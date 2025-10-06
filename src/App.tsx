@@ -4,6 +4,9 @@ import Dashboard from "./pages/Dashboard";
 import MemberList from "./pages/members/MemberList";
 import MemberAdd from "./pages/members/MemberAdd";
 import MemberDetail from "./pages/members/MemberDetail";
+import BookList from "./pages/books/BookList";
+import BookAdd from "./pages/books/BookAdd";
+import BookDetail from "./pages/books/BookDetail";
 
 // 임시 플레이스홀더 컴포넌트
 const Placeholder = ({ title }: { title: string }) => (
@@ -22,7 +25,9 @@ function App() {
         <Route path="/members" element={<MemberList />} />
         <Route path="/members/add" element={<MemberAdd />} />
         <Route path="/members/:id" element={<MemberDetail />} />
-        <Route path="/books" element={<Placeholder title="Books" />} />
+        <Route path="/books" element={<BookList />} />
+        <Route path="/books/add" element={<BookAdd />} />
+        <Route path="/books/:id" element={<BookDetail />} />
         <Route path="/orders" element={<Placeholder title="Orders" />} />
         <Route path="/settings" element={<Placeholder title="Settings" />} />
       </Routes>
