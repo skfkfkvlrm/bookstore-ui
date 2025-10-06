@@ -1,4 +1,4 @@
-type BadgeVariant = 'premium' | 'standard' | 'available' | 'unavailable' | 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+type BadgeVariant = 'premium' | 'standard' | 'available' | 'unavailable' | 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled' | 'active' | 'returned' | 'overdue';
 
 interface BadgeProps {
   variant: BadgeVariant;
@@ -16,6 +16,9 @@ const Badge = ({ variant, children }: BadgeProps) => {
     shipped: "bg-purple-500/20 text-purple-600 dark:text-purple-400",
     delivered: "bg-green-500/20 text-green-600 dark:text-green-400",
     cancelled: "bg-red-500/20 text-red-600 dark:text-red-400",
+    active: "bg-blue-500/20 text-blue-600 dark:text-blue-400",
+    returned: "bg-green-500/20 text-green-600 dark:text-green-400",
+    overdue: "bg-red-500/20 text-red-600 dark:text-red-400",
   };
 
   return (

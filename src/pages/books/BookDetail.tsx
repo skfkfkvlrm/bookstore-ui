@@ -70,17 +70,13 @@ const BookDetail = () => {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="mb-6 flex justify-between items-center">
+      <div className="mb-6">
         <div>
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Book Details</h2>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
             View and manage book information.
           </p>
         </div>
-        <Button variant="secondary" onClick={() => navigate("/books")}>
-          <span className="material-symbols-outlined">arrow_back</span>
-          Back to Catalog
-        </Button>
       </div>
 
       <div className="bg-white dark:bg-[#1a2632] rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
@@ -218,6 +214,13 @@ const BookDetail = () => {
             </Button>
           </div>
         )}
+      </div>
+
+      <div className="flex justify-end mt-6">
+        <Button variant="secondary" onClick={() => navigate("/books")}>
+          <span className="material-symbols-outlined">arrow_back</span>
+          Back to Catalog
+        </Button>
       </div>
     </div>
   );

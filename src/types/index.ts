@@ -40,6 +40,8 @@ export interface Order {
   status: 'PENDING' | 'CONFIRMED' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
   items: OrderItem[];
   customerEmail?: string;
+  paymentMethod?: 'CREDIT_CARD' | 'BANK_TRANSFER';
+  paymentStatus?: 'PENDING' | 'COMPLETED' | 'FAILED';
 }
 
 export interface OrderItem {
@@ -52,8 +54,14 @@ export interface OrderItem {
 }
 
 export interface OrderCreateRequest {
-  bookIds: number[];
+  items: Array<{ bookId: number; quantity: number }>;
   customerEmail: string;
+  paymentMethod: 'CREDIT_CARD' | 'BANK_TRANSFER';
+}
+
+export interface OrderUpdateStatusRequest {
+  orderId: number;
+  status: 'PENDING' | 'CONFIRMED' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
 }
 
 export interface OrderStatistics {
@@ -90,8 +98,33 @@ export interface NavItem {
   label: string;
 }
 
+// Loan Types
+export interface Loan {
+  id: number;
+  bookId: number;
+  bookTitle: string;
+  bookAuthor: string;
+  memberId: number;
+  memberName: string;
+  memberEmail: string;
+  loanDate: string;
+  dueDate: string;
+  returnDate?: string;
+  status: 'ACTIVE' | 'RETURNED' | 'OVERDUE';
+}
+
+export interface LoanCreateRequest {
+  bookId: number;
+  memberId: number;
+}
+
+export interface LoanReturnRequest {
+  loanId: number;
+  returnDate: string;
+}
+
 // Badge Variant Types
-export type BadgeVariant = 'premium' | 'standard' | 'available' | 'unavailable' | 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+export type BadgeVariant = 'premium' | 'standard' | 'available' | 'unavailable' | 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled' | 'active' | 'returned' | 'overdue';
 
 // Button Variant Types
 export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'success';

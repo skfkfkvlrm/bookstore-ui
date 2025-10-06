@@ -4,6 +4,7 @@ const navItems = [
   { to: "/dashboard", icon: "dashboard", label: "Dashboard" },
   { to: "/members", icon: "group", label: "Members" },
   { to: "/books", icon: "menu_book", label: "Books" },
+  { to: "/loans", icon: "library_books", label: "Loans" },
   { to: "/orders", icon: "receipt_long", label: "Orders" },
   { to: "/settings", icon: "settings", label: "Settings" },
 ];
