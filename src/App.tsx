@@ -13,14 +13,7 @@ import OrderDetail from "./pages/orders/OrderDetail";
 import LoanList from "./pages/loans/LoanList";
 import LoanAdd from "./pages/loans/LoanAdd";
 import LoanDetail from "./pages/loans/LoanDetail";
-
-// 임시 플레이스홀더 컴포넌트
-const Placeholder = ({ title }: { title: string }) => (
-  <div className="max-w-7xl mx-auto">
-    <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">{title}</h1>
-    <p className="mt-4 text-gray-600 dark:text-gray-400">이 페이지는 현재 개발 중입니다.</p>
-  </div>
-);
+import Settings from "./pages/Settings";
 
 function App() {
   return (
@@ -40,7 +33,7 @@ function App() {
         <Route path="/orders" element={<OrderList />} />
         <Route path="/orders/add" element={<OrderAdd />} />
         <Route path="/orders/:id" element={<OrderDetail />} />
-        <Route path="/settings" element={<Placeholder title="Settings" />} />
+        <Route path="/settings" element={<Settings />} />
       </Routes>
     </Layout>
   );
