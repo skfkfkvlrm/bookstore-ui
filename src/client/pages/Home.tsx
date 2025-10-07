@@ -1,0 +1,134 @@
+import { Link } from "react-router-dom";
+import type { Book } from "../../shared/types";
+import booksData from "../../shared/data/books.json";
+
+// Get first 6 books as featured
+const featuredBooks: Book[] = (booksData as Book[]).slice(0, 6);
+
+const Home = () => {
+  return (
+    <div className="space-y-12">
+      {/* Hero Section */}
+      <section className="text-center py-16 bg-gradient-to-r from-[#1173d4]/10 to-[#1173d4]/5 rounded-2xl">
+        <span className="material-symbols-outlined text-7xl text-[#1173d4] mb-4">local_library</span>
+        <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-4">
+          Welcome to Spring Library
+        </h1>
+        <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+          Discover your next favorite book from our extensive collection. Browse, borrow, and buy
+          with ease.
+        </p>
+        <div className="flex gap-4 justify-center">
+          <Link
+            to="/client/books"
+            className="inline-flex items-center px-8 py-3 rounded-lg bg-[#1173d4] text-white font-bold text-base hover:bg-[#1173d4]/90 transition-all shadow-md"
+          >
+            <span className="material-symbols-outlined mr-2">search</span>
+            Browse Books
+          </Link>
+          <Link
+            to="/client/my-loans"
+            className="inline-flex items-center px-8 py-3 rounded-lg bg-[#1173d4]/20 text-[#1173d4] font-bold text-base hover:bg-[#1173d4]/30 transition-all"
+          >
+            <span className="material-symbols-outlined mr-2">book</span>
+            My Loans
+          </Link>
+        </div>
+      </section>
+
+      {/* Featured Books Section */}
+      <section>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Featured Books</h2>
+          <Link
+            to="/client/books"
+            className="text-[#1173d4] hover:underline font-medium flex items-center gap-1"
+          >
+            View All
+            <span className="material-symbols-outlined text-sm">arrow_forward</span>
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+          {featuredBooks.map((book) => (
+            <Link
+              key={book.id}
+              to={`/client/books/${book.id}`}
+              className="group flex flex-col gap-2"
+            >
+              <div className="w-full overflow-hidden rounded-lg bg-gray-200 dark:bg-gray-800 transition-shadow duration-300 group-hover:shadow-xl">
+                {book.coverImage ? (
+                  <img
+                    src={book.coverImage}
+                    alt={`Cover of ${book.title}`}
+                    className="aspect-[3/4] w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                    }}
+                  />
+                ) : null}
+                <div className={`aspect-[3/4] w-full bg-gradient-to-br from-[#1173d4]/20 to-[#1173d4]/5 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 ${book.coverImage ? 'hidden' : ''}`}>
+                  <span className="material-symbols-outlined text-6xl text-[#1173d4]/40">
+                    book
+                  </span>
+                </div>
+              </div>
+              <div>
+                <h3 className="font-bold text-gray-900 dark:text-white text-sm line-clamp-2">
+                  {book.title}
+                </h3>
+                <p className="text-xs text-gray-600 dark:text-gray-400">by {book.author}</p>
+                <div className="mt-1 flex items-center justify-between">
+                  <p className="text-sm font-bold text-[#1173d4]">${book.price}</p>
+                  {book.available ? (
+                    <span className="text-xs text-green-600 dark:text-green-400">In Stock</span>
+                  ) : (
+                    <span className="text-xs text-red-600 dark:text-red-400">Out of Stock</span>
+                  )}
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="grid md:grid-cols-3 gap-8 py-8">
+        <div className="text-center p-6 bg-white dark:bg-[#1a2632] rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          <span className="material-symbols-outlined text-5xl text-[#1173d4] mb-4">
+            library_books
+          </span>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+            Extensive Collection
+          </h3>
+          <p className="text-gray-600 dark:text-gray-400">
+            Browse thousands of books across all genres and categories
+          </p>
+        </div>
+
+        <div className="text-center p-6 bg-white dark:bg-[#1a2632] rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          <span className="material-symbols-outlined text-5xl text-[#1173d4] mb-4">
+            schedule
+          </span>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Easy Borrowing</h3>
+          <p className="text-gray-600 dark:text-gray-400">
+            Borrow books with flexible loan periods and easy returns
+          </p>
+        </div>
+
+        <div className="text-center p-6 bg-white dark:bg-[#1a2632] rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          <span className="material-symbols-outlined text-5xl text-[#1173d4] mb-4">
+            shopping_cart
+          </span>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Purchase Option</h3>
+          <p className="text-gray-600 dark:text-gray-400">
+            Buy your favorite books at competitive prices
+          </p>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default Home;

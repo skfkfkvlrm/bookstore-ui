@@ -1,0 +1,502 @@
+[
+  {
+    "id": 1,
+    "title": "Atomic Habits",
+    "author": "James Clear",
+    "isbn": "978-0-7352-1129-2",
+    "price": 27.00,
+    "available": true,
+    "createdDate": "2025-08-10T11:30:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/10329383-L.jpg"
+  },
+  {
+    "id": 2,
+    "title": "Sapiens: A Brief History of Humankind",
+    "author": "Yuval Noah Harari",
+    "isbn": "978-0-06-231609-7",
+    "price": 24.99,
+    "available": true,
+    "createdDate": "2025-07-22T14:00:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/10328087-L.jpg"
+  },
+  {
+    "id": 3,
+    "title": "The Martian",
+    "author": "Andy Weir",
+    "isbn": "978-0-8041-3902-1",
+    "price": 15.00,
+    "available": false,
+    "createdDate": "2025-06-15T09:45:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/10114403-L.jpg"
+  },
+  {
+    "id": 4,
+    "title": "Where the Crawdads Sing",
+    "author": "Delia Owens",
+    "isbn": "978-0-7352-1909-0",
+    "price": 18.00,
+    "available": true,
+    "createdDate": "2025-09-01T10:20:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/10209539-L.jpg"
+  },
+  {
+    "id": 5,
+    "title": "Pachinko",
+    "author": "Min Jin Lee",
+    "isbn": "978-1-4555-6393-7",
+    "price": 17.99,
+    "available": true,
+    "createdDate": "2025-08-05T16:00:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/8315573-L.jpg"
+  },
+  {
+    "id": 6,
+    "title": "Dune",
+    "author": "Frank Herbert",
+    "isbn": "978-0-441-01359-3",
+    "price": 18.00,
+    "available": true,
+    "createdDate": "2025-09-11T13:10:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/9117333-L.jpg"
+  },
+  {
+    "id": 7,
+    "title": "Project Hail Mary",
+    "author": "Andy Weir",
+    "isbn": "978-0-593-13520-4",
+    "price": 28.00,
+    "available": false,
+    "createdDate": "2025-07-30T18:00:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/10700938-L.jpg"
+  },
+  {
+    "id": 8,
+    "title": "Lessons in Chemistry",
+    "author": "Bonnie Garmus",
+    "isbn": "978-0-385-54734-5",
+    "price": 29.00,
+    "available": true,
+    "createdDate": "2025-09-18T09:00:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/12749969-L.jpg"
+  },
+  {
+    "id": 9,
+    "title": "Fourth Wing",
+    "author": "Rebecca Yarros",
+    "isbn": "978-1-64937-404-2",
+    "price": 29.99,
+    "available": true,
+    "createdDate": "2025-09-25T11:50:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/13833419-L.jpg"
+  },
+  {
+    "id": 10,
+    "title": "Klara and the Sun",
+    "author": "Kazuo Ishiguro",
+    "isbn": "978-0-593-31817-1",
+    "price": 21.00,
+    "available": true,
+    "createdDate": "2025-08-14T12:00:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/10571216-L.jpg"
+  },
+  {
+    "id": 11,
+    "title": "Educated",
+    "author": "Tara Westover",
+    "isbn": "978-0-3995-9050-4",
+    "price": 18.99,
+    "available": true,
+    "createdDate": "2025-09-02T14:30:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/8777994-L.jpg"
+  },
+  {
+    "id": 12,
+    "title": "Becoming",
+    "author": "Michelle Obama",
+    "isbn": "978-1-5247-6313-8",
+    "price": 32.50,
+    "available": true,
+    "createdDate": "2025-09-03T10:00:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/8777908-L.jpg"
+  },
+  {
+    "id": 13,
+    "title": "The Seven Husbands of Evelyn Hugo",
+    "author": "Taylor Jenkins Reid",
+    "isbn": "978-1-5011-6193-3",
+    "price": 17.00,
+    "available": false,
+    "createdDate": "2025-09-04T11:20:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/8372202-L.jpg"
+  },
+  {
+    "id": 14,
+    "title": "The Midnight Library",
+    "author": "Matt Haig",
+    "isbn": "978-0-5255-5947-4",
+    "price": 26.00,
+    "available": true,
+    "createdDate": "2025-09-05T09:15:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/10323389-L.jpg"
+  },
+  {
+    "id": 15,
+    "title": "Circe",
+    "author": "Madeline Miller",
+    "isbn": "978-0-3165-5634-7",
+    "price": 16.99,
+    "available": true,
+    "createdDate": "2025-09-06T16:45:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/8483861-L.jpg"
+  },
+  {
+    "id": 16,
+    "title": "The Song of Achilles",
+    "author": "Madeline Miller",
+    "isbn": "978-0-0620-6062-4",
+    "price": 16.99,
+    "available": true,
+    "createdDate": "2025-09-07T13:00:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/10103259-L.jpg"
+  },
+  {
+    "id": 17,
+    "title": "The Silent Patient",
+    "author": "Alex Michaelides",
+    "isbn": "978-1-2503-0169-7",
+    "price": 27.99,
+    "available": false,
+    "createdDate": "2025-09-08T10:30:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/8821941-L.jpg"
+  },
+  {
+    "id": 18,
+    "title": "Gone Girl",
+    "author": "Gillian Flynn",
+    "isbn": "978-0-3075-8837-1",
+    "price": 15.00,
+    "available": true,
+    "createdDate": "2025-09-09T12:00:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/10041217-L.jpg"
+  },
+  {
+    "id": 19,
+    "title": "The Vanishing Half",
+    "author": "Brit Bennett",
+    "isbn": "978-0-5255-3629-1",
+    "price": 27.00,
+    "available": true,
+    "createdDate": "2025-09-10T14:20:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/10002161-L.jpg"
+  },
+  {
+    "id": 20,
+    "title": "The Three-Body Problem",
+    "author": "Cixin Liu",
+    "isbn": "978-0-7653-8203-0",
+    "price": 16.99,
+    "available": true,
+    "createdDate": "2025-09-11T11:00:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/8243455-L.jpg"
+  },
+  {
+    "id": 21,
+    "title": "A Man Called Ove",
+    "author": "Fredrik Backman",
+    "isbn": "978-1-4767-3802-4",
+    "price": 16.00,
+    "available": true,
+    "createdDate": "2025-09-12T15:00:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/7933454-L.jpg"
+  },
+  {
+    "id": 22,
+    "title": "Anxious People",
+    "author": "Fredrik Backman",
+    "isbn": "978-1-5011-6084-4",
+    "price": 17.99,
+    "available": false,
+    "createdDate": "2025-09-13T09:45:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/10292182-L.jpg"
+  },
+  {
+    "id": 23,
+    "title": "The Hate U Give",
+    "author": "Angie Thomas",
+    "isbn": "978-0-0624-9853-3",
+    "price": 18.99,
+    "available": true,
+    "createdDate": "2025-09-14T10:15:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/8302069-L.jpg"
+  },
+  {
+    "id": 24,
+    "title": "Six of Crows",
+    "author": "Leigh Bardugo",
+    "isbn": "978-1-6277-9212-7",
+    "price": 19.99,
+    "available": true,
+    "createdDate": "2025-09-15T11:30:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/8287955-L.jpg"
+  },
+  {
+    "id": 25,
+    "title": "All the Light We Cannot See",
+    "author": "Anthony Doerr",
+    "isbn": "978-1-4767-4658-6",
+    "price": 18.00,
+    "available": true,
+    "createdDate": "2025-09-16T13:00:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/8254432-L.jpg"
+  },
+  {
+    "id": 26,
+    "title": "The Nightingale",
+    "author": "Kristin Hannah",
+    "isbn": "978-0-3125-7722-3",
+    "price": 16.99,
+    "available": true,
+    "createdDate": "2025-09-17T14:45:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/8283281-L.jpg"
+  },
+  {
+    "id": 27,
+    "title": "It Ends with Us",
+    "author": "Colleen Hoover",
+    "isbn": "978-1-5011-1036-8",
+    "price": 16.99,
+    "available": true,
+    "createdDate": "2025-09-18T16:00:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/10042491-L.jpg"
+  },
+  {
+    "id": 28,
+    "title": "Verity",
+    "author": "Colleen Hoover",
+    "isbn": "978-1-5387-2473-6",
+    "price": 16.99,
+    "available": false,
+    "createdDate": "2025-09-19T08:30:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/12836262-L.jpg"
+  },
+  {
+    "id": 29,
+    "title": "Thinking, Fast and Slow",
+    "author": "Daniel Kahneman",
+    "isbn": "978-0-3742-7563-1",
+    "price": 20.00,
+    "available": true,
+    "createdDate": "2025-09-20T10:00:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/7911475-L.jpg"
+  },
+  {
+    "id": 30,
+    "title": "Quiet: The Power of Introverts in a World That Can't Stop Talking",
+    "author": "Susan Cain",
+    "isbn": "978-0-3073-5214-9",
+    "price": 16.00,
+    "available": true,
+    "createdDate": "2025-09-21T11:15:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/10408422-L.jpg"
+  },
+  {
+    "id": 31,
+    "title": "The Subtle Art of Not Giving a F*ck",
+    "author": "Mark Manson",
+    "isbn": "978-0-0624-5771-8",
+    "price": 24.99,
+    "available": true,
+    "createdDate": "2025-09-22T13:30:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/8254209-L.jpg"
+  },
+  {
+    "id": 32,
+    "title": "Mistborn: The Final Empire",
+    "author": "Brandon Sanderson",
+    "isbn": "978-0-7653-1178-8",
+    "price": 21.99,
+    "available": true,
+    "createdDate": "2025-09-23T14:00:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/8383831-L.jpg"
+  },
+  {
+    "id": 33,
+    "title": "The Name of the Wind",
+    "author": "Patrick Rothfuss",
+    "isbn": "978-0-7564-0407-9",
+    "price": 18.99,
+    "available": false,
+    "createdDate": "2025-09-24T15:45:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/8750849-L.jpg"
+  },
+  {
+    "id": 34,
+    "title": "The Priory of the Orange Tree",
+    "author": "Samantha Shannon",
+    "isbn": "978-1-4088-8344-2",
+    "price": 29.99,
+    "available": true,
+    "createdDate": "2025-09-25T17:00:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/8816404-L.jpg"
+  },
+  {
+    "id": 35,
+    "title": "The Immortal Life of Henrietta Lacks",
+    "author": "Rebecca Skloot",
+    "isbn": "978-1-4000-5218-9",
+    "price": 16.00,
+    "available": true,
+    "createdDate": "2025-09-26T09:00:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/9264805-L.jpg"
+  },
+  {
+    "id": 36,
+    "title": "Normal People",
+    "author": "Sally Rooney",
+    "isbn": "978-1-9848-2217-8",
+    "price": 17.00,
+    "available": true,
+    "createdDate": "2025-09-27T10:30:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/8816408-L.jpg"
+  },
+  {
+    "id": 37,
+    "title": "Little Fires Everywhere",
+    "author": "Celeste Ng",
+    "isbn": "978-1-5942-0639-6",
+    "price": 17.00,
+    "available": false,
+    "createdDate": "2025-09-28T11:45:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/8394467-L.jpg"
+  },
+  {
+    "id": 38,
+    "title": "Daisy Jones & The Six",
+    "author": "Taylor Jenkins Reid",
+    "isbn": "978-1-5247-9862-8",
+    "price": 17.00,
+    "available": true,
+    "createdDate": "2025-09-29T13:15:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/8821938-L.jpg"
+  },
+  {
+    "id": 39,
+    "title": "Children of Blood and Bone",
+    "author": "Tomi Adeyemi",
+    "isbn": "978-1-2501-7097-2",
+    "price": 18.99,
+    "available": true,
+    "createdDate": "2025-09-30T14:30:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/8483842-L.jpg"
+  },
+  {
+    "id": 40,
+    "title": "The Guest List",
+    "author": "Lucy Fokley",
+    "isbn": "978-0-0628-6893-0",
+    "price": 27.99,
+    "available": true,
+    "createdDate": "2025-10-01T16:00:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/9324707-L.jpg"
+  },
+  {
+    "id": 41,
+    "title": "Hamnet",
+    "author": "Maggie O'Farrell",
+    "isbn": "978-0-5256-5740-3",
+    "price": 26.95,
+    "available": true,
+    "createdDate": "2025-10-02T09:45:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/9324888-L.jpg"
+  },
+  {
+    "id": 42,
+    "title": "Red, White & Royal Blue",
+    "author": "Casey McQuiston",
+    "isbn": "978-1-2503-1677-6",
+    "price": 16.99,
+    "available": false,
+    "createdDate": "2025-10-03T11:00:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/8995383-L.jpg"
+  },
+  {
+    "id": 43,
+    "title": "The House in the Cerulean Sea",
+    "author": "T.J. Klune",
+    "isbn": "978-1-2502-1728-8",
+    "price": 26.99,
+    "available": true,
+    "createdDate": "2025-10-04T12:30:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/10188232-L.jpg"
+  },
+  {
+    "id": 44,
+    "title": "Mexican Gothic",
+    "author": "Silvia Moreno-Garcia",
+    "isbn": "978-0-5256-2078-5",
+    "price": 17.00,
+    "available": true,
+    "createdDate": "2025-10-05T14:00:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/10002159-L.jpg"
+  },
+  {
+    "id": 45,
+    "title": "Ancillary Justice",
+    "author": "Ann Leckie",
+    "isbn": "978-0-3565-0240-3",
+    "price": 15.99,
+    "available": true,
+    "createdDate": "2025-10-06T15:15:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/7933453-L.jpg"
+  },
+  {
+    "id": 46,
+    "title": "Gideon the Ninth",
+    "author": "Tamsyn Muir",
+    "isbn": "978-1-2503-1319-5",
+    "price": 26.99,
+    "available": false,
+    "createdDate": "2025-10-07T16:30:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/9188484-L.jpg"
+  },
+  {
+    "id": 47,
+    "title": "Piranesi",
+    "author": "Susanna Clarke",
+    "isbn": "978-1-6355-7563-7",
+    "price": 27.00,
+    "available": true,
+    "createdDate": "2025-10-08T09:00:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/10292211-L.jpg"
+  },
+  {
+    "id": 48,
+    "title": "Between the World and Me",
+    "author": "Ta-Nehisi Coates",
+    "isbn": "978-0-8129-9354-7",
+    "price": 24.00,
+    "available": true,
+    "createdDate": "2025-10-09T10:45:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/8287954-L.jpg"
+  },
+  {
+    "id": 49,
+    "title": "The Goldfinch",
+    "author": "Donna Tartt",
+    "isbn": "978-0-3160-5543-7",
+    "price": 20.00,
+    "available": true,
+    "createdDate": "2025-10-10T12:00:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/10408544-L.jpg"
+  },
+  {
+    "id": 50,
+    "title": "Crying in H Mart",
+    "author": "Michelle Zauner",
+    "isbn": "978-0-5933-1959-8",
+    "price": 26.95,
+    "available": true,
+    "createdDate": "2025-10-11T13:30:00",
+    "coverImage": "https://covers.openlibrary.org/b/id/10571217-L.jpg"
+  }
+]
