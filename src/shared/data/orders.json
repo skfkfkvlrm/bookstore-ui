@@ -1,0 +1,232 @@
+[
+  {
+    "id": 1020,
+    "totalAmount": 89.96,
+    "orderDate": "2025-10-05T14:30:00",
+    "status": "PENDING",
+    "customerEmail": "sophia.clark@email.com",
+    "items": [
+      { "id": 1, "bookId": 1, "bookTitle": "Atomic Habits", "bookAuthor": "James Clear", "quantity": 2, "price": 16.99 },
+      { "id": 2, "bookId": 5, "bookTitle": "The Midnight Library", "bookAuthor": "Matt Haig", "quantity": 1, "price": 15.99 },
+      { "id": 3, "bookId": 10, "bookTitle": "Educated", "bookAuthor": "Tara Westover", "quantity": 1, "price": 18.99 },
+      { "id": 4, "bookId": 15, "bookTitle": "The Silent Patient", "bookAuthor": "Alex Michaelides", "quantity": 2, "price": 10.50 }
+    ]
+  },
+  {
+    "id": 1019,
+    "totalAmount": 45.97,
+    "orderDate": "2025-10-04T09:15:00",
+    "status": "CONFIRMED",
+    "customerEmail": "ethan.bennett@email.com",
+    "items": [
+      { "id": 5, "bookId": 2, "bookTitle": "Sapiens", "bookAuthor": "Yuval Noah Harari", "quantity": 1, "price": 19.99 },
+      { "id": 6, "bookId": 8, "bookTitle": "Where the Crawdads Sing", "bookAuthor": "Delia Owens", "quantity": 1, "price": 15.99 },
+      { "id": 7, "bookId": 12, "bookTitle": "Becoming", "bookAuthor": "Michelle Obama", "quantity": 1, "price": 9.99 }
+    ]
+  },
+  {
+    "id": 1018,
+    "totalAmount": 67.95,
+    "orderDate": "2025-10-03T16:45:00",
+    "status": "SHIPPED",
+    "customerEmail": "olivia.carter@email.com",
+    "items": [
+      { "id": 8, "bookId": 3, "bookTitle": "The Martian", "bookAuthor": "Andy Weir", "quantity": 1, "price": 14.99 },
+      { "id": 9, "bookId": 7, "bookTitle": "Circe", "bookAuthor": "Madeline Miller", "quantity": 2, "price": 16.99 },
+      { "id": 10, "bookId": 20, "bookTitle": "Daisy Jones & The Six", "bookAuthor": "Taylor Jenkins Reid", "quantity": 1, "price": 18.98 }
+    ]
+  },
+  {
+    "id": 1017,
+    "totalAmount": 24.98,
+    "orderDate": "2025-10-02T11:20:00",
+    "status": "DELIVERED",
+    "customerEmail": "james.wilson@email.com",
+    "items": [
+      { "id": 11, "bookId": 4, "bookTitle": "Dune", "bookAuthor": "Frank Herbert", "quantity": 1, "price": 12.49 },
+      { "id": 12, "bookId": 9, "bookTitle": "The Four Winds", "bookAuthor": "Kristin Hannah", "quantity": 1, "price": 12.49 }
+    ]
+  },
+  {
+    "id": 1016,
+    "totalAmount": 53.96,
+    "orderDate": "2025-10-01T13:50:00",
+    "status": "DELIVERED",
+    "customerEmail": "emma.davis@email.com",
+    "items": [
+      { "id": 13, "bookId": 6, "bookTitle": "Project Hail Mary", "bookAuthor": "Andy Weir", "quantity": 2, "price": 17.99 },
+      { "id": 14, "bookId": 11, "bookTitle": "The Seven Husbands of Evelyn Hugo", "bookAuthor": "Taylor Jenkins Reid", "quantity": 1, "price": 17.99 }
+    ]
+  },
+  {
+    "id": 1015,
+    "totalAmount": 38.97,
+    "orderDate": "2025-09-30T10:30:00",
+    "status": "DELIVERED",
+    "customerEmail": "sophia.clark@email.com",
+    "items": [
+      { "id": 15, "bookId": 13, "bookTitle": "The Nightingale", "bookAuthor": "Kristin Hannah", "quantity": 1, "price": 13.99 },
+      { "id": 16, "bookId": 14, "bookTitle": "Normal People", "bookAuthor": "Sally Rooney", "quantity": 1, "price": 11.99 },
+      { "id": 17, "bookId": 16, "bookTitle": "Anxious People", "bookAuthor": "Fredrik Backman", "quantity": 1, "price": 12.99 }
+    ]
+  },
+  {
+    "id": 1014,
+    "totalAmount": 71.94,
+    "orderDate": "2025-09-29T15:10:00",
+    "status": "CANCELLED",
+    "customerEmail": "ethan.bennett@email.com",
+    "items": [
+      { "id": 18, "bookId": 17, "bookTitle": "The Invisible Life of Addie LaRue", "bookAuthor": "V.E. Schwab", "quantity": 2, "price": 17.99 },
+      { "id": 19, "bookId": 18, "bookTitle": "Malibu Rising", "bookAuthor": "Taylor Jenkins Reid", "quantity": 2, "price": 17.98 }
+    ]
+  },
+  {
+    "id": 1013,
+    "totalAmount": 29.98,
+    "orderDate": "2025-09-28T08:25:00",
+    "status": "PENDING",
+    "customerEmail": "olivia.carter@email.com",
+    "items": [
+      { "id": 20, "bookId": 19, "bookTitle": "It Ends with Us", "bookAuthor": "Colleen Hoover", "quantity": 1, "price": 14.99 },
+      { "id": 21, "bookId": 21, "bookTitle": "The Song of Achilles", "bookAuthor": "Madeline Miller", "quantity": 1, "price": 14.99 }
+    ]
+  },
+  {
+    "id": 1012,
+    "totalAmount": 56.95,
+    "orderDate": "2025-09-27T12:40:00",
+    "status": "CONFIRMED",
+    "customerEmail": "james.wilson@email.com",
+    "items": [
+      { "id": 22, "bookId": 22, "bookTitle": "A Court of Thorns and Roses", "bookAuthor": "Sarah J. Maas", "quantity": 1, "price": 18.99 },
+      { "id": 23, "bookId": 23, "bookTitle": "The House in the Cerulean Sea", "bookAuthor": "TJ Klune", "quantity": 1, "price": 18.99 },
+      { "id": 24, "bookId": 24, "bookTitle": "Verity", "bookAuthor": "Colleen Hoover", "quantity": 1, "price": 18.97 }
+    ]
+  },
+  {
+    "id": 1011,
+    "totalAmount": 42.96,
+    "orderDate": "2025-09-26T17:55:00",
+    "status": "SHIPPED",
+    "customerEmail": "emma.davis@email.com",
+    "items": [
+      { "id": 25, "bookId": 25, "bookTitle": "The Vanishing Half", "bookAuthor": "Brit Bennett", "quantity": 2, "price": 10.99 },
+      { "id": 26, "bookId": 26, "bookTitle": "Mexican Gothic", "bookAuthor": "Silvia Moreno-Garcia", "quantity": 2, "price": 10.49 }
+    ]
+  },
+  {
+    "id": 1010,
+    "totalAmount": 64.95,
+    "orderDate": "2025-09-25T09:30:00",
+    "status": "DELIVERED",
+    "customerEmail": "sophia.clark@email.com",
+    "items": [
+      { "id": 27, "bookId": 27, "bookTitle": "The Maidens", "bookAuthor": "Alex Michaelides", "quantity": 1, "price": 21.99 },
+      { "id": 28, "bookId": 28, "bookTitle": "The Thursday Murder Club", "bookAuthor": "Richard Osman", "quantity": 1, "price": 21.99 },
+      { "id": 29, "bookId": 29, "bookTitle": "Klara and the Sun", "bookAuthor": "Kazuo Ishiguro", "quantity": 1, "price": 20.97 }
+    ]
+  },
+  {
+    "id": 1009,
+    "totalAmount": 33.98,
+    "orderDate": "2025-09-24T14:15:00",
+    "status": "DELIVERED",
+    "customerEmail": "ethan.bennett@email.com",
+    "items": [
+      { "id": 30, "bookId": 30, "bookTitle": "The Guest List", "bookAuthor": "Lucy Foley", "quantity": 1, "price": 16.99 },
+      { "id": 31, "bookId": 31, "bookTitle": "The Paris Apartment", "bookAuthor": "Lucy Foley", "quantity": 1, "price": 16.99 }
+    ]
+  },
+  {
+    "id": 1008,
+    "totalAmount": 47.96,
+    "orderDate": "2025-09-23T11:05:00",
+    "status": "PENDING",
+    "customerEmail": "olivia.carter@email.com",
+    "items": [
+      { "id": 32, "bookId": 32, "bookTitle": "The Seven Year Slip", "bookAuthor": "Ashley Poston", "quantity": 2, "price": 11.99 },
+      { "id": 33, "bookId": 33, "bookTitle": "Book Lovers", "bookAuthor": "Emily Henry", "quantity": 2, "price": 11.99 }
+    ]
+  },
+  {
+    "id": 1007,
+    "totalAmount": 58.95,
+    "orderDate": "2025-09-22T16:20:00",
+    "status": "CONFIRMED",
+    "customerEmail": "james.wilson@email.com",
+    "items": [
+      { "id": 34, "bookId": 34, "bookTitle": "Tomorrow, and Tomorrow, and Tomorrow", "bookAuthor": "Gabrielle Zevin", "quantity": 1, "price": 19.99 },
+      { "id": 35, "bookId": 35, "bookTitle": "The Lincoln Highway", "bookAuthor": "Amor Towles", "quantity": 1, "price": 19.99 },
+      { "id": 36, "bookId": 36, "bookTitle": "Lessons in Chemistry", "bookAuthor": "Bonnie Garmus", "quantity": 1, "price": 18.97 }
+    ]
+  },
+  {
+    "id": 1006,
+    "totalAmount": 39.97,
+    "orderDate": "2025-09-21T13:45:00",
+    "status": "SHIPPED",
+    "customerEmail": "emma.davis@email.com",
+    "items": [
+      { "id": 37, "bookId": 37, "bookTitle": "Demon Copperhead", "bookAuthor": "Barbara Kingsolver", "quantity": 1, "price": 13.99 },
+      { "id": 38, "bookId": 38, "bookTitle": "The Woman in Me", "bookAuthor": "Britney Spears", "quantity": 1, "price": 12.99 },
+      { "id": 39, "bookId": 39, "bookTitle": "Holly", "bookAuthor": "Stephen King", "quantity": 1, "price": 12.99 }
+    ]
+  },
+  {
+    "id": 1005,
+    "totalAmount": 51.96,
+    "orderDate": "2025-09-20T10:30:00",
+    "status": "DELIVERED",
+    "customerEmail": "sophia.clark@email.com",
+    "items": [
+      { "id": 40, "bookId": 40, "bookTitle": "Fourth Wing", "bookAuthor": "Rebecca Yarros", "quantity": 2, "price": 12.99 },
+      { "id": 41, "bookId": 41, "bookTitle": "Iron Flame", "bookAuthor": "Rebecca Yarros", "quantity": 2, "price": 12.99 }
+    ]
+  },
+  {
+    "id": 1004,
+    "totalAmount": 35.98,
+    "orderDate": "2025-09-19T15:50:00",
+    "status": "CANCELLED",
+    "customerEmail": "ethan.bennett@email.com",
+    "items": [
+      { "id": 42, "bookId": 42, "bookTitle": "The Covenant of Water", "bookAuthor": "Abraham Verghese", "quantity": 1, "price": 17.99 },
+      { "id": 43, "bookId": 43, "bookTitle": "Tom Lake", "bookAuthor": "Ann Patchett", "quantity": 1, "price": 17.99 }
+    ]
+  },
+  {
+    "id": 1003,
+    "totalAmount": 44.97,
+    "orderDate": "2025-09-18T08:15:00",
+    "status": "PENDING",
+    "customerEmail": "olivia.carter@email.com",
+    "items": [
+      { "id": 44, "bookId": 44, "bookTitle": "Happy Place", "bookAuthor": "Emily Henry", "quantity": 1, "price": 14.99 },
+      { "id": 45, "bookId": 45, "bookTitle": "The Five-Star Weekend", "bookAuthor": "Elin Hilderbrand", "quantity": 1, "price": 14.99 },
+      { "id": 46, "bookId": 46, "bookTitle": "Hello Beautiful", "bookAuthor": "Ann Napolitano", "quantity": 1, "price": 14.99 }
+    ]
+  },
+  {
+    "id": 1002,
+    "totalAmount": 62.94,
+    "orderDate": "2025-09-17T12:40:00",
+    "status": "CONFIRMED",
+    "customerEmail": "james.wilson@email.com",
+    "items": [
+      { "id": 47, "bookId": 47, "bookTitle": "The Heaven & Earth Grocery Store", "bookAuthor": "James McBride", "quantity": 2, "price": 15.99 },
+      { "id": 48, "bookId": 48, "bookTitle": "The Wager", "bookAuthor": "David Grann", "quantity": 2, "price": 15.48 }
+    ]
+  },
+  {
+    "id": 1001,
+    "totalAmount": 29.98,
+    "orderDate": "2025-09-16T17:25:00",
+    "status": "SHIPPED",
+    "customerEmail": "emma.davis@email.com",
+    "items": [
+      { "id": 49, "bookId": 49, "bookTitle": "The Fraud", "bookAuthor": "Zadie Smith", "quantity": 1, "price": 14.99 },
+      { "id": 50, "bookId": 50, "bookTitle": "The Trackers", "bookAuthor": "Charles Frazier", "quantity": 1, "price": 14.99 }
+    ]
+  }
+]

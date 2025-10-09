@@ -4,74 +4,16 @@ import type { Order } from "../../../shared/types";
 import Button from "../../../shared/components/common/Button";
 import Badge from "../../../shared/components/common/Badge";
 import SearchInput from "../../../shared/components/common/SearchInput";
-import FilterButton from "../../../shared/components/common/FilterButton";
+import Pagination from "../../../shared/components/common/Pagination";
+import ordersData from "../../../shared/data/orders.json";
 
-// Mock data
-const mockOrders: Order[] = [
-  {
-    id: 1234,
-    totalAmount: 33.47,
-    orderDate: "2025-09-20T10:30:00",
-    status: "DELIVERED",
-    customerEmail: "emily.carter@email.com",
-    items: [
-      {
-        id: 1,
-        bookId: 1,
-        bookTitle: "The Secret Garden",
-        bookAuthor: "Frances Bennett",
-        quantity: 1,
-        price: 9.99,
-      },
-      {
-        id: 2,
-        bookId: 2,
-        bookTitle: "1984",
-        bookAuthor: "George Orwell",
-        quantity: 1,
-        price: 14.99,
-      },
-      {
-        id: 3,
-        bookId: 3,
-        bookTitle: "Pride and Prejudice",
-        bookAuthor: "Jane Austen",
-        quantity: 1,
-        price: 8.49,
-      },
-    ],
-  },
-  {
-    id: 1233,
-    totalAmount: 12.50,
-    orderDate: "2025-09-19T14:15:00",
-    status: "PENDING",
-    customerEmail: "david.lee@email.com",
-    items: [
-      {
-        id: 4,
-        bookId: 4,
-        bookTitle: "To Kill a Mockingbird",
-        bookAuthor: "Harper Lee",
-        quantity: 1,
-        price: 12.50,
-      },
-    ],
-  },
-  {
-    id: 1232,
-    totalAmount: 75.45,
-    orderDate: "2025-09-18T09:00:00",
-    status: "CANCELLED",
-    customerEmail: "olivia.brown@email.com",
-    items: [],
-  },
-];
+const ITEMS_PER_PAGE = 10;
 
 const OrderList = () => {
   const navigate = useNavigate();
-  const [orders] = useState<Order[]>(mockOrders);
+  const [orders] = useState<Order[]>(ordersData as Order[]);
   const [selectedOrders, setSelectedOrders] = useState<number[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"orderDate" | "totalAmount" | "id">("orderDate");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
@@ -116,12 +58,22 @@ const OrderList = () => {
     return sortOrder === "asc" ? comparison : -comparison;
   });
 
+  const totalPages = Math.ceil(sortedOrders.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedOrders = sortedOrders.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
   const handleSelectAll = () => {
-    if (selectedOrders.length === sortedOrders.length) {
+    if (selectedOrders.length === paginatedOrders.length) {
       setSelectedOrders([]);
     } else {
-      setSelectedOrders(sortedOrders.map((order) => order.id));
+      setSelectedOrders(paginatedOrders.map((order) => order.id));
     }
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    setSelectedOrders([]);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleSelectOrder = (orderId: number) => {
@@ -140,6 +92,7 @@ const OrderList = () => {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
+    setCurrentPage(1);
   };
 
   const toggleSortOrder = () => {
@@ -151,7 +104,7 @@ const OrderList = () => {
       header: (
         <input
           type="checkbox"
-          checked={selectedOrders.length === sortedOrders.length && sortedOrders.length > 0}
+          checked={selectedOrders.length === paginatedOrders.length && paginatedOrders.length > 0}
           onChange={handleSelectAll}
           className="rounded border-gray-300 text-[#1173d4] focus:ring-[#1173d4]"
         />
@@ -301,7 +254,7 @@ const OrderList = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-            {sortedOrders.map((order) => (
+            {paginatedOrders.map((order) => (
               <tr
                 key={order.id}
                 onClick={(e) => {
@@ -327,6 +280,14 @@ const OrderList = () => {
           </tbody>
         </table>
       </div>
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        itemsPerPage={ITEMS_PER_PAGE}
+        totalItems={sortedOrders.length}
+      />
     </div>
   );
 };

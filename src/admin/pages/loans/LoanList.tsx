@@ -4,53 +4,16 @@ import type { Loan } from "../../../shared/types";
 import Button from "../../../shared/components/common/Button";
 import Badge from "../../../shared/components/common/Badge";
 import SearchInput from "../../../shared/components/common/SearchInput";
-import FilterButton from "../../../shared/components/common/FilterButton";
+import Pagination from "../../../shared/components/common/Pagination";
+import loansData from "../../../shared/data/loans.json";
 
-// Mock data
-const mockLoans: Loan[] = [
-  {
-    id: 1,
-    bookId: 1,
-    bookTitle: "The Secret Garden",
-    bookAuthor: "Frances Bennett",
-    memberId: 1,
-    memberName: "Sophia Clark",
-    memberEmail: "sophia.clark@email.com",
-    loanDate: "2025-09-10T10:00:00",
-    dueDate: "2025-09-24T10:00:00",
-    returnDate: "2025-09-22T14:30:00",
-    status: "RETURNED",
-  },
-  {
-    id: 2,
-    bookId: 2,
-    bookTitle: "1984",
-    bookAuthor: "George Orwell",
-    memberId: 2,
-    memberName: "Ethan Bennett",
-    memberEmail: "ethan.bennett@email.com",
-    loanDate: "2025-09-15T11:00:00",
-    dueDate: "2025-09-29T11:00:00",
-    status: "ACTIVE",
-  },
-  {
-    id: 3,
-    bookId: 3,
-    bookTitle: "To Kill a Mockingbird",
-    bookAuthor: "Harper Lee",
-    memberId: 3,
-    memberName: "Olivia Carter",
-    memberEmail: "olivia.carter@email.com",
-    loanDate: "2025-08-20T09:00:00",
-    dueDate: "2025-09-03T09:00:00",
-    status: "OVERDUE",
-  },
-];
+const ITEMS_PER_PAGE = 10;
 
 const LoanList = () => {
   const navigate = useNavigate();
-  const [loans] = useState<Loan[]>(mockLoans);
+  const [loans] = useState<Loan[]>(loansData as Loan[]);
   const [selectedLoans, setSelectedLoans] = useState<number[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"loanDate" | "dueDate" | "bookTitle">("loanDate");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
@@ -94,12 +57,22 @@ const LoanList = () => {
     return sortOrder === "asc" ? comparison : -comparison;
   });
 
+  const totalPages = Math.ceil(sortedLoans.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedLoans = sortedLoans.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
   const handleSelectAll = () => {
-    if (selectedLoans.length === sortedLoans.length) {
+    if (selectedLoans.length === paginatedLoans.length) {
       setSelectedLoans([]);
     } else {
-      setSelectedLoans(sortedLoans.map((loan) => loan.id));
+      setSelectedLoans(paginatedLoans.map((loan) => loan.id));
     }
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    setSelectedLoans([]);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleSelectLoan = (loanId: number) => {
@@ -117,6 +90,7 @@ const LoanList = () => {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
+    setCurrentPage(1);
   };
 
   const toggleSortOrder = () => {
@@ -128,7 +102,7 @@ const LoanList = () => {
       header: (
         <input
           type="checkbox"
-          checked={selectedLoans.length === sortedLoans.length && sortedLoans.length > 0}
+          checked={selectedLoans.length === paginatedLoans.length && paginatedLoans.length > 0}
           onChange={handleSelectAll}
           className="rounded border-gray-300 text-[#1173d4] focus:ring-[#1173d4]"
         />
@@ -289,7 +263,7 @@ const LoanList = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-            {sortedLoans.map((loan) => (
+            {paginatedLoans.map((loan) => (
               <tr
                 key={loan.id}
                 onClick={(e) => {
@@ -313,6 +287,14 @@ const LoanList = () => {
           </tbody>
         </table>
       </div>
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        itemsPerPage={ITEMS_PER_PAGE}
+        totalItems={sortedLoans.length}
+      />
     </div>
   );
 };
