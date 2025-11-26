@@ -15,9 +15,16 @@ export const getUserLoans = (): Loan[] => {
   }
 };
 
+// localStorage 대출은 10000부터 시작하여 JSON 대출 ID와 충돌 방지
+const LOCAL_STORAGE_ID_START = 10000;
+
 export const addLoan = (loan: Omit<Loan, "id">): Loan => {
   const existingLoans = getUserLoans();
-  const newId = Math.max(0, ...existingLoans.map(l => l.id)) + 1;
+  const maxLocalId = existingLoans.length > 0
+    ? Math.max(...existingLoans.map(l => l.id))
+    : LOCAL_STORAGE_ID_START - 1;
+  const newId = Math.max(maxLocalId, LOCAL_STORAGE_ID_START - 1) + 1;
+
   const newLoan: Loan = {
     ...loan,
     id: newId,

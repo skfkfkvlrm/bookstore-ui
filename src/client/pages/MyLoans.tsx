@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
 import type { Loan } from "../../shared/types";
 import loansData from "../../shared/data/loans.json";
-import { getUserLoans, getCurrentMemberId, returnBook, deleteLoan } from "../utils/loanStorage";
+import { getUserLoans, getCurrentMemberId, returnBook, deleteLoan, addLoan } from "../utils/loanStorage";
 
 type FilterStatus = "ALL" | "ACTIVE" | "OVERDUE" | "RETURNED";
 
@@ -16,8 +16,13 @@ const MyLoans = () => {
   }, []);
 
   const myLoans = useMemo(() => {
-    const jsonLoans = (loansData as Loan[]).filter(loan => loan.memberId === currentMemberId);
     const localStorageLoans = userLoans.filter(loan => loan.memberId === currentMemberId);
+    const localStorageLoanIds = new Set(localStorageLoans.map(loan => loan.id));
+
+    // localStorage에 있는 대출은 JSON에서 제외 (중복 방지)
+    const jsonLoans = (loansData as Loan[])
+      .filter(loan => loan.memberId === currentMemberId && !localStorageLoanIds.has(loan.id));
+
     return [...localStorageLoans, ...jsonLoans];
   }, [currentMemberId, userLoans]);
 
@@ -41,16 +46,17 @@ const MyLoans = () => {
     );
 
     if (confirmed) {
-      // If loan is from JSON data, copy it to localStorage first
       const isInLocalStorage = userLoans.some(l => l.id === loan.id);
+      let targetLoanId = loan.id;
+
       if (!isInLocalStorage) {
-        // Copy JSON loan to localStorage before returning
-        const loanCopy = { ...loan };
-        const existingLoans = getUserLoans();
-        localStorage.setItem("library_user_loans", JSON.stringify([loanCopy, ...existingLoans]));
+        // JSON 대출을 localStorage로 복사 (새로운 ID 부여)
+        const { id, ...loanData } = loan;
+        const newLoan = addLoan(loanData);
+        targetLoanId = newLoan.id;
       }
 
-      returnBook(loan.id);
+      returnBook(targetLoanId);
       setUserLoans(getUserLoans());
     }
   };
@@ -61,16 +67,17 @@ const MyLoans = () => {
     );
 
     if (confirmed) {
-      // If loan is from JSON data, copy it to localStorage first then delete
       const isInLocalStorage = userLoans.some(l => l.id === loan.id);
+      let targetLoanId = loan.id;
+
       if (!isInLocalStorage) {
-        // Copy JSON loan to localStorage before deleting
-        const loanCopy = { ...loan };
-        const existingLoans = getUserLoans();
-        localStorage.setItem("library_user_loans", JSON.stringify([loanCopy, ...existingLoans]));
+        // JSON 대출을 localStorage로 복사 (새로운 ID 부여)
+        const { id, ...loanData } = loan;
+        const newLoan = addLoan(loanData);
+        targetLoanId = newLoan.id;
       }
 
-      deleteLoan(loan.id);
+      deleteLoan(targetLoanId);
       setUserLoans(getUserLoans());
     }
   };
