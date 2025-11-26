@@ -3,6 +3,7 @@ import Layout from "./layout/Layout";
 import Home from "./pages/Home";
 import BookList from "./pages/BookList";
 import BookDetail from "./pages/BookDetail";
+import MyLoans from "./pages/MyLoans";
 
 function ClientApp() {
   return (
@@ -11,8 +12,8 @@ function ClientApp() {
         <Route path="/" element={<Home />} />
         <Route path="/books" element={<BookList />} />
         <Route path="/books/:id" element={<BookDetail />} />
+        <Route path="/my-loans" element={<MyLoans />} />
         {/* Placeholder routes */}
-        <Route path="/my-loans" element={<div className="text-center py-16"><h2 className="text-2xl font-bold text-gray-900 dark:text-white">My Loans - Coming Soon</h2></div>} />
         <Route path="/cart" element={<div className="text-center py-16"><h2 className="text-2xl font-bold text-gray-900 dark:text-white">Shopping Cart - Coming Soon</h2></div>} />
         <Route path="/account" element={<div className="text-center py-16"><h2 className="text-2xl font-bold text-gray-900 dark:text-white">My Account - Coming Soon</h2></div>} />
         <Route path="/about" element={<div className="text-center py-16"><h2 className="text-2xl font-bold text-gray-900 dark:text-white">About Us - Coming Soon</h2></div>} />

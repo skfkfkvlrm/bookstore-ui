@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import type { Book } from "../../shared/types";
 import booksData from "../../shared/data/books.json";
+import { addLoan, getCurrentMemberId } from "../utils/loanStorage";
+import membersData from "../../shared/data/members.json";
 
 const BookDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const initialBook = (booksData as Book[]).find((b) => b.id === Number(id)) || (booksData[0] as Book);
   const [book] = useState<Book>(initialBook);
   const [quantity, setQuantity] = useState(1);
@@ -21,8 +24,39 @@ const BookDetail = () => {
   };
 
   const handleBorrowBook = () => {
-    console.log("Borrow book:", { bookId: id, loanPeriod });
-    alert(`Request to borrow "${book.title}" for ${loanPeriod} days has been submitted`);
+    const memberId = getCurrentMemberId();
+    const member = membersData.find(m => m.id === memberId);
+
+    if (!member) {
+      alert("Please log in to borrow books");
+      return;
+    }
+
+    const loanDate = new Date();
+    const dueDate = new Date();
+    dueDate.setDate(dueDate.getDate() + parseInt(loanPeriod));
+
+    const newLoan = addLoan({
+      bookId: book.id,
+      bookTitle: book.title,
+      bookAuthor: book.author,
+      memberId: member.id,
+      memberName: member.name,
+      memberEmail: member.email,
+      loanDate: loanDate.toISOString(),
+      dueDate: dueDate.toISOString(),
+      status: "ACTIVE",
+    });
+
+    console.log("Book borrowed:", newLoan);
+
+    const confirmNavigate = window.confirm(
+      `Successfully borrowed "${book.title}" for ${loanPeriod} days!\n\nWould you like to view your loans?`
+    );
+
+    if (confirmNavigate) {
+      navigate("/client/my-loans");
+    }
   };
 
   return (
