@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import type { Book } from "../../shared/types";
 import booksData from "../../shared/data/books.json";
 import { addLoan, getCurrentMemberId } from "../utils/loanStorage";
+import { addToCart } from "../utils/cartStorage";
 import membersData from "../../shared/data/members.json";
 
 const BookDetail = () => {
@@ -14,8 +15,13 @@ const BookDetail = () => {
   const [loanPeriod, setLoanPeriod] = useState("14");
 
   const handleAddToCart = () => {
-    console.log("Add to cart:", { bookId: id, quantity });
-    alert(`Added ${quantity} ${quantity === 1 ? "copy" : "copies"} of "${book.title}" to cart`);
+    addToCart(book, quantity);
+    const confirmNavigate = window.confirm(
+      `Added ${quantity} ${quantity === 1 ? "copy" : "copies"} of "${book.title}" to cart.\n\nGo to cart?`
+    );
+    if (confirmNavigate) {
+      navigate("/client/cart");
+    }
   };
 
   const handleAddToWishlist = () => {

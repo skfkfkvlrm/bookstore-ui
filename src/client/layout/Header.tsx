@@ -46,6 +46,12 @@ const Header = () => {
               >
                 Cart
               </Link>
+              <Link
+                to="/client/orders"
+                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#1173d4] dark:hover:text-[#1173d4] transition-colors"
+              >
+                Orders
+              </Link>
             </nav>
           </div>
           <div className="flex items-center gap-4">
