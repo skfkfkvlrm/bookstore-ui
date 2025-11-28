@@ -1,9 +1,12 @@
 import type { Loan } from "../../shared/types";
+import { getCurrentUser } from "./authStorage";
 
 const LOANS_STORAGE_KEY = "library_user_loans";
-const CURRENT_MEMBER_ID = 1; // TODO: Replace with actual authenticated user ID
 
-export const getCurrentMemberId = () => CURRENT_MEMBER_ID;
+export const getCurrentMemberId = () => {
+  const user = getCurrentUser();
+  return user?.id || 1; // Fallback to 1 if not logged in
+};
 
 export const getUserLoans = (): Loan[] => {
   const stored = localStorage.getItem(LOANS_STORAGE_KEY);

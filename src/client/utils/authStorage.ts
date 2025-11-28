@@ -1,0 +1,131 @@
+import type { Member } from "../../shared/types";
+import membersData from "../../shared/data/members.json";
+
+const AUTH_STORAGE_KEY = "library_current_user";
+const USERS_STORAGE_KEY = "library_users";
+
+// Helper function to dispatch auth change event
+const dispatchAuthChangeEvent = () => {
+  window.dispatchEvent(new CustomEvent('authChange'));
+};
+
+export const getStoredUsers = (): Member[] => {
+  const stored = localStorage.getItem(USERS_STORAGE_KEY);
+  if (!stored) return [];
+  try {
+    return JSON.parse(stored);
+  } catch {
+    return [];
+  }
+};
+
+export const getAllUsers = (): Member[] => {
+  const jsonUsers = membersData as Member[];
+  const localUsers = getStoredUsers();
+  const localUserIds = new Set(localUsers.map(u => u.id));
+
+  // localStorage 유저가 우선, JSON 유저는 중복 제외
+  const jsonUsersFiltered = jsonUsers.filter(u => !localUserIds.has(u.id));
+  return [...localUsers, ...jsonUsersFiltered];
+};
+
+export const getCurrentUser = (): Member | null => {
+  const stored = localStorage.getItem(AUTH_STORAGE_KEY);
+  if (!stored) return null;
+  try {
+    return JSON.parse(stored);
+  } catch {
+    return null;
+  }
+};
+
+export const login = (email: string): Member | null => {
+  const allUsers = getAllUsers();
+  const user = allUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+  if (user) {
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
+    dispatchAuthChangeEvent();
+    return user;
+  }
+
+  return null;
+};
+
+export const logout = (): void => {
+  localStorage.removeItem(AUTH_STORAGE_KEY);
+  dispatchAuthChangeEvent();
+};
+
+export const register = (userData: {
+  name: string;
+  email: string;
+  membershipType: "REGULAR" | "PREMIUM";
+}): Member => {
+  const allUsers = getAllUsers();
+
+  // Check if email already exists
+  const existingUser = allUsers.find(u => u.email.toLowerCase() === userData.email.toLowerCase());
+  if (existingUser) {
+    throw new Error("Email already exists");
+  }
+
+  const localUsers = getStoredUsers();
+  const maxId = Math.max(0, ...allUsers.map(u => u.id));
+
+  const newUser: Member = {
+    id: maxId + 1,
+    name: userData.name,
+    email: userData.email,
+    membershipType: userData.membershipType,
+    status: "ACTIVE",
+    joinDate: new Date().toISOString(),
+  };
+
+  const updatedUsers = [newUser, ...localUsers];
+  localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(updatedUsers));
+
+  // Auto login after registration
+  localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(newUser));
+  dispatchAuthChangeEvent();
+
+  return newUser;
+};
+
+export const updateUser = (userId: number, updates: Partial<Member>): Member => {
+  const currentUser = getCurrentUser();
+  if (!currentUser || currentUser.id !== userId) {
+    throw new Error("Unauthorized");
+  }
+
+  const localUsers = getStoredUsers();
+  const userIndex = localUsers.findIndex(u => u.id === userId);
+
+  let updatedUser: Member;
+
+  if (userIndex >= 0) {
+    // Update existing local user
+    updatedUser = { ...localUsers[userIndex], ...updates };
+    localUsers[userIndex] = updatedUser;
+    localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(localUsers));
+  } else {
+    // User from JSON, copy to localStorage with updates
+    const jsonUser = (membersData as Member[]).find(u => u.id === userId);
+    if (!jsonUser) {
+      throw new Error("User not found");
+    }
+    updatedUser = { ...jsonUser, ...updates };
+    const newLocalUsers = [updatedUser, ...localUsers];
+    localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(newLocalUsers));
+  }
+
+  // Update current user in auth storage
+  localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(updatedUser));
+  dispatchAuthChangeEvent();
+
+  return updatedUser;
+};
+
+export const isAuthenticated = (): boolean => {
+  return getCurrentUser() !== null;
+};
