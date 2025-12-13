@@ -1,23 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Loan } from "../../../shared/types";
 import Button from "../../../shared/components/common/Button";
 import Badge from "../../../shared/components/common/Badge";
 import SearchInput from "../../../shared/components/common/SearchInput";
 import Pagination from "../../../shared/components/common/Pagination";
-import loansData from "../../../shared/data/loans.json";
+import { getLoans, updateLoan } from "../../../shared/utils/mockLoanApi";
 
 const ITEMS_PER_PAGE = 10;
 
 const LoanList = () => {
   const navigate = useNavigate();
-  const [loans] = useState<Loan[]>(loansData as Loan[]);
+  const [allLoans, setAllLoans] = useState<Loan[]>([]);
   const [selectedLoans, setSelectedLoans] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<"loanDate" | "dueDate" | "bookTitle">("loanDate");
+  const [sortBy, setSortBy] = useState<keyof Loan>("loanDate");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [statusFilter, setStatusFilter] = useState<"all" | Loan["status"]>("all");
+
+  useEffect(() => {
+    const loansFromApi = getLoans({
+      searchQuery,
+      statusFilter,
+      sortKey: sortBy,
+      sortOrder,
+    });
+    setAllLoans(loansFromApi);
+  }, [searchQuery, statusFilter, sortBy, sortOrder]);
 
   const getStatusVariant = (status: Loan["status"]) => {
     const statusMap = {
@@ -28,38 +38,12 @@ const LoanList = () => {
     return statusMap[status];
   };
 
-  // Filter loans
-  const filteredLoans = loans.filter((loan) => {
-    const matchesSearch = searchQuery === "" ||
-      loan.bookTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      loan.memberName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      loan.memberEmail.toLowerCase().includes(searchQuery.toLowerCase());
+  const paginatedLoans = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return allLoans.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [allLoans, currentPage]);
 
-    const matchesStatus = statusFilter === "all" || loan.status === statusFilter;
-
-    return matchesSearch && matchesStatus;
-  });
-
-  // Sort loans
-  const sortedLoans = [...filteredLoans].sort((a, b) => {
-    let comparison = 0;
-    switch (sortBy) {
-      case "loanDate":
-        comparison = new Date(a.loanDate).getTime() - new Date(b.loanDate).getTime();
-        break;
-      case "dueDate":
-        comparison = new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
-        break;
-      case "bookTitle":
-        comparison = a.bookTitle.localeCompare(b.bookTitle);
-        break;
-    }
-    return sortOrder === "asc" ? comparison : -comparison;
-  });
-
-  const totalPages = Math.ceil(sortedLoans.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedLoans = sortedLoans.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(allLoans.length / ITEMS_PER_PAGE);
 
   const handleSelectAll = () => {
     if (selectedLoans.length === paginatedLoans.length) {
@@ -84,8 +68,18 @@ const LoanList = () => {
   };
 
   const handleBulkAction = (action: string) => {
-    console.log(`Bulk action ${action} on loans:`, selectedLoans);
-    alert(`${action} on ${selectedLoans.length} selected loan(s)`);
+    if (action === "Mark as Returned") {
+      selectedLoans.forEach(id => {
+        updateLoan(id, { status: "RETURNED", returnDate: new Date().toISOString() });
+      });
+      // Refresh data
+      const loansFromApi = getLoans({ searchQuery, statusFilter, sortKey: sortBy, sortOrder });
+      setAllLoans(loansFromApi);
+      setSelectedLoans([]);
+    } else {
+      console.log(`Bulk action ${action} on loans:`, selectedLoans);
+      alert(`${action} on ${selectedLoans.length} selected loan(s)`);
+    }
   };
 
   const handleSearch = (query: string) => {
@@ -134,7 +128,7 @@ const LoanList = () => {
     {
       header: "Member",
       accessor: (row: Loan) => (
-        <div className="cursor-pointer">
+        <div className="cursor-pointer" onClick={() => navigate(`/admin/members/${row.memberId}`)}>
           <p className="font-medium text-gray-900 dark:text-white">{row.memberName}</p>
           <p className="text-xs text-gray-600 dark:text-gray-400">{row.memberEmail}</p>
         </div>
@@ -143,18 +137,18 @@ const LoanList = () => {
     {
       header: "Loan Date",
       accessor: (row: Loan) => new Date(row.loanDate).toLocaleDateString(),
-      className: "text-gray-600 dark:text-gray-400 cursor-pointer",
+      className: "text-gray-600 dark:text-gray-400",
     },
     {
       header: "Due Date",
       accessor: (row: Loan) => new Date(row.dueDate).toLocaleDateString(),
-      className: "text-gray-600 dark:text-gray-400 cursor-pointer",
+      className: "text-gray-600 dark:text-gray-400",
     },
     {
       header: "Return Date",
       accessor: (row: Loan) =>
         row.returnDate ? new Date(row.returnDate).toLocaleDateString() : "-",
-      className: "text-gray-600 dark:text-gray-400 cursor-pointer",
+      className: "text-gray-600 dark:text-gray-400",
     },
     {
       header: "Status",
@@ -217,7 +211,10 @@ const LoanList = () => {
               <span className="text-sm text-gray-600 dark:text-gray-400">Status:</span>
               <select
                 value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
+                onChange={(e) => {
+                  setStatusFilter(e.target.value as typeof statusFilter);
+                  setCurrentPage(1);
+                }}
                 className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1a2632] text-sm focus:ring-2 focus:ring-[#1173d4] focus:border-transparent"
               >
                 <option value="all">All Status</option>
@@ -230,7 +227,10 @@ const LoanList = () => {
               <span className="text-sm text-gray-600 dark:text-gray-400">Sort by:</span>
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+                onChange={(e) => {
+                  setSortBy(e.target.value as typeof sortBy);
+                  setCurrentPage(1);
+                }}
                 className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1a2632] text-sm focus:ring-2 focus:ring-[#1173d4] focus:border-transparent"
               >
                 <option value="loanDate">Loan Date</option>
@@ -257,7 +257,7 @@ const LoanList = () => {
             <tr>
               {columns.map((col, index) => (
                 <th key={index} scope="col" className="px-6 py-3">
-                  {typeof col.header === "function" ? col.header : col.header}
+                  {typeof col.header === "function" ? col.header(undefined) : col.header}
                 </th>
               ))}
             </tr>
@@ -279,7 +279,7 @@ const LoanList = () => {
               >
                 {columns.map((col, colIndex) => (
                   <td key={colIndex} className={`px-6 py-4 ${col.className || ""}`}>
-                    {typeof col.accessor === "function" ? col.accessor(loan) : loan[col.accessor]}
+                    {typeof col.accessor === "function" ? col.accessor(loan) : loan[col.accessor as keyof Loan]}
                   </td>
                 ))}
               </tr>
@@ -293,7 +293,7 @@ const LoanList = () => {
         totalPages={totalPages}
         onPageChange={handlePageChange}
         itemsPerPage={ITEMS_PER_PAGE}
-        totalItems={sortedLoans.length}
+        totalItems={allLoans.length}
       />
     </div>
   );
