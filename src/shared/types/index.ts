@@ -1,11 +1,13 @@
 // Member Types
 export type MemberStatus = 'ACTIVE' | 'SUSPENDED' | 'DORMANT' | 'WITHDRAWN';
+export type MemberGrade = 'BASIC' | 'SILVER' | 'GOLD' | 'VIP';
 
 export interface Member {
   id: number;
   name: string;
   email: string;
   membershipType: 'REGULAR' | 'PREMIUM';
+  memberGrade?: MemberGrade;    // 회원 등급 (대출 권수 제한 기준)
   status: MemberStatus;
   joinDate: string;
 }
@@ -116,6 +118,9 @@ export interface Loan {
   dueDate: string;
   returnDate?: string;
   status: 'ACTIVE' | 'RETURNED' | 'OVERDUE';
+  extensionCount?: number;     // 연장 횟수 (기본값: 0)
+  overdueFee?: number;          // 연체료 (원 단위)
+  overdueDays?: number;         // 연체 일수
 }
 
 export interface LoanCreateRequest {
