@@ -616,7 +616,7 @@ Client > Books > 도서 카드 클릭 > 도서 상세 > 대출 기간 선택 > B
 
 **현재 구현**: localStorage 기반 (서버 API 미연동)
 
-**향후 API**: `POST /api/my/loans/request`
+**향후 API**: `POST /api/client/loans/request`
 
 **Request Body**:
 
@@ -767,7 +767,7 @@ Client > My Loans (헤더 메뉴에서 클릭, 페이지 로드 시 자동 API �
 
 #### 🔌 API 명세
 
-**엔드포인트**: `GET /api/my/loans`
+**엔드포인트**: `GET /api/client/loans`
 
 **Query Parameters**:
 
@@ -781,15 +781,15 @@ Client > My Loans (헤더 메뉴에서 클릭, 페이지 로드 시 자동 API �
 
 ```bash
 # 내 모든 대출 조회
-curl -X GET "http://localhost:8080/api/my/loans" \
+curl -X GET "http://localhost:8080/api/client/loans" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 
 # 대출 중인 도서만 조회
-curl -X GET "http://localhost:8080/api/my/loans?statusFilter=ACTIVE" \
+curl -X GET "http://localhost:8080/api/client/loans?statusFilter=ACTIVE" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 
 # 연체 중인 도서만 조회
-curl -X GET "http://localhost:8080/api/my/loans?statusFilter=OVERDUE" \
+curl -X GET "http://localhost:8080/api/client/loans?statusFilter=OVERDUE" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
@@ -886,7 +886,7 @@ Client > My Loans > 대출 카드 > Return Book 버튼 > 확인 다이얼로그 
 
 #### 🔌 API 명세
 
-**엔드포인트**: `POST /api/my/loans/{id}/return`
+**엔드포인트**: `POST /api/client/loans/{id}/return`
 
 **Path Parameters**:
 - `id`: 대출 ID (number)
@@ -903,7 +903,7 @@ Client > My Loans > 대출 카드 > Return Book 버튼 > 확인 다이얼로그 
 #### 💻 curl 예제
 
 ```bash
-curl -X POST "http://localhost:8080/api/my/loans/20/return" \
+curl -X POST "http://localhost:8080/api/client/loans/20/return" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "Content-Type: application/json"
 ```
@@ -985,7 +985,7 @@ Client > My Loans > RETURNED 필터 > 대출 카드 > Delete 버튼 > 확인 다
 
 #### 🔌 API 명세
 
-**엔드포인트**: `DELETE /api/my/loans/{id}`
+**엔드포인트**: `DELETE /api/client/loans/{id}`
 
 **Path Parameters**:
 - `id`: 대출 ID (number)
@@ -996,7 +996,7 @@ Client > My Loans > RETURNED 필터 > 대출 카드 > Delete 버튼 > 확인 다
 #### 💻 curl 예제
 
 ```bash
-curl -X DELETE "http://localhost:8080/api/my/loans/13" \
+curl -X DELETE "http://localhost:8080/api/client/loans/13" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
@@ -1142,7 +1142,7 @@ curl -X DELETE "http://localhost:8080/api/my/loans/13" \
 ```bash
 # 화면: /client/books/{id} > "Borrow Book" 버튼 (이미 구현됨)
 # API만 연동 필요
-curl -X POST "http://localhost:8080/api/my/loans/request" \
+curl -X POST "http://localhost:8080/api/client/loans/request" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -d '{ "bookId": 15, "loanPeriod": 14 }'
 ```
@@ -1217,7 +1217,7 @@ curl -X GET "http://localhost:8080/api/admin/loans"
 curl -X GET "http://localhost:8080/api/admin/loans/1"
 
 # 3. 내 대출 조회 (사용자)
-curl -X GET "http://localhost:8080/api/my/loans"
+curl -X GET "http://localhost:8080/api/client/loans"
 ```
 
 ### 2단계: 검색/필터 실습
