@@ -54,7 +54,7 @@
 Admin > Loans > 목록 (페이지 로드 시 자동 API 호출)
 
 **페이지**: `/admin/loans`
-**파일**: `src/admin/pages/loans/LoanList.tsx:22-30`
+**파일**: `src/admin/pages/loans/LoanList.tsx`
 
 #### 🔌 API 명세
 
@@ -118,8 +118,8 @@ curl -X GET "http://localhost:8080/api/admin/loans?sortKey=dueDate&sortOrder=asc
 #### 📂 관련 코드
 
 - **페이지**: `src/admin/pages/loans/LoanList.tsx`
-- **API 호출**: `getLoans()` 함수 (`mockLoanApi.ts:39-81`)
-- **렌더링**: `LoanList.tsx:254-289` (테이블)
+- **API 호출**: `getLoans()` (`mockLoanApi.ts`)
+- **렌더링**: `LoanList.tsx` (테이블 렌더링)
 
 ---
 
@@ -132,7 +132,7 @@ curl -X GET "http://localhost:8080/api/admin/loans?sortKey=dueDate&sortOrder=asc
 Admin > Loans > 목록 > New Loan 버튼 > 회원/도서 선택 > Create Loan (성공 시 목록으로 이동)
 
 **페이지**: `/admin/loans/add`
-**파일**: `src/admin/pages/loans/LoanAdd.tsx:25-51`
+**파일**: `src/admin/pages/loans/LoanAdd.tsx`
 
 #### 🔌 API 명세
 
@@ -154,6 +154,21 @@ Admin > Loans > 목록 > New Loan 버튼 > 회원/도서 선택 > Create Loan (�
 - 서버는 `memberId`로 회원 정보 조회 후 `memberName`, `memberEmail` 자동 설정
 - 도서의 `available` 상태를 `false`로 변경
 - 초기 상태는 `ACTIVE`
+
+**회원 등급별 대여 규칙**:
+
+| 회원 등급 | 최대 대여 권수 | 대여 기간 | 연장 가능 횟수 | 연장 기간 |
+|----------|-------------|----------|--------------|----------|
+| `BASIC`  | 3권         | 14일      | 1회          | 7일      |
+| `SILVER` | 5권         | 21일      | 2회          | 7일      |
+| `GOLD`   | 10권        | 30일      | 3회          | 14일     |
+| `VIP`    | 무제한       | 60일      | 무제한        | 30일     |
+
+**대여 가능 조건**:
+- 책이 대여 가능한 상태 (`available: true`)
+- 회원의 현재 대여 중인 책 수 < 등급별 최대 권수
+- 회원에게 연체 중인 책이 없음
+- 회원 계정이 정지 상태가 아님
 
 #### 💻 curl 예제
 
@@ -257,10 +272,10 @@ curl -X POST "http://localhost:8080/api/admin/loans" \
 
 #### 📂 관련 코드
 
-- **UI**: `src/admin/pages/loans/LoanAdd.tsx:25-51` (handleSubmit)
-- **API 호출**: `createLoan()` (`mockLoanApi.ts:94-106`)
-- **회원 선택 모달**: `LoanAdd.tsx:159-177`
-- **도서 선택 모달**: `LoanAdd.tsx:179-197`
+- **UI**: `src/admin/pages/loans/LoanAdd.tsx` (handleSubmit)
+- **API 호출**: `createLoan()` (`mockLoanApi.ts`)
+- **회원 선택 모달**: `LoanAdd.tsx` (MemberSelectModal)
+- **도서 선택 모달**: `LoanAdd.tsx` (BookSelectModal)
 
 ---
 
@@ -273,7 +288,7 @@ curl -X POST "http://localhost:8080/api/admin/loans" \
 Admin > Loans > 목록 > 대출 항목 클릭 > 대출 상세
 
 **페이지**: `/admin/loans/:id`
-**파일**: `src/admin/pages/loans/LoanDetail.tsx:15-24`
+**파일**: `src/admin/pages/loans/LoanDetail.tsx`
 
 #### 🔌 API 명세
 
@@ -335,8 +350,8 @@ curl -X GET "http://localhost:8080/api/admin/loans/1" \
 #### 📂 관련 코드
 
 - **UI**: `src/admin/pages/loans/LoanDetail.tsx`
-- **API 호출**: `getLoanById()` (`mockLoanApi.ts:86-89`)
-- **연체 확인**: `isOverdue()` (`LoanDetail.tsx:77-80`)
+- **API 호출**: `getLoanById()` (`mockLoanApi.ts`)
+- **연체 확인**: `isOverdue()` (`LoanDetail.tsx`)
 
 ---
 
@@ -349,7 +364,7 @@ curl -X GET "http://localhost:8080/api/admin/loans/1" \
 Admin > Loans > 대출 상세 > Mark as Returned 버튼 > 확인 다이얼로그 > Yes
 
 **페이지**: `/admin/loans/:id`
-**파일**: `src/admin/pages/loans/LoanDetail.tsx:35-43`
+**파일**: `src/admin/pages/loans/LoanDetail.tsx`
 
 #### 🔌 API 명세
 
@@ -366,7 +381,12 @@ Admin > Loans > 대출 상세 > Mark as Returned 버튼 > 확인 다이얼로그
 **비즈니스 로직**:
 - 서버는 `returnDate`를 현재 시간으로 자동 설정
 - 도서의 `available` 상태를 `true`로 변경
-- 연체인 경우 연체료 계산 (1일당 500원, 최대 10,000원)
+- 연체인 경우 연체료 계산
+
+**연체 처리 규칙**:
+- 반납 예정일(`dueDate`) 경과 시 자동으로 `OVERDUE` 상태로 변경
+- 연체 중인 회원은 새로운 대출 불가
+- 연체료: **1일당 500원** (최대 10,000원)
 
 #### 💻 curl 예제
 
@@ -437,8 +457,8 @@ curl -X PATCH "http://localhost:8080/api/admin/loans/1" \
 
 #### 📂 관련 코드
 
-- **UI**: `src/admin/pages/loans/LoanDetail.tsx:35-43` (handleReturn)
-- **API 호출**: `updateLoan()` (`mockLoanApi.ts:111-131`)
+- **UI**: `src/admin/pages/loans/LoanDetail.tsx` (handleReturn)
+- **API 호출**: `updateLoan()` (`mockLoanApi.ts`)
 
 ---
 
@@ -451,7 +471,7 @@ curl -X PATCH "http://localhost:8080/api/admin/loans/1" \
 Admin > Loans > 대출 상세 > Extend Due Date 버튼 > 날짜 입력 > Save Extension
 
 **페이지**: `/admin/loans/:id`
-**파일**: `src/admin/pages/loans/LoanDetail.tsx:63-75`
+**파일**: `src/admin/pages/loans/LoanDetail.tsx`
 
 #### 🔌 API 명세
 
@@ -469,6 +489,12 @@ Admin > Loans > 대출 상세 > Extend Due Date 버튼 > 날짜 입력 > Save Ex
 - 새 반납일이 현재 시간보다 미래인 경우 `status`를 `ACTIVE`로 변경
 - `extensionCount` 증가
 - 회원 등급별 연장 가능 횟수 확인
+
+**대여 연장 규칙**:
+- 반납 예정일 **3일 전부터** 연장 신청 가능
+- 등급별 연장 가능 횟수 제한 (회원 등급별 대여 규칙 참조)
+- 다른 회원의 예약이 있는 경우 연장 불가
+- 연체 중인 도서는 연장 불가
 
 #### 💻 curl 예제
 
@@ -541,8 +567,8 @@ curl -X PATCH "http://localhost:8080/api/admin/loans/1" \
 
 #### 📂 관련 코드
 
-- **UI**: `src/admin/pages/loans/LoanDetail.tsx:63-75` (handleSaveExtension)
-- **연장 모드**: `LoanDetail.tsx:218-244`
+- **UI**: `src/admin/pages/loans/LoanDetail.tsx` (handleSaveExtension)
+- **연장 모드**: `LoanDetail.tsx` (extension mode UI)
 
 ---
 
@@ -555,7 +581,7 @@ curl -X PATCH "http://localhost:8080/api/admin/loans/1" \
 Admin > Loans > 목록 > 항목 체크박스 선택 (2개 이상) > Mark as Returned 버튼
 
 **페이지**: `/admin/loans`
-**파일**: `src/admin/pages/loans/LoanList.tsx:70-83`
+**파일**: `src/admin/pages/loans/LoanList.tsx`
 
 #### 🔌 API 명세
 
@@ -594,8 +620,8 @@ curl -X PATCH "http://localhost:8080/api/admin/loans/2" \
 
 #### 📂 관련 코드
 
-- **UI**: `src/admin/pages/loans/LoanList.tsx:70-83` (handleBulkAction)
-- **선택 관리**: `LoanList.tsx:48-68`
+- **UI**: `src/admin/pages/loans/LoanList.tsx` (handleBulkAction)
+- **선택 관리**: `LoanList.tsx` (selection state)
 
 ---
 
@@ -610,7 +636,7 @@ curl -X PATCH "http://localhost:8080/api/admin/loans/2" \
 Client > Books > 도서 카드 클릭 > 도서 상세 > 대출 기간 선택 > Borrow Book 버튼
 
 **페이지**: `/client/books/:id`
-**파일**: `src/client/pages/BookDetail.tsx:32-66`
+**파일**: `src/client/pages/BookDetail.tsx`
 
 #### 🔌 API 명세
 
@@ -638,7 +664,7 @@ Client > Books > 도서 카드 클릭 > 도서 상세 > 대출 기간 선택 > B
 #### 💻 현재 동작 (localStorage)
 
 ```javascript
-// BookDetail.tsx:32-66
+// BookDetail.tsx - handleBorrowBook
 const handleBorrowBook = () => {
   const memberId = getCurrentMemberId();
   const loanDate = new Date();
@@ -748,7 +774,7 @@ if (!member) {
 
 #### 📂 관련 코드
 
-- **UI**: `src/client/pages/BookDetail.tsx:32-66` (handleBorrowBook)
+- **UI**: `src/client/pages/BookDetail.tsx` (handleBorrowBook)
 - **도서 목록**: `src/client/pages/BookList.tsx`
 - **Storage**: `addLoan()` (`loanStorage.ts`)
 
@@ -763,7 +789,7 @@ if (!member) {
 Client > My Loans (헤더 메뉴에서 클릭, 페이지 로드 시 자동 API 호출)
 
 **페이지**: `/client/my-loans`
-**파일**: `src/client/pages/MyLoans.tsx:14-16`
+**파일**: `src/client/pages/MyLoans.tsx`
 
 #### 🔌 API 명세
 
@@ -829,7 +855,7 @@ curl -X GET "http://localhost:8080/api/client/loans?statusFilter=OVERDUE" \
 
 - **UI**: `src/client/pages/MyLoans.tsx`
 - **API 호출**: `getUserLoans()` (`loanStorage.ts`)
-- **통계 계산**: `MyLoans.tsx:34-41`
+- **통계 계산**: `MyLoans.tsx` (statistics cards)
 
 ---
 
@@ -842,12 +868,12 @@ curl -X GET "http://localhost:8080/api/client/loans?statusFilter=OVERDUE" \
 Client > Books > 검색창에 키워드 입력 (제목/저자/ISBN)
 
 **페이지**: `/client/books`
-**파일**: `src/client/pages/BookList.tsx:26-33`
+**파일**: `src/client/pages/BookList.tsx`
 
 #### 💻 현재 동작 (클라이언트 필터링)
 
 ```javascript
-// BookList.tsx:45-53
+// BookList.tsx - filteredBooks
 const filteredBooks = (booksData as Book[]).filter((book) => {
   if (!searchQuery) return true;
   const query = searchQuery.toLowerCase();
@@ -867,9 +893,9 @@ const filteredBooks = (booksData as Book[]).filter((book) => {
 
 #### 📂 관련 코드
 
-- **UI**: `src/client/pages/BookList.tsx:26-33` (handleSearch)
-- **필터링**: `BookList.tsx:45-53`
-- **페이지네이션**: `BookList.tsx:55-57`
+- **UI**: `src/client/pages/BookList.tsx` (handleSearch)
+- **필터링**: `BookList.tsx` (filteredBooks)
+- **페이지네이션**: `BookList.tsx` (Pagination component)
 
 ---
 
@@ -882,7 +908,7 @@ const filteredBooks = (booksData as Book[]).filter((book) => {
 Client > My Loans > 대출 카드 > Return Book 버튼 > 확인 다이얼로그 > Yes
 
 **페이지**: `/client/my-loans`
-**파일**: `src/client/pages/MyLoans.tsx:43-62`
+**파일**: `src/client/pages/MyLoans.tsx`
 
 #### 🔌 API 명세
 
@@ -967,7 +993,7 @@ curl -X POST "http://localhost:8080/api/client/loans/20/return" \
 
 #### 📂 관련 코드
 
-- **UI**: `src/client/pages/MyLoans.tsx:43-62` (handleReturnBook)
+- **UI**: `src/client/pages/MyLoans.tsx` (handleReturnBook)
 - **Storage**: `returnBook()` (`loanStorage.ts`)
 
 ---
@@ -981,7 +1007,7 @@ curl -X POST "http://localhost:8080/api/client/loans/20/return" \
 Client > My Loans > RETURNED 필터 > 대출 카드 > Delete 버튼 > 확인 다이얼로그 > Yes
 
 **페이지**: `/client/my-loans`
-**파일**: `src/client/pages/MyLoans.tsx:64-83`
+**파일**: `src/client/pages/MyLoans.tsx`
 
 #### 🔌 API 명세
 
@@ -1029,106 +1055,8 @@ curl -X DELETE "http://localhost:8080/api/client/loans/13" \
 
 #### 📂 관련 코드
 
-- **UI**: `src/client/pages/MyLoans.tsx:64-83` (handleDeleteLoan)
+- **UI**: `src/client/pages/MyLoans.tsx` (handleDeleteLoan)
 - **Storage**: `deleteLoan()` (`loanStorage.ts`)
-
----
-
-## 📋 비즈니스 규칙
-
-### 회원 등급별 대여 규칙
-
-| 회원 등급 | 최대 대여 권수 | 대여 기간 | 연장 가능 횟수 | 연장 기간 |
-|----------|-------------|----------|--------------|----------|
-| `BASIC`  | 3권         | 14일      | 1회          | 7일      |
-| `SILVER` | 5권         | 21일      | 2회          | 7일      |
-| `GOLD`   | 10권        | 30일      | 3회          | 14일     |
-| `VIP`    | 무제한       | 60일      | 무제한        | 30일     |
-
-### 대여 기본 규칙
-
-**대여 가능 조건**:
-- 책이 대여 가능한 상태 (`available: true`)
-- 회원의 현재 대여 중인 책 수 < 등급별 최대 권수
-- 회원에게 연체 중인 책이 없음
-- 회원 계정이 정지 상태가 아님
-
-**연체 처리**:
-- 반납 예정일(`dueDate`) 경과 시 자동으로 `OVERDUE` 상태로 변경
-- 연체 중인 회원은 새로운 대출 불가
-- 연체료: **1일당 500원** (최대 10,000원)
-
-**대여 연장**:
-- 반납 예정일 **3일 전부터** 연장 신청 가능
-- 등급별 연장 가능 횟수 제한
-- 다른 회원의 예약이 있는 경우 연장 불가
-
----
-
-## ⚠️ 예외 처리 및 에러 메시지
-
-### HTTP 상태 코드
-
-| 코드 | 설명 | 사용 예시 |
-|------|------|----------|
-| 200 | OK | 조회, 수정 성공 |
-| 201 | Created | 대출 생성 성공 |
-| 204 | No Content | 삭제 성공 |
-| 400 | Bad Request | 잘못된 요청 데이터 |
-| 401 | Unauthorized | 인증 토큰 없음/만료 |
-| 403 | Forbidden | 권한 없음 |
-| 404 | Not Found | 리소스를 찾을 수 없음 |
-| 409 | Conflict | 비즈니스 규칙 위반 |
-| 422 | Unprocessable Entity | 유효성 검증 실패 |
-
-### 에러 응답 형식
-
-```json
-{
-  "timestamp": "2025-10-15T14:30:00Z",
-  "status": 409,
-  "error": "Conflict",
-  "code": "BOOK_ALREADY_LOANED",
-  "message": "이미 대여 중인 도서입니다.",
-  "details": {
-    "bookId": 15,
-    "bookTitle": "The Silent Patient",
-    "currentLoanId": 42,
-    "expectedReturnDate": "2025-10-20T11:45:00Z"
-  },
-  "path": "/api/admin/loans"
-}
-```
-
-### 주요 에러 코드
-
-#### 도서 관련 (BOOK_*)
-
-- `BOOK_NOT_FOUND`: 존재하지 않는 도서입니다.
-- `BOOK_ALREADY_LOANED`: 이미 대여 중인 도서입니다.
-- `BOOK_RESERVED_BY_OTHER`: 다른 회원이 예약한 도서입니다.
-- `BOOK_NOT_AVAILABLE`: 대여 가능하지 않은 도서입니다.
-
-#### 회원 관련 (MEMBER_*)
-
-- `MEMBER_NOT_FOUND`: 존재하지 않는 회원입니다.
-- `MEMBER_ACCOUNT_SUSPENDED`: 정지된 계정입니다. 관리자에게 문의하세요.
-- `MEMBER_HAS_OVERDUE`: 연체 중인 도서가 있습니다. 먼저 반납해주세요.
-- `MEMBER_UNPAID_FEES`: 미납된 연체료가 있습니다.
-
-#### 대출 관련 (LOAN_*)
-
-- `LOAN_NOT_FOUND`: 존재하지 않는 대출 기록입니다.
-- `LOAN_LIMIT_EXCEEDED`: 대여 가능 권수를 초과했습니다.
-- `DUPLICATE_LOAN`: 이미 대여 중인 도서입니다.
-- `ALREADY_RETURNED`: 이미 반납된 도서입니다.
-
-#### 연장 관련 (EXTENSION_*)
-
-- `EXTENSION_LIMIT_EXCEEDED`: 연장 가능 횟수를 초과했습니다.
-- `EXTENSION_TOO_EARLY`: 반납 예정일 3일 전부터 연장 가능합니다.
-- `CANNOT_EXTEND_OVERDUE`: 연체 중인 도서는 연장할 수 없습니다.
-- `CANNOT_EXTEND_RESERVED_BOOK`: 예약이 있는 도서는 연장할 수 없습니다.
 
 ---
 
@@ -1186,8 +1114,8 @@ curl -X POST "http://localhost:8080/api/my/fees/1/pay" \
 ## 📂 코드 참조
 
 ### 타입 정의
-- **Loan 타입**: `src/shared/types/index.ts:107-122`
-- **Member 타입**: `src/shared/types/index.ts:5-13`
+- **Loan 타입**: `src/shared/types/index.ts`
+- **Member 타입**: `src/shared/types/index.ts`
 
 ### Mock API
 - **Mock 함수**: `src/shared/utils/mockLoanApi.ts`
