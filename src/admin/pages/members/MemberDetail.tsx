@@ -118,7 +118,7 @@ const MemberDetail = () => {
               {isEditing ? (
                 <Select
                   value={formData.membershipType}
-                  onChange={(e) => setFormData({ ...formData, membershipType: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, membershipType: e.target.value as Member['membershipType'] })}
                   options={[
                     { value: "REGULAR", label: "Standard" },
                     { value: "PREMIUM", label: "Premium" },
@@ -151,8 +151,8 @@ const MemberDetail = () => {
                 <div className="py-2">
                   <Badge variant={
                     member.status === "ACTIVE" ? "active" :
-                    member.status === "SUSPENDED" ? "suspended" :
-                    member.status === "DORMANT" ? "dormant" : "withdrawn"
+                      member.status === "SUSPENDED" ? "suspended" :
+                        member.status === "DORMANT" ? "dormant" : "withdrawn"
                   }>
                     {member.status}
                   </Badge>

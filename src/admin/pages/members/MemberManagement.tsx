@@ -9,6 +9,7 @@ const mockMembers: Member[] = [
     name: "홍길동",
     email: "hong@example.com",
     membershipType: "REGULAR",
+    status: "ACTIVE",
     joinDate: "2025-01-15T10:30:00",
   },
   {
@@ -16,6 +17,7 @@ const mockMembers: Member[] = [
     name: "김개발",
     email: "kim.dev@example.com",
     membershipType: "PREMIUM",
+    status: "ACTIVE",
     joinDate: "2025-01-16T11:00:00",
   },
   {
@@ -23,6 +25,7 @@ const mockMembers: Member[] = [
     name: "박스프링",
     email: "park.spring@example.com",
     membershipType: "REGULAR",
+    status: "ACTIVE",
     joinDate: "2025-01-17T14:20:00",
   },
 ];
@@ -32,7 +35,7 @@ const MemberManagement = () => {
   const members = mockMembers;
 
   return (
-    
+
     <div className="p-8">
       <header className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold text-gray-800">사용자 관리</h1>
@@ -60,11 +63,10 @@ const MemberManagement = () => {
                 <td className="px-6 py-4 whitespace-nowrap text-gray-600">{member.email}</td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span
-                    className={`px-3 py-1 text-xs font-semibold rounded-full ${
-                      member.membershipType === "PREMIUM"
+                    className={`px-3 py-1 text-xs font-semibold rounded-full ${member.membershipType === "PREMIUM"
                         ? "bg-yellow-200 text-yellow-800"
                         : "bg-green-200 text-green-800"
-                    }`}>
+                      }`}>
                     {member.membershipType}
                   </span>
                 </td>

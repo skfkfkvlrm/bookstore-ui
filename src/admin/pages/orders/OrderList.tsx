@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Order } from "../../../shared/types";
 import Button from "../../../shared/components/common/Button";
@@ -34,7 +34,7 @@ const OrderList = () => {
   const filteredOrders = orders.filter((order) => {
     const matchesSearch = searchQuery === "" ||
       String(order.id).includes(searchQuery) ||
-      order.customerEmail.toLowerCase().includes(searchQuery.toLowerCase());
+      order.customerEmail?.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesStatus = statusFilter === "all" || order.status === statusFilter;
 
@@ -272,7 +272,7 @@ const OrderList = () => {
                   <td key={colIndex} className={`px-6 py-4 ${col.className || ""}`}>
                     {typeof col.accessor === "function"
                       ? col.accessor(order)
-                      : order[col.accessor]}
+                      : (order[col.accessor] as ReactNode)}
                   </td>
                 ))}
               </tr>

@@ -4,7 +4,7 @@ import type { Book } from "../../../shared/types";
 import Button from "../../../shared/components/common/Button";
 import Badge from "../../../shared/components/common/Badge";
 import SearchInput from "../../../shared/components/common/SearchInput";
-import FilterButton from "../../../shared/components/common/FilterButton";
+
 import Pagination from "../../../shared/components/common/Pagination";
 import booksData from "../../../shared/data/books.json";
 

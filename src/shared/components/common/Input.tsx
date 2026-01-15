@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, forwardRef } from "react";
+import { type InputHTMLAttributes, forwardRef } from "react";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -16,9 +16,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
         <input
           ref={ref}
-          className={`w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#1173d4] focus:outline-none ${
-            error ? "border-red-500" : ""
-          } ${className}`}
+          className={`w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#1173d4] focus:outline-none ${error ? "border-red-500" : ""
+            } ${className}`}
           {...props}
         />
         {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
