@@ -67,6 +67,10 @@ export const getLoans = (params: GetLoansParams): Loan[] => {
     const valA = a[sortKey];
     const valB = b[sortKey];
 
+    if (valA === valB) return 0;
+    if (valA === undefined || valA === null) return 1;
+    if (valB === undefined || valB === null) return -1;
+
     let comparison = 0;
     if (valA > valB) {
       comparison = 1;

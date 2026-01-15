@@ -257,7 +257,7 @@ const LoanList = () => {
             <tr>
               {columns.map((col, index) => (
                 <th key={index} scope="col" className="px-6 py-3">
-                  {typeof col.header === "function" ? col.header(undefined) : col.header}
+                  {col.header}
                 </th>
               ))}
             </tr>
