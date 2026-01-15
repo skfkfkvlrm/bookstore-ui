@@ -1,6 +1,5 @@
 import type { Order } from "../../shared/types";
-import { getCurrentMemberId } from "./loanStorage";
-import membersData from "../../shared/data/members.json";
+import { getCurrentUser } from "./authStorage";
 
 const ORDERS_STORAGE_KEY = "library_user_orders";
 const LOCAL_STORAGE_ID_START = 10000;
@@ -48,7 +47,6 @@ export const cancelOrder = (orderId: number): void => {
 };
 
 export const getCurrentUserEmail = (): string => {
-  const memberId = getCurrentMemberId();
-  const member = membersData.find(m => m.id === memberId);
-  return member?.email || "user@example.com";
+  const user = getCurrentUser();
+  return user?.email || "user@example.com";
 };

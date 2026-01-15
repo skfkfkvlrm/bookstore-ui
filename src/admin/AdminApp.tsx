@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./layout/Layout";
 import Dashboard from "./pages/Dashboard";
@@ -14,8 +15,13 @@ import LoanList from "./pages/loans/LoanList";
 import LoanAdd from "./pages/loans/LoanAdd";
 import LoanDetail from "./pages/loans/LoanDetail";
 import Settings from "./pages/Settings";
+import { initLoans } from "../shared/utils/mockLoanApi";
 
 function AdminApp() {
+  useEffect(() => {
+    initLoans();
+  }, []);
+
   return (
     <Layout>
       <Routes>

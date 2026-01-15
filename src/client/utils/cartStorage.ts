@@ -7,6 +7,11 @@ export interface CartItem {
   quantity: number;
 }
 
+// Helper function to dispatch cart change event
+const dispatchCartChangeEvent = () => {
+  window.dispatchEvent(new CustomEvent('cartChange'));
+};
+
 export const getCart = (): CartItem[] => {
   const stored = localStorage.getItem(CART_STORAGE_KEY);
   if (!stored) return [];
@@ -28,6 +33,7 @@ export const addToCart = (book: Book, quantity: number = 1): void => {
   }
 
   localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+  dispatchCartChangeEvent();
 };
 
 export const updateCartItemQuantity = (bookId: number, quantity: number): void => {
@@ -40,6 +46,7 @@ export const updateCartItemQuantity = (bookId: number, quantity: number): void =
     } else {
       item.quantity = quantity;
       localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+      dispatchCartChangeEvent();
     }
   }
 };
@@ -48,10 +55,12 @@ export const removeFromCart = (bookId: number): void => {
   const cart = getCart();
   const updatedCart = cart.filter(item => item.book.id !== bookId);
   localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(updatedCart));
+  dispatchCartChangeEvent();
 };
 
 export const clearCart = (): void => {
   localStorage.removeItem(CART_STORAGE_KEY);
+  dispatchCartChangeEvent();
 };
 
 export const getCartTotal = (): number => {

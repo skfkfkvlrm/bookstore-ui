@@ -4,7 +4,7 @@ import type { Book } from "../../shared/types";
 import booksData from "../../shared/data/books.json";
 import { addLoan, getCurrentMemberId } from "../utils/loanStorage";
 import { addToCart } from "../utils/cartStorage";
-import membersData from "../../shared/data/members.json";
+import { getAllUsers } from "../utils/authStorage";
 
 const BookDetail = () => {
   const { id } = useParams();
@@ -31,7 +31,8 @@ const BookDetail = () => {
 
   const handleBorrowBook = () => {
     const memberId = getCurrentMemberId();
-    const member = membersData.find(m => m.id === memberId);
+    const allUsers = getAllUsers();
+    const member = allUsers.find(m => m.id === memberId);
 
     if (!member) {
       alert("Please log in to borrow books");

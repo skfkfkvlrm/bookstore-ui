@@ -1,14 +1,60 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { getCurrentUser, logout } from "../utils/authStorage";
+import { getCart } from "../utils/cartStorage";
 
 const Header = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
+  const [user, setUser] = useState(getCurrentUser());
+  const [cartCount, setCartCount] = useState(0);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+
+  // Update user state on location change (page navigation)
+  useEffect(() => {
+    setUser(getCurrentUser());
+  }, [location]);
+
+  useEffect(() => {
+    // Update cart count on mount
+    setCartCount(getCart().reduce((sum, item) => sum + item.quantity, 0));
+
+    // Listen for cart changes
+    const handleCartChange = () => {
+      setCartCount(getCart().reduce((sum, item) => sum + item.quantity, 0));
+    };
+
+    // Listen for auth changes
+    const handleAuthChange = () => {
+      setUser(getCurrentUser());
+    };
+
+    window.addEventListener('cartChange', handleCartChange);
+    window.addEventListener('authChange', handleAuthChange);
+    window.addEventListener('storage', handleCartChange); // For cross-tab updates
+
+    return () => {
+      window.removeEventListener('cartChange', handleCartChange);
+      window.removeEventListener('authChange', handleAuthChange);
+      window.removeEventListener('storage', handleCartChange);
+    };
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/client/books?search=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
+  const handleLogout = () => {
+    const confirmed = window.confirm("Are you sure you want to log out?");
+    if (confirmed) {
+      logout();
+      setUser(null);
+      setShowUserMenu(false);
+      navigate("/client/login");
     }
   };
 
@@ -72,16 +118,101 @@ const Header = () => {
               className="relative p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-200/60 dark:hover:bg-gray-800/60 transition-colors"
             >
               <span className="material-symbols-outlined">shopping_cart</span>
-              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#1173d4] text-xs font-bold text-white">
-                0
-              </span>
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#1173d4] text-xs font-bold text-white">
+                  {cartCount > 9 ? '9+' : cartCount}
+                </span>
+              )}
             </Link>
-            <Link
-              to="/client/account"
-              className="w-10 h-10 rounded-full bg-[#1173d4] flex items-center justify-center text-white font-bold"
-            >
-              <span className="material-symbols-outlined">person</span>
-            </Link>
+
+            {user ? (
+              <div className="relative">
+                <button
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="flex items-center gap-2 p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-200/60 dark:hover:bg-gray-800/60 transition-colors"
+                >
+                  <div className="w-8 h-8 rounded-full bg-[#1173d4] flex items-center justify-center text-white font-bold text-sm">
+                    {user.name.charAt(0).toUpperCase()}
+                  </div>
+                  <span className="hidden sm:block text-sm font-medium">
+                    {user.name}
+                  </span>
+                  <span className="material-symbols-outlined text-sm">
+                    {showUserMenu ? 'expand_less' : 'expand_more'}
+                  </span>
+                </button>
+
+                {showUserMenu && (
+                  <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-[#1a2332] border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden">
+                    <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">
+                        {user.name}
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        {user.email}
+                      </p>
+                      <span className={`inline-block mt-2 px-2 py-1 rounded-full text-xs font-medium ${
+                        user.membershipType === 'PREMIUM'
+                          ? 'bg-[#1173d4] text-white'
+                          : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                      }`}>
+                        {user.membershipType}
+                      </span>
+                    </div>
+                    <div className="py-2">
+                      <Link
+                        to="/client/account"
+                        onClick={() => setShowUserMenu(false)}
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                      >
+                        <span className="material-symbols-outlined text-base">account_circle</span>
+                        My Account
+                      </Link>
+                      <Link
+                        to="/client/my-loans"
+                        onClick={() => setShowUserMenu(false)}
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                      >
+                        <span className="material-symbols-outlined text-base">auto_stories</span>
+                        My Loans
+                      </Link>
+                      <Link
+                        to="/client/orders"
+                        onClick={() => setShowUserMenu(false)}
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                      >
+                        <span className="material-symbols-outlined text-base">shopping_bag</span>
+                        My Orders
+                      </Link>
+                    </div>
+                    <div className="border-t border-gray-200 dark:border-gray-700 py-2">
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors w-full text-left"
+                      >
+                        <span className="material-symbols-outlined text-base">logout</span>
+                        Log Out
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/client/login"
+                  className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-[#1173d4] dark:hover:text-[#1173d4] transition-colors"
+                >
+                  Log In
+                </Link>
+                <Link
+                  to="/client/register"
+                  className="px-4 py-2 rounded-lg bg-[#1173d4] text-white text-sm font-medium hover:bg-[#1173d4]/90 transition-colors"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>

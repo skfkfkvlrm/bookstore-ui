@@ -1,27 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { Loan } from "../../../shared/types";
 import Button from "../../../shared/components/common/Button";
 import Badge from "../../../shared/components/common/Badge";
-
-// Mock data - replace with API call
-const mockLoan: Loan = {
-  id: 2,
-  bookId: 2,
-  bookTitle: "1984",
-  bookAuthor: "George Orwell",
-  memberId: 2,
-  memberName: "Ethan Bennett",
-  memberEmail: "ethan.bennett@email.com",
-  loanDate: "2025-09-15T11:00:00",
-  dueDate: "2025-09-29T11:00:00",
-  status: "ACTIVE",
-};
+import { getLoanById, updateLoan } from "../../../shared/utils/mockLoanApi";
 
 const LoanDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [loan, setLoan] = useState<Loan>(mockLoan);
+  const [loan, setLoan] = useState<Loan | null>(null);
+  const [isExtending, setIsExtending] = useState(false);
+  const [newDueDate, setNewDueDate] = useState("");
+
+  useEffect(() => {
+    if (id) {
+      const loanId = parseInt(id, 10);
+      const foundLoan = getLoanById(loanId);
+      setLoan(foundLoan || null);
+      if (foundLoan) {
+        setNewDueDate(new Date(foundLoan.dueDate).toISOString().split("T")[0]);
+      }
+    }
+  }, [id]);
 
   const getStatusVariant = (status: Loan["status"]) => {
     const statusMap = {
@@ -33,36 +33,79 @@ const LoanDetail = () => {
   };
 
   const handleReturn = () => {
-    if (window.confirm("Are you sure you want to mark this loan as returned?")) {
-      // TODO: API call to return loan
-      const returnDate = new Date().toISOString();
-      console.log("Return loan:", id, "at", returnDate);
-      setLoan({
-        ...loan,
-        returnDate,
+    if (loan && window.confirm("Are you sure you want to mark this loan as returned?")) {
+      const updatedLoan = updateLoan(loan.id, {
         status: "RETURNED",
+        returnDate: new Date().toISOString(),
       });
+      setLoan(updatedLoan || null);
     }
   };
 
   const handleSendReminder = () => {
+    if (!loan) return;
     // TODO: API call to send reminder email
     console.log("Send reminder email to:", loan.memberEmail);
     alert(`Reminder email sent to ${loan.memberEmail}`);
   };
 
+  const handleStartExtending = () => {
+    if (loan) {
+      setNewDueDate(new Date(loan.dueDate).toISOString().split("T")[0]);
+      setIsExtending(true);
+    }
+  };
+
+  const handleCancelExtending = () => {
+    setIsExtending(false);
+  };
+
+  const handleSaveExtension = () => {
+    if (loan && newDueDate) {
+      const newDueDateObj = new Date(newDueDate);
+      newDueDateObj.setHours(23, 59, 59, 999); // Set to end of day
+
+      const updatedLoan = updateLoan(loan.id, {
+        dueDate: newDueDateObj.toISOString(),
+        status: newDueDateObj > new Date() ? "ACTIVE" : "OVERDUE",
+      });
+      setLoan(updatedLoan || null);
+      setIsExtending(false);
+    }
+  };
+
   const isOverdue = () => {
-    if (loan.status === "RETURNED") return false;
+    if (!loan || loan.status === "RETURNED") return false;
     return new Date(loan.dueDate) < new Date();
   };
 
   const daysUntilDue = () => {
+    if (!loan) return 0;
     const today = new Date();
     const dueDate = new Date(loan.dueDate);
     const diffTime = dueDate.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
   };
+
+  if (!loan) {
+    return (
+      <div className="max-w-7xl mx-auto text-center py-10">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Loan Not Found</h2>
+        <p className="text-gray-600 dark:text-gray-400 mt-2">
+          The loan with ID <span className="font-mono">#{id}</span> could not be found.
+        </p>
+        <Button
+          variant="secondary"
+          onClick={() => navigate("/admin/loans")}
+          className="mt-6"
+        >
+          <span className="material-symbols-outlined">arrow_back</span>
+          Back to List
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -75,15 +118,14 @@ const LoanDetail = () => {
         </div>
       </div>
 
-      {isOverdue() && (
+      {isOverdue() && loan.status !== "RETURNED" && (
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
           <div className="flex items-start gap-3">
             <span className="material-symbols-outlined text-red-600 dark:text-red-400">warning</span>
             <div className="flex-1">
               <p className="font-semibold text-red-800 dark:text-red-300">Overdue Loan</p>
               <p className="text-sm text-red-700 dark:text-red-400 mt-1">
-                This loan is {Math.abs(daysUntilDue())} day(s) overdue. Please return the book as
-                soon as possible.
+                This loan is {Math.abs(daysUntilDue())} day(s) overdue. Please take action.
               </p>
             </div>
           </div>
@@ -173,20 +215,66 @@ const LoanDetail = () => {
 
       <div className="bg-white dark:bg-[#1a2632] rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Loan Actions</h4>
-        <div className="flex gap-4">
-          {loan.status === "ACTIVE" && (
-            <Button variant="success" onClick={handleReturn}>
-              <span className="material-symbols-outlined">check_circle</span>
-              Mark as Returned
-            </Button>
-          )}
-          {(loan.status === "ACTIVE" || loan.status === "OVERDUE") && (
-            <Button variant="secondary" onClick={handleSendReminder}>
-              <span className="material-symbols-outlined">mail</span>
-              Send Reminder Email
-            </Button>
-          )}
-        </div>
+        {isExtending ? (
+          <div className="space-y-4">
+            <div>
+              <label
+                htmlFor="newDueDate"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                New Due Date
+              </label>
+              <input
+                type="date"
+                id="newDueDate"
+                value={newDueDate}
+                onChange={(e) => setNewDueDate(e.target.value)}
+                className="mt-1 block w-full md:w-1/3 rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-[#101922] shadow-sm focus:border-[#1173d4] focus:ring-[#1173d4] sm:text-sm"
+              />
+            </div>
+            <div className="flex gap-4">
+              <Button onClick={handleSaveExtension}>
+                <span className="material-symbols-outlined">save</span>
+                Save Extension
+              </Button>
+              <Button variant="secondary" onClick={handleCancelExtending}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-wrap gap-4">
+            {loan.status === "ACTIVE" && (
+              <Button variant="success" onClick={handleReturn}>
+                <span className="material-symbols-outlined">check_circle</span>
+                Mark as Returned
+              </Button>
+            )}
+            {loan.status === "OVERDUE" && (
+              <Button variant="success" onClick={handleReturn}>
+                <span className="material-symbols-outlined">check_circle</span>
+                Mark as Returned
+              </Button>
+            )}
+            {(loan.status === "ACTIVE" || loan.status === "OVERDUE") && (
+              <>
+                <Button variant="secondary" onClick={handleSendReminder}>
+                  <span className="material-symbols-outlined">mail</span>
+                  Send Reminder Email
+                </Button>
+                <Button variant="secondary" onClick={handleStartExtending}>
+                  <span className="material-symbols-outlined">edit_calendar</span>
+                  Extend Due Date
+                </Button>
+              </>
+            )}
+            {loan.status === "RETURNED" && (
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                This loan has been returned. No further actions are available.
+              </p>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="flex justify-end mt-6">
