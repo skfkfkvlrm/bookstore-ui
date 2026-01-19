@@ -1,3 +1,8 @@
+---
+name: build
+description: Run the build process and fix any errors. Use when you need to build the project, fix TypeScript errors, or verify the build passes.
+---
+
 # Build Skill
 
 When invoked with `/build`, run the build process and fix any errors.

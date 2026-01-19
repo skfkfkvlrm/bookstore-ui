@@ -1,3 +1,8 @@
+---
+name: lint
+description: Run ESLint and fix issues. Use when you need to check code quality, find lint errors, or auto-fix formatting issues.
+---
+
 # Lint Skill
 
 When invoked with `/lint`, run ESLint and fix issues.

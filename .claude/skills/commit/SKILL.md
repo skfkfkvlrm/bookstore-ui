@@ -1,3 +1,8 @@
+---
+name: commit
+description: Create a well-formatted git commit. Use when you need to commit changes with proper conventional commit messages.
+---
+
 # Commit Skill
 
 When invoked with `/commit`, create a well-formatted git commit.

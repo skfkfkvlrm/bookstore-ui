@@ -1,7 +1,6 @@
 ---
 name: library-management-ui
 description: Work with React 19 + TypeScript library management system. Use when developing features for book management, member management, order processing, loan tracking, or working with React Router, TailwindCSS, Chart.js, or Axios in this project.
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 
 # Library Management UI Development

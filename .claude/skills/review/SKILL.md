@@ -1,3 +1,8 @@
+---
+name: review
+description: Review code changes for quality and issues. Use when you need to review a PR, check code quality, or audit changes before merging.
+---
+
 # Code Review Skill
 
 When invoked with `/review`, review code changes for quality and issues.

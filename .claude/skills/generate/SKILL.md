@@ -1,3 +1,8 @@
+---
+name: generate
+description: Generate React + TypeScript + Tailwind CSS code following project patterns. Use when creating new components, pages, types, or utilities.
+---
+
 # Code Generation Skill
 
 When invoked with `/generate`, help generate React + TypeScript + Tailwind CSS code following this project's patterns.

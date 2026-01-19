@@ -1,3 +1,8 @@
+---
+name: pr
+description: Create a well-formatted GitHub pull request. Use when you need to create a PR with proper description and test plan.
+---
+
 # Pull Request Skill
 
 When invoked with `/pr`, create a well-formatted GitHub pull request.
