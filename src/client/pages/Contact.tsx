@@ -68,9 +68,10 @@ const Contact = () => {
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">아래 내용을 작성하면 담당자가 빠르게 답변드립니다.</p>
           <div className="mt-6 space-y-4">
             <div>
-              <label className="text-sm text-gray-600 dark:text-gray-400">이름</label>
+              <label htmlFor="contact-name" className="text-sm text-gray-600 dark:text-gray-400">이름</label>
               <input
                 type="text"
+                id="contact-name"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="mt-1 w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-[#1173d4] dark:border-gray-600 dark:bg-[#101922] dark:text-white"
@@ -78,9 +79,10 @@ const Contact = () => {
               />
             </div>
             <div>
-              <label className="text-sm text-gray-600 dark:text-gray-400">이메일</label>
+              <label htmlFor="contact-email" className="text-sm text-gray-600 dark:text-gray-400">이메일</label>
               <input
                 type="email"
+                id="contact-email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className="mt-1 w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-[#1173d4] dark:border-gray-600 dark:bg-[#101922] dark:text-white"
@@ -88,10 +90,11 @@ const Contact = () => {
               />
             </div>
             <div>
-              <label className="text-sm text-gray-600 dark:text-gray-400">문의 유형</label>
+              <label htmlFor="contact-topic" className="text-sm text-gray-600 dark:text-gray-400">문의 유형</label>
               <select
                 value={formData.topic}
                 onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
+                id="contact-topic"
                 className="mt-1 w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-[#1173d4] dark:border-gray-600 dark:bg-[#101922] dark:text-white"
               >
                 <option>제휴/협업 문의</option>
@@ -101,11 +104,12 @@ const Contact = () => {
               </select>
             </div>
             <div>
-              <label className="text-sm text-gray-600 dark:text-gray-400">문의 내용</label>
+              <label htmlFor="contact-message" className="text-sm text-gray-600 dark:text-gray-400">문의 내용</label>
               <textarea
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 rows={5}
+                id="contact-message"
                 className="mt-1 w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-[#1173d4] dark:border-gray-600 dark:bg-[#101922] dark:text-white"
                 placeholder="필요한 지원이나 궁금한 점을 자세히 남겨 주세요"
               />
