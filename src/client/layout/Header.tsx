@@ -7,7 +7,7 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
-  const [user, setUser] = useState(getCurrentUser());
+  const [user, setUser] = useState(() => getCurrentUser());
   const [cartCount, setCartCount] = useState(0);
   const [showUserMenu, setShowUserMenu] = useState(false);
 
@@ -49,7 +49,7 @@ const Header = () => {
   };
 
   const handleLogout = () => {
-    const confirmed = window.confirm("Are you sure you want to log out?");
+    const confirmed = window.confirm("로그아웃하시겠습니까?");
     if (confirmed) {
       logout();
       setUser(null);
@@ -65,38 +65,38 @@ const Header = () => {
           <div className="flex items-center gap-8">
             <Link to="/client" className="flex items-center gap-2 text-gray-900 dark:text-white">
               <span className="material-symbols-outlined text-[#1173d4] text-3xl">local_library</span>
-              <span className="text-xl font-bold">Spring Library</span>
+              <span className="text-xl font-bold">스프링 도서관</span>
             </Link>
             <nav className="hidden md:flex items-center gap-6">
               <Link
                 to="/client"
                 className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#1173d4] dark:hover:text-[#1173d4] transition-colors"
               >
-                Home
+                홈
               </Link>
               <Link
                 to="/client/books"
                 className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#1173d4] dark:hover:text-[#1173d4] transition-colors"
               >
-                Books
+                도서
               </Link>
               <Link
                 to="/client/my-loans"
                 className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#1173d4] dark:hover:text-[#1173d4] transition-colors"
               >
-                My Loans
+                내 대출
               </Link>
               <Link
                 to="/client/cart"
                 className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#1173d4] dark:hover:text-[#1173d4] transition-colors"
               >
-                Cart
+                장바구니
               </Link>
               <Link
                 to="/client/orders"
                 className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#1173d4] dark:hover:text-[#1173d4] transition-colors"
               >
-                Orders
+                주문 내역
               </Link>
             </nav>
           </div>
@@ -110,7 +110,7 @@ const Header = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-200/50 dark:bg-gray-800/50 border-transparent focus:ring-2 focus:ring-[#1173d4] focus:border-transparent transition-colors text-gray-900 dark:text-gray-100"
-                placeholder="Search books..."
+                placeholder="도서를 검색하세요"
               />
             </form>
             <Link
@@ -156,7 +156,7 @@ const Header = () => {
                           ? 'bg-[#1173d4] text-white'
                           : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
                       }`}>
-                        {user.membershipType}
+                        {user.membershipType === 'PREMIUM' ? '프리미엄' : '일반'} 회원
                       </span>
                     </div>
                     <div className="py-2">
@@ -166,7 +166,7 @@ const Header = () => {
                         className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                       >
                         <span className="material-symbols-outlined text-base">account_circle</span>
-                        My Account
+                        내 계정
                       </Link>
                       <Link
                         to="/client/my-loans"
@@ -174,7 +174,7 @@ const Header = () => {
                         className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                       >
                         <span className="material-symbols-outlined text-base">auto_stories</span>
-                        My Loans
+                        내 대출
                       </Link>
                       <Link
                         to="/client/orders"
@@ -182,7 +182,7 @@ const Header = () => {
                         className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                       >
                         <span className="material-symbols-outlined text-base">shopping_bag</span>
-                        My Orders
+                        내 주문
                       </Link>
                     </div>
                     <div className="border-t border-gray-200 dark:border-gray-700 py-2">
@@ -191,7 +191,7 @@ const Header = () => {
                         className="flex items-center gap-3 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors w-full text-left"
                       >
                         <span className="material-symbols-outlined text-base">logout</span>
-                        Log Out
+                        로그아웃
                       </button>
                     </div>
                   </div>
@@ -203,13 +203,13 @@ const Header = () => {
                   to="/client/login"
                   className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-[#1173d4] dark:hover:text-[#1173d4] transition-colors"
                 >
-                  Log In
+                  로그인
                 </Link>
                 <Link
                   to="/client/register"
                   className="px-4 py-2 rounded-lg bg-[#1173d4] text-white text-sm font-medium hover:bg-[#1173d4]/90 transition-colors"
                 >
-                  Sign Up
+                  회원가입
                 </Link>
               </div>
             )}

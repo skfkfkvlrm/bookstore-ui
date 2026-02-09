@@ -10,6 +10,14 @@ const MyOrders = () => {
   const currentUserEmail = getCurrentUserEmail();
   const [filterStatus, setFilterStatus] = useState<FilterStatus>("ALL");
   const [userOrders, setUserOrders] = useState<Order[]>([]);
+  const orderFilterLabel: Record<FilterStatus, string> = {
+    ALL: "전체",
+    PENDING: "접수",
+    CONFIRMED: "확정",
+    SHIPPED: "배송 중",
+    DELIVERED: "배송 완료",
+    CANCELLED: "취소",
+  };
 
   useEffect(() => {
     setUserOrders(getUserOrders());
@@ -46,16 +54,16 @@ const MyOrders = () => {
     const isInLocalStorage = userOrders.some(o => o.id === order.id);
 
     if (!isInLocalStorage) {
-      alert("Cannot cancel orders from JSON data.");
+      alert("샘플 데이터 주문은 취소할 수 없습니다.");
       return;
     }
 
     if (order.status === "DELIVERED" || order.status === "CANCELLED") {
-      alert("This order has already been delivered or cancelled.");
+      alert("이미 배송 완료 또는 취소된 주문입니다.");
       return;
     }
 
-    const confirmed = window.confirm(`Cancel order #${order.id}?`);
+    const confirmed = window.confirm(`#${order.id} 주문을 취소하시겠습니까?`);
     if (confirmed) {
       cancelOrder(order.id);
       setUserOrders(getUserOrders());
@@ -63,7 +71,7 @@ const MyOrders = () => {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
+    return new Date(dateString).toLocaleDateString("ko-KR", {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -74,11 +82,11 @@ const MyOrders = () => {
 
   const getStatusBadge = (status: Order["status"]) => {
     const variants = {
-      PENDING: { bg: "bg-yellow-100 dark:bg-yellow-900/30", text: "text-yellow-800 dark:text-yellow-300", icon: "schedule", label: "Pending" },
-      CONFIRMED: { bg: "bg-blue-100 dark:bg-blue-900/30", text: "text-blue-800 dark:text-blue-300", icon: "check_circle", label: "Confirmed" },
-      SHIPPED: { bg: "bg-purple-100 dark:bg-purple-900/30", text: "text-purple-800 dark:text-purple-300", icon: "local_shipping", label: "Shipped" },
-      DELIVERED: { bg: "bg-green-100 dark:bg-green-900/30", text: "text-green-800 dark:text-green-300", icon: "task_alt", label: "Delivered" },
-      CANCELLED: { bg: "bg-red-100 dark:bg-red-900/30", text: "text-red-800 dark:text-red-300", icon: "cancel", label: "Cancelled" },
+      PENDING: { bg: "bg-yellow-100 dark:bg-yellow-900/30", text: "text-yellow-800 dark:text-yellow-300", icon: "schedule", label: "접수" },
+      CONFIRMED: { bg: "bg-blue-100 dark:bg-blue-900/30", text: "text-blue-800 dark:text-blue-300", icon: "check_circle", label: "확정" },
+      SHIPPED: { bg: "bg-purple-100 dark:bg-purple-900/30", text: "text-purple-800 dark:text-purple-300", icon: "local_shipping", label: "배송 중" },
+      DELIVERED: { bg: "bg-green-100 dark:bg-green-900/30", text: "text-green-800 dark:text-green-300", icon: "task_alt", label: "배송 완료" },
+      CANCELLED: { bg: "bg-red-100 dark:bg-red-900/30", text: "text-red-800 dark:text-red-300", icon: "cancel", label: "취소됨" },
     };
 
     const variant = variants[status];
@@ -94,36 +102,36 @@ const MyOrders = () => {
   return (
     <div className="mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">My Orders</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">내 주문 내역</h1>
         <p className="text-gray-600 dark:text-gray-400">
-          View your order history and track shipments
+          주문 이력을 확인하고 배송 현황을 추적하세요
         </p>
       </div>
 
       {/* Statistics */}
       <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
         <div className="bg-white dark:bg-[#1a2332] p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-          <p className="text-sm text-gray-600 dark:text-gray-400">Total</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">총 주문</p>
           <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.total}</p>
         </div>
         <div className="bg-white dark:bg-[#1a2332] p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-          <p className="text-sm text-gray-600 dark:text-gray-400">Pending</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">접수</p>
           <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{stats.pending}</p>
         </div>
         <div className="bg-white dark:bg-[#1a2332] p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-          <p className="text-sm text-gray-600 dark:text-gray-400">Confirmed</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">확정</p>
           <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{stats.confirmed}</p>
         </div>
         <div className="bg-white dark:bg-[#1a2332] p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-          <p className="text-sm text-gray-600 dark:text-gray-400">Shipped</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">배송 중</p>
           <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">{stats.shipped}</p>
         </div>
         <div className="bg-white dark:bg-[#1a2332] p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-          <p className="text-sm text-gray-600 dark:text-gray-400">Delivered</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">배송 완료</p>
           <p className="text-2xl font-bold text-green-600 dark:text-green-400">{stats.delivered}</p>
         </div>
         <div className="bg-white dark:bg-[#1a2332] p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-          <p className="text-sm text-gray-600 dark:text-gray-400">Cancelled</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">취소</p>
           <p className="text-2xl font-bold text-red-600 dark:text-red-400">{stats.cancelled}</p>
         </div>
       </div>
@@ -140,7 +148,7 @@ const MyOrders = () => {
                 : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
             }`}
           >
-            {status}
+            {orderFilterLabel[status]}
           </button>
         ))}
       </div>
@@ -153,15 +161,15 @@ const MyOrders = () => {
           </span>
           <p className="text-lg text-gray-600 dark:text-gray-400">
             {filterStatus === "ALL"
-              ? "No orders yet."
-              : `No ${filterStatus.toLowerCase()} orders found.`}
+              ? "아직 주문 내역이 없습니다."
+              : `${orderFilterLabel[filterStatus]} 상태의 주문이 없습니다.`}
           </p>
           <Link
             to="/client/books"
             className="inline-flex items-center mt-4 px-6 py-3 rounded-lg bg-[#1173d4] text-white font-bold hover:bg-[#1173d4]/90 transition-colors"
           >
             <span className="material-symbols-outlined mr-2">shopping_bag</span>
-            Start Shopping
+            쇼핑 시작하기
           </Link>
         </div>
       ) : (
@@ -175,11 +183,11 @@ const MyOrders = () => {
               <div className="bg-gray-50 dark:bg-[#0f1621] px-6 py-4 flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 dark:border-gray-700">
                 <div className="flex items-center gap-4">
                   <div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Order Number</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">주문 번호</p>
                     <p className="font-bold text-gray-900 dark:text-white">#{order.id}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Order Date</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">주문 일시</p>
                     <p className="font-medium text-gray-900 dark:text-white">{formatDate(order.orderDate)}</p>
                   </div>
                 </div>
@@ -191,7 +199,7 @@ const MyOrders = () => {
                       className="inline-flex items-center px-3 py-1.5 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition-colors"
                     >
                       <span className="material-symbols-outlined text-sm mr-1">cancel</span>
-                      Cancel
+                      주문 취소
                     </button>
                   )}
                 </div>
@@ -209,15 +217,15 @@ const MyOrders = () => {
                         >
                           {item.bookTitle}
                         </Link>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">by {item.bookAuthor}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">저자 {item.bookAuthor}</p>
                         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                          Quantity: {item.quantity}
+                          수량: {item.quantity}
                         </p>
                       </div>
                       <div className="text-right">
                         <p className="font-bold text-[#1173d4]">${item.price.toFixed(2)}</p>
                         <p className="text-sm text-gray-600 dark:text-gray-400">
-                          Subtotal: ${(item.price * item.quantity).toFixed(2)}
+                          소계: ${(item.price * item.quantity).toFixed(2)}
                         </p>
                       </div>
                     </div>
@@ -226,7 +234,7 @@ const MyOrders = () => {
 
                 {/* Order Total */}
                 <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                  <span className="text-lg font-bold text-gray-900 dark:text-white">Order Total</span>
+                  <span className="text-lg font-bold text-gray-900 dark:text-white">총 결제 금액</span>
                   <span className="text-2xl font-bold text-[#1173d4]">${order.totalAmount.toFixed(2)}</span>
                 </div>
               </div>

@@ -53,7 +53,7 @@ const StatCard = ({
               >
                 {trend.value}%
               </span>
-              <span className="text-xs text-gray-500 dark:text-gray-500">vs last period</span>
+              <span className="text-xs text-gray-500 dark:text-gray-500">이전 기간 대비</span>
             </div>
           )}
         </div>

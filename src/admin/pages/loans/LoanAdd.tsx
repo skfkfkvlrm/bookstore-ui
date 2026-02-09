@@ -14,8 +14,8 @@ const LoanAdd = () => {
   const [isMemberModalOpen, setMemberModalOpen] = useState(false);
   const [isBookModalOpen, setBookModalOpen] = useState(false);
 
-  const [loanDate, setLoanDate] = useState(new Date());
-  const [dueDate, setDueDate] = useState(addDays(new Date(), 14));
+  const [loanDate, setLoanDate] = useState(() => new Date());
+  const [dueDate, setDueDate] = useState(() => addDays(new Date(), 14));
 
   useEffect(() => {
     // When loan date changes, update due date to be 14 days after

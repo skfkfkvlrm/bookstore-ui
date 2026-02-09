@@ -45,7 +45,7 @@ const MyAccount = () => {
     setError("");
 
     if (!formData.name.trim()) {
-      setError("Please enter your name");
+      setError("이름을 입력하세요.");
       return;
     }
 
@@ -62,13 +62,13 @@ const MyAccount = () => {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError("Update failed. Please try again.");
+        setError("업데이트에 실패했습니다. 다시 시도하세요.");
       }
     }
   };
 
   const handleLogout = () => {
-    const confirmed = window.confirm("Are you sure you want to log out?");
+    const confirmed = window.confirm("로그아웃하시겠습니까?");
     if (confirmed) {
       logout();
       navigate("/client/login");
@@ -101,9 +101,9 @@ const MyAccount = () => {
   return (
     <div className="mx-auto max-w-4xl">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">My Account</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">내 계정</h1>
         <p className="text-gray-600 dark:text-gray-400">
-          Manage your profile and view account information
+          프로필을 관리하고 계정 정보를 확인하세요
         </p>
       </div>
 
@@ -118,7 +118,7 @@ const MyAccount = () => {
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 {stats.activeLoans}
               </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Active Loans</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">대여 중</p>
             </div>
           </div>
         </div>
@@ -132,7 +132,7 @@ const MyAccount = () => {
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 {stats.totalOrders}
               </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Total Orders</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">총 주문</p>
             </div>
           </div>
         </div>
@@ -146,7 +146,7 @@ const MyAccount = () => {
               <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 {user.membershipType === "PREMIUM" ? "5" : "3"}
               </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Book Limit</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">대여 가능 권수</p>
             </div>
           </div>
         </div>
@@ -156,7 +156,7 @@ const MyAccount = () => {
       <div className="bg-white dark:bg-[#1a2332] border border-gray-200 dark:border-gray-700 rounded-lg p-8">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Profile Information
+            프로필 정보
           </h2>
           {!isEditing && (
             <button
@@ -164,7 +164,7 @@ const MyAccount = () => {
               className="inline-flex items-center px-4 py-2 rounded-lg bg-[#1173d4] text-white text-sm font-medium hover:bg-[#1173d4]/90 transition-colors"
             >
               <span className="material-symbols-outlined text-sm mr-1">edit</span>
-              Edit Profile
+              프로필 수정
             </button>
           )}
         </div>
@@ -173,7 +173,7 @@ const MyAccount = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Full Name
+                이름
               </label>
               <input
                 type="text"
@@ -186,7 +186,7 @@ const MyAccount = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Email Address
+                이메일
               </label>
               <input
                 type="email"
@@ -195,13 +195,13 @@ const MyAccount = () => {
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-500 cursor-not-allowed"
               />
               <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                Email cannot be changed
+                이메일은 변경할 수 없습니다.
               </p>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Membership Type
+                회원 등급
               </label>
               <div className="grid grid-cols-2 gap-4">
                 <button
@@ -217,9 +217,9 @@ const MyAccount = () => {
                     <span className="material-symbols-outlined text-3xl text-[#1173d4] mb-2">
                       book
                     </span>
-                    <p className="font-bold text-gray-900 dark:text-white">Regular</p>
+                    <p className="font-bold text-gray-900 dark:text-white">일반</p>
                     <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                      Up to 3 books
+                      최대 3권 대출 가능
                     </p>
                   </div>
                 </button>
@@ -237,9 +237,9 @@ const MyAccount = () => {
                     <span className="material-symbols-outlined text-3xl text-[#1173d4] mb-2">
                       workspace_premium
                     </span>
-                    <p className="font-bold text-gray-900 dark:text-white">Premium</p>
+                    <p className="font-bold text-gray-900 dark:text-white">프리미엄</p>
                     <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                      Up to 5 books
+                      최대 5권 대출 가능
                     </p>
                   </div>
                 </button>
@@ -263,7 +263,7 @@ const MyAccount = () => {
                 className="flex-1 inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#1173d4] text-white font-bold hover:bg-[#1173d4]/90 transition-colors"
               >
                 <span className="material-symbols-outlined mr-2">save</span>
-                Save Changes
+                변경 사항 저장
               </button>
               <button
                 type="button"
@@ -271,7 +271,7 @@ const MyAccount = () => {
                 className="flex-1 inline-flex items-center justify-center px-6 py-3 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
               >
                 <span className="material-symbols-outlined mr-2">close</span>
-                Cancel
+                취소
               </button>
             </div>
           </form>
@@ -280,7 +280,7 @@ const MyAccount = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                  Full Name
+                  이름
                 </label>
                 <p className="text-lg font-medium text-gray-900 dark:text-white">
                   {user.name}
@@ -289,7 +289,7 @@ const MyAccount = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                  Email Address
+                  이메일
                 </label>
                 <p className="text-lg font-medium text-gray-900 dark:text-white">
                   {user.email}
@@ -298,31 +298,31 @@ const MyAccount = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                  Membership Type
+                  회원 등급
                 </label>
                 <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${membershipBadgeColor}`}>
                   <span className="material-symbols-outlined text-sm mr-1">
                     {user.membershipType === "PREMIUM" ? "workspace_premium" : "book"}
                   </span>
-                  {user.membershipType}
+                  {user.membershipType === "PREMIUM" ? "프리미엄" : "일반"}
                 </span>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                  Account Status
+                  계정 상태
                 </label>
                 <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${statusBadgeColor}`}>
                   <span className="material-symbols-outlined text-sm mr-1">
                     {user.status === "ACTIVE" ? "check_circle" : "cancel"}
                   </span>
-                  {user.status}
+                  {user.status === "ACTIVE" ? "활성" : "일시중지"}
                 </span>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                  Member Since
+                  가입일
                 </label>
                 <p className="text-lg font-medium text-gray-900 dark:text-white">
                   {new Date(user.joinDate).toLocaleDateString()}
@@ -339,7 +339,7 @@ const MyAccount = () => {
               className="inline-flex items-center px-6 py-3 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition-colors"
             >
               <span className="material-symbols-outlined mr-2">logout</span>
-              Log Out
+              로그아웃
             </button>
           </div>
         )}

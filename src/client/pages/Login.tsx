@@ -15,7 +15,7 @@ const Login = () => {
     setError("");
 
     if (!email.trim()) {
-      setError("Please enter your email address");
+      setError("이메일을 입력하세요.");
       return;
     }
 
@@ -24,7 +24,7 @@ const Login = () => {
     if (user) {
       navigate(from, { replace: true });
     } else {
-      setError("No account found with this email. Please check your email or register.");
+      setError("해당 이메일로 등록된 계정이 없습니다. 이메일을 확인하거나 회원가입을 진행하세요.");
     }
   };
 
@@ -36,10 +36,10 @@ const Login = () => {
             account_circle
           </span>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Welcome Back
+            다시 만나서 반가워요
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Sign in to access your account
+            로그인하고 계정 기능을 이용하세요
           </p>
         </div>
 
@@ -47,7 +47,7 @@ const Login = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Email Address
+                이메일
               </label>
               <input
                 type="email"
@@ -55,7 +55,7 @@ const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-[#1173d4] focus:border-transparent"
-                placeholder="Enter your email"
+                placeholder="이메일을 입력하세요"
                 autoComplete="email"
               />
             </div>
@@ -76,18 +76,18 @@ const Login = () => {
               className="w-full inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#1173d4] text-white font-bold text-base hover:bg-[#1173d4]/90 transition-all shadow-md"
             >
               <span className="material-symbols-outlined mr-2">login</span>
-              Sign In
+              로그인
             </button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Don't have an account?{" "}
+              아직 계정이 없으신가요?{" "}
               <Link
                 to="/client/register"
                 className="text-[#1173d4] font-medium hover:underline"
               >
-                Sign up
+                회원가입
               </Link>
             </p>
           </div>

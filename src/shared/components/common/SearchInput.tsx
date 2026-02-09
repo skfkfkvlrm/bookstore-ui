@@ -4,7 +4,7 @@ interface SearchInputProps extends InputHTMLAttributes<HTMLInputElement> {
   onSearch?: (value: string) => void;
 }
 
-const SearchInput = ({ placeholder = "Search", className = "", onSearch, ...props }: SearchInputProps) => {
+const SearchInput = ({ placeholder = "검색", className = "", onSearch, ...props }: SearchInputProps) => {
   return (
     <div className={`relative ${className}`}>
       <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-400">

@@ -30,6 +30,14 @@ const OrderList = () => {
     return statusMap[status];
   };
 
+  const statusLabelMap: Record<Order["status"], string> = {
+    PENDING: "접수",
+    CONFIRMED: "확정",
+    SHIPPED: "배송 중",
+    DELIVERED: "배송 완료",
+    CANCELLED: "취소",
+  };
+
   // Filter orders
   const filteredOrders = orders.filter((order) => {
     const matchesSearch = searchQuery === "" ||
@@ -86,8 +94,7 @@ const OrderList = () => {
 
   const handleBulkAction = (action: string) => {
     console.log(`Bulk action ${action} on orders:`, selectedOrders);
-    // TODO: Implement bulk actions
-    alert(`${action} on ${selectedOrders.length} selected order(s)`);
+    alert(`선택된 ${selectedOrders.length}건의 주문에 ${action} 작업을 수행했습니다.`);
   };
 
   const handleSearch = (query: string) => {
@@ -122,7 +129,7 @@ const OrderList = () => {
       ),
     },
     {
-      header: "Order ID",
+      header: "주문 번호",
       accessor: (row: Order) => (
         <button
           onClick={() => navigate(`/admin/orders/${row.id}`)}
@@ -133,24 +140,24 @@ const OrderList = () => {
       ),
     },
     {
-      header: "Customer",
+      header: "고객 이메일",
       accessor: "customerEmail" as keyof Order,
       className: "font-medium text-gray-900 dark:text-white cursor-pointer",
     },
     {
-      header: "Date",
+      header: "주문일",
       accessor: (row: Order) => new Date(row.orderDate).toLocaleDateString(),
       className: "text-gray-600 dark:text-gray-400 cursor-pointer",
     },
     {
-      header: "Total Amount",
+      header: "결제 금액",
       accessor: (row: Order) => `$${row.totalAmount.toFixed(2)}`,
       className: "text-gray-600 dark:text-gray-400 cursor-pointer",
     },
     {
-      header: "Status",
+      header: "상태",
       accessor: (row: Order) => (
-        <Badge variant={getStatusVariant(row.status)}>{row.status}</Badge>
+        <Badge variant={getStatusVariant(row.status)}>{statusLabelMap[row.status]}</Badge>
       ),
     },
   ];
@@ -159,12 +166,12 @@ const OrderList = () => {
     <div className="max-w-7xl mx-auto space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Order List</h2>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">Browse and manage all book orders.</p>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">주문 관리</h2>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">도서 주문 내역을 조회하고 관리하세요.</p>
         </div>
         <Button onClick={() => navigate("/admin/orders/add")}>
           <span className="material-symbols-outlined">add</span>
-          Create Order
+          주문 생성
         </Button>
       </div>
 
@@ -172,20 +179,20 @@ const OrderList = () => {
         <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-blue-800 dark:text-blue-300">
-              {selectedOrders.length} order(s) selected
+              선택된 주문 {selectedOrders.length}건
             </span>
             <div className="flex gap-2">
-              <Button variant="secondary" size="sm" onClick={() => handleBulkAction("Export")}>
+              <Button variant="secondary" size="sm" onClick={() => handleBulkAction("내보내기")}>
                 <span className="material-symbols-outlined">download</span>
-                Export
+                내보내기
               </Button>
               <Button
                 variant="danger"
                 size="sm"
-                onClick={() => handleBulkAction("Cancel Orders")}
+                onClick={() => handleBulkAction("주문 취소")}
               >
                 <span className="material-symbols-outlined">cancel</span>
-                Cancel Orders
+                주문 취소
               </Button>
             </div>
           </div>
@@ -196,42 +203,42 @@ const OrderList = () => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
           <div className="md:col-span-4">
             <SearchInput
-              placeholder="Search by Order ID or Email"
+              placeholder="주문 번호 또는 이메일 검색"
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
             />
           </div>
           <div className="md:col-span-8 flex items-center gap-3 justify-end flex-wrap">
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600 dark:text-gray-400">Status:</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">상태:</span>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
                 className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1a2632] text-sm focus:ring-2 focus:ring-[#1173d4] focus:border-transparent"
               >
-                <option value="all">All Status</option>
-                <option value="PENDING">Pending</option>
-                <option value="CONFIRMED">Confirmed</option>
-                <option value="SHIPPED">Shipped</option>
-                <option value="DELIVERED">Delivered</option>
-                <option value="CANCELLED">Cancelled</option>
+                <option value="all">전체 상태</option>
+                <option value="PENDING">접수</option>
+                <option value="CONFIRMED">확정</option>
+                <option value="SHIPPED">배송 중</option>
+                <option value="DELIVERED">배송 완료</option>
+                <option value="CANCELLED">취소</option>
               </select>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600 dark:text-gray-400">Sort by:</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">정렬:</span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
                 className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1a2632] text-sm focus:ring-2 focus:ring-[#1173d4] focus:border-transparent"
               >
-                <option value="orderDate">Order Date</option>
-                <option value="totalAmount">Total Amount</option>
-                <option value="id">Order ID</option>
+                <option value="orderDate">주문일</option>
+                <option value="totalAmount">결제 금액</option>
+                <option value="id">주문 번호</option>
               </select>
               <button
                 onClick={toggleSortOrder}
                 className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                title={sortOrder === "asc" ? "Sort Descending" : "Sort Ascending"}
+                title={sortOrder === "asc" ? "내림차순으로 정렬" : "오름차순으로 정렬"}
               >
                 <span className="material-symbols-outlined text-gray-600 dark:text-gray-400">
                   {sortOrder === "asc" ? "arrow_upward" : "arrow_downward"}

@@ -17,7 +17,7 @@ const BookDetail = () => {
   const handleAddToCart = () => {
     addToCart(book, quantity);
     const confirmNavigate = window.confirm(
-      `Added ${quantity} ${quantity === 1 ? "copy" : "copies"} of "${book.title}" to cart.\n\nGo to cart?`
+      `"${book.title}" ${quantity}권을 장바구니에 담았습니다.\n\n장바구니로 이동할까요?`
     );
     if (confirmNavigate) {
       navigate("/client/cart");
@@ -26,7 +26,7 @@ const BookDetail = () => {
 
   const handleAddToWishlist = () => {
     console.log("Add to wishlist:", id);
-    alert(`Added "${book.title}" to your wishlist`);
+    alert(`"${book.title}"을(를) 위시리스트에 담았습니다.`);
   };
 
   const handleBorrowBook = () => {
@@ -35,7 +35,7 @@ const BookDetail = () => {
     const member = allUsers.find(m => m.id === memberId);
 
     if (!member) {
-      alert("Please log in to borrow books");
+      alert("로그인 후 대출할 수 있습니다.");
       return;
     }
 
@@ -58,7 +58,7 @@ const BookDetail = () => {
     console.log("Book borrowed:", newLoan);
 
     const confirmNavigate = window.confirm(
-      `Successfully borrowed "${book.title}" for ${loanPeriod} days!\n\nWould you like to view your loans?`
+      `"${book.title}"을(를) ${loanPeriod}일 동안 대출했습니다!\n\n내 대출 내역을 확인할까요?`
     );
 
     if (confirmNavigate) {
@@ -70,7 +70,7 @@ const BookDetail = () => {
     <div className="mx-auto">
       <div className="mb-6 text-sm text-gray-500 dark:text-gray-400">
         <Link to="/client/books" className="hover:text-[#1173d4]">
-          Books
+          도서 목록
         </Link>
         <span className="mx-2">/</span>
         <span className="text-gray-800 dark:text-gray-200 font-medium">{book.title}</span>
@@ -81,7 +81,7 @@ const BookDetail = () => {
           {book.coverImage ? (
             <img
               src={book.coverImage}
-              alt={`Cover of ${book.title}`}
+              alt={`${book.title} 표지 이미지`}
               className="w-full rounded-lg shadow-lg aspect-[3/4] object-cover"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
@@ -97,7 +97,7 @@ const BookDetail = () => {
         <div className="md:col-span-2">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">{book.title}</h1>
           <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
-            by{" "}
+            저자{" "}
             <Link to={`/client/authors/${book.author}`} className="text-[#1173d4] hover:underline">
               {book.author}
             </Link>
@@ -110,25 +110,25 @@ const BookDetail = () => {
                 <p className="text-base font-medium text-gray-800 dark:text-gray-200">{book.isbn}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Price</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">가격</p>
                 <p className="text-2xl font-bold text-[#1173d4]">${book.price}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Availability</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">재고 상태</p>
                 {book.available ? (
                   <p className="inline-flex items-center text-base font-medium text-green-600 dark:text-green-400">
                     <span className="material-symbols-outlined mr-1 text-lg">check_circle</span>
-                    In Stock
+                    재고 있음
                   </p>
                 ) : (
                   <p className="inline-flex items-center text-base font-medium text-red-600 dark:text-red-400">
                     <span className="material-symbols-outlined mr-1 text-lg">cancel</span>
-                    Out of Stock
+                    재고 없음
                   </p>
                 )}
               </div>
               <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Quantity</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">수량</p>
                 <div className="flex items-center gap-2 mt-1">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -162,12 +162,12 @@ const BookDetail = () => {
             <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                 <span className="material-symbols-outlined text-[#1173d4]">library_books</span>
-                Borrow this Book
+                도서 대출
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Loan Period
+                    대출 기간
                   </label>
                   <select
                     value={loanPeriod}
@@ -175,10 +175,10 @@ const BookDetail = () => {
                     className="w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] py-2 px-3 focus:border-[#1173d4] focus:ring-[#1173d4] text-gray-900 dark:text-gray-100"
                     disabled={!book.available}
                   >
-                    <option value="7">7 days</option>
-                    <option value="14">14 days (Standard)</option>
-                    <option value="21">21 days</option>
-                    <option value="30">30 days</option>
+                    <option value="7">7일</option>
+                    <option value="14">14일 (기본)</option>
+                    <option value="21">21일</option>
+                    <option value="30">30일</option>
                   </select>
                 </div>
                 <div className="flex items-end">
@@ -188,13 +188,13 @@ const BookDetail = () => {
                     className="w-full inline-flex items-center justify-center px-6 py-2 rounded-lg bg-green-600 text-white font-bold text-base hover:bg-green-700 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <span className="material-symbols-outlined mr-2">book</span>
-                    Borrow Book
+                    대출하기
                   </button>
                 </div>
               </div>
               <p className="text-xs text-gray-600 dark:text-gray-400">
                 <span className="material-symbols-outlined text-sm align-middle mr-1">info</span>
-                Free borrowing. Return before due date to avoid late fees.
+                대출은 무료이며, 연체료를 피하려면 반납 기한을 지켜주세요.
               </p>
             </div>
 
@@ -206,14 +206,14 @@ const BookDetail = () => {
                 className="flex-1 inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#1173d4] text-white font-bold text-base hover:bg-[#1173d4]/90 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span className="material-symbols-outlined mr-2">add_shopping_cart</span>
-                Add to Cart
+                장바구니 담기
               </button>
               <button
                 onClick={handleAddToWishlist}
                 className="flex-1 inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#1173d4]/20 dark:bg-[#1173d4]/20 text-[#1173d4] font-bold text-base hover:bg-[#1173d4]/30 dark:hover:bg-[#1173d4]/30 transition-all"
               >
                 <span className="material-symbols-outlined mr-2">favorite</span>
-                Add to Wishlist
+                위시리스트 추가
               </button>
             </div>
           </div>
@@ -221,17 +221,14 @@ const BookDetail = () => {
       </div>
 
       <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Book Details</h2>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">도서 상세 소개</h2>
         <div className="prose prose-base dark:prose-invert max-w-none text-gray-600 dark:text-gray-300">
           <p>
-            In the quaint town of Willow Creek, a series of unsettling events has the community on
-            edge. A reclusive artist, known only as 'The Silent Observer,' becomes the focus of
-            suspicion when cryptic clues are discovered in their artwork, hinting at a deeper
-            mystery. As the town's detective, Sarah Walker, delves into the case, she uncovers a web
-            of secrets and hidden connections, leading her to question everything she thought she
-            knew about her neighbors and the peaceful facade of Willow Creek. This gripping thriller
-            will keep you guessing until the final page, as Sarah races against time to unravel the
-            truth before it's too late.
+            고즈넉한 마을 윌로우 크리크에서 의문의 사건이 잇달아 발생하며 주민들이 불안에 빠집니다.
+            '침묵하는 관찰자'라 불리는 은둔 화가의 작품 속에서 암호 같은 단서가 발견되자, 사건은 새로운 국면을 맞이합니다.
+            마을 형사 사라 워커가 수사에 나서면서, 평온해 보이던 일상 뒤에 숨겨진 비밀과 연결 고리가 하나둘 드러나고,
+            그녀는 이웃들에 대해 알고 있던 모든 것을 의심하게 됩니다. 진실을 밝혀내기 위한 사라의 시간과의 싸움이
+            마지막 페이지까지 긴장감을 놓지 못하게 만드는 서스펜스를 선사합니다.
           </p>
         </div>
       </div>

@@ -1,12 +1,12 @@
 import { NavLink } from "react-router-dom";
 
 const navItems = [
-  { to: "/admin/dashboard", icon: "dashboard", label: "Dashboard" },
-  { to: "/admin/members", icon: "group", label: "Members" },
-  { to: "/admin/books", icon: "menu_book", label: "Books" },
-  { to: "/admin/loans", icon: "library_books", label: "Loans" },
-  { to: "/admin/orders", icon: "receipt_long", label: "Orders" },
-  { to: "/admin/settings", icon: "settings", label: "Settings" },
+  { to: "/admin/dashboard", icon: "dashboard", label: "대시보드" },
+  { to: "/admin/members", icon: "group", label: "회원 관리" },
+  { to: "/admin/books", icon: "menu_book", label: "도서 관리" },
+  { to: "/admin/loans", icon: "library_books", label: "대여 관리" },
+  { to: "/admin/orders", icon: "receipt_long", label: "주문 관리" },
+  { to: "/admin/settings", icon: "settings", label: "설정" },
 ];
 
 const Sidebar = () => {
@@ -37,7 +37,7 @@ const Sidebar = () => {
             </clipPath>
           </defs>
         </svg>
-        <h1 className="text-xl font-bold">Spring Library</h1>
+        <h1 className="text-xl font-bold">스프링 도서관</h1>
       </div>
 
       <nav className="flex-1 px-4 py-4 space-y-2">

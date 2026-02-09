@@ -12,11 +12,10 @@ const Home = () => {
       <section className="text-center py-16 bg-gradient-to-r from-[#1173d4]/10 to-[#1173d4]/5 rounded-2xl">
         <span className="material-symbols-outlined text-7xl text-[#1173d4] mb-4">local_library</span>
         <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-4">
-          Welcome to Spring Library
+          스프링 도서관에 오신 것을 환영합니다
         </h1>
         <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-          Discover your next favorite book from our extensive collection. Browse, borrow, and buy
-          with ease.
+          방대한 소장 도서를 살펴보고, 손쉽게 대출하거나 구매해 보세요.
         </p>
         <div className="flex gap-4 justify-center">
           <Link
@@ -24,14 +23,14 @@ const Home = () => {
             className="inline-flex items-center px-8 py-3 rounded-lg bg-[#1173d4] text-white font-bold text-base hover:bg-[#1173d4]/90 transition-all shadow-md"
           >
             <span className="material-symbols-outlined mr-2">search</span>
-            Browse Books
+            도서 둘러보기
           </Link>
           <Link
             to="/client/my-loans"
             className="inline-flex items-center px-8 py-3 rounded-lg bg-[#1173d4]/20 text-[#1173d4] font-bold text-base hover:bg-[#1173d4]/30 transition-all"
           >
             <span className="material-symbols-outlined mr-2">book</span>
-            My Loans
+            내 대출 확인
           </Link>
         </div>
       </section>
@@ -39,12 +38,12 @@ const Home = () => {
       {/* Featured Books Section */}
       <section>
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Featured Books</h2>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">추천 도서</h2>
           <Link
             to="/client/books"
             className="text-[#1173d4] hover:underline font-medium flex items-center gap-1"
           >
-            View All
+            전체 보기
             <span className="material-symbols-outlined text-sm">arrow_forward</span>
           </Link>
         </div>
@@ -60,7 +59,7 @@ const Home = () => {
                 {book.coverImage ? (
                   <img
                     src={book.coverImage}
-                    alt={`Cover of ${book.title}`}
+                    alt={`${book.title} 표지 이미지`}
                     className="aspect-[3/4] w-full object-cover transition-transform duration-300 group-hover:scale-105"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
@@ -78,13 +77,13 @@ const Home = () => {
                 <h3 className="font-bold text-gray-900 dark:text-white text-sm line-clamp-2">
                   {book.title}
                 </h3>
-                <p className="text-xs text-gray-600 dark:text-gray-400">by {book.author}</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400">저자 {book.author}</p>
                 <div className="mt-1 flex items-center justify-between">
                   <p className="text-sm font-bold text-[#1173d4]">${book.price}</p>
                   {book.available ? (
-                    <span className="text-xs text-green-600 dark:text-green-400">In Stock</span>
+                    <span className="text-xs text-green-600 dark:text-green-400">재고 있음</span>
                   ) : (
-                    <span className="text-xs text-red-600 dark:text-red-400">Out of Stock</span>
+                    <span className="text-xs text-red-600 dark:text-red-400">재고 없음</span>
                   )}
                 </div>
               </div>
@@ -100,10 +99,10 @@ const Home = () => {
             library_books
           </span>
           <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-            Extensive Collection
+            방대한 소장 도서
           </h3>
           <p className="text-gray-600 dark:text-gray-400">
-            Browse thousands of books across all genres and categories
+            다양한 장르와 주제의 도서를 수천 권 이상 제공해요
           </p>
         </div>
 
@@ -111,9 +110,9 @@ const Home = () => {
           <span className="material-symbols-outlined text-5xl text-[#1173d4] mb-4">
             schedule
           </span>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Easy Borrowing</h3>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">간편한 대출</h3>
           <p className="text-gray-600 dark:text-gray-400">
-            Borrow books with flexible loan periods and easy returns
+            유연한 대출 기간과 쉬운 반납 절차를 지원합니다
           </p>
         </div>
 
@@ -121,9 +120,9 @@ const Home = () => {
           <span className="material-symbols-outlined text-5xl text-[#1173d4] mb-4">
             shopping_cart
           </span>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Purchase Option</h3>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">구매 서비스</h3>
           <p className="text-gray-600 dark:text-gray-400">
-            Buy your favorite books at competitive prices
+            마음에 드는 도서를 합리적인 가격으로 구매하세요
           </p>
         </div>
       </section>

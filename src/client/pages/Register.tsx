@@ -16,19 +16,19 @@ const Register = () => {
     setError("");
 
     if (!formData.name.trim()) {
-      setError("Please enter your name");
+      setError("이름을 입력하세요.");
       return;
     }
 
     if (!formData.email.trim()) {
-      setError("Please enter your email address");
+      setError("이메일을 입력하세요.");
       return;
     }
 
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
-      setError("Please enter a valid email address");
+      setError("올바른 이메일 형식을 입력하세요.");
       return;
     }
 
@@ -39,7 +39,7 @@ const Register = () => {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError("Registration failed. Please try again.");
+        setError("회원가입에 실패했습니다. 다시 시도하세요.");
       }
     }
   };
@@ -52,10 +52,10 @@ const Register = () => {
             person_add
           </span>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Create Account
+            회원가입
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Join our library community
+            스프링 도서관 커뮤니티에 합류하세요
           </p>
         </div>
 
@@ -63,7 +63,7 @@ const Register = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Full Name
+                이름
               </label>
               <input
                 type="text"
@@ -71,14 +71,14 @@ const Register = () => {
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-[#1173d4] focus:border-transparent"
-                placeholder="Enter your full name"
+                placeholder="이름을 입력하세요"
                 autoComplete="name"
               />
             </div>
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Email Address
+                이메일
               </label>
               <input
                 type="email"
@@ -86,14 +86,14 @@ const Register = () => {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-[#1173d4] focus:border-transparent"
-                placeholder="Enter your email"
+                placeholder="이메일을 입력하세요"
                 autoComplete="email"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Membership Type
+                회원 등급
               </label>
               <div className="grid grid-cols-2 gap-4">
                 <button
@@ -109,9 +109,9 @@ const Register = () => {
                     <span className="material-symbols-outlined text-3xl text-[#1173d4] mb-2">
                       book
                     </span>
-                    <p className="font-bold text-gray-900 dark:text-white">Regular</p>
+                    <p className="font-bold text-gray-900 dark:text-white">일반</p>
                     <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                      Standard access
+                      기본 이용 혜택
                     </p>
                   </div>
                 </button>
@@ -129,9 +129,9 @@ const Register = () => {
                     <span className="material-symbols-outlined text-3xl text-[#1173d4] mb-2">
                       workspace_premium
                     </span>
-                    <p className="font-bold text-gray-900 dark:text-white">Premium</p>
+                    <p className="font-bold text-gray-900 dark:text-white">프리미엄</p>
                     <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                      Extended benefits
+                      확대된 혜택 제공
                     </p>
                   </div>
                 </button>
@@ -154,18 +154,18 @@ const Register = () => {
               className="w-full inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#1173d4] text-white font-bold text-base hover:bg-[#1173d4]/90 transition-all shadow-md"
             >
               <span className="material-symbols-outlined mr-2">person_add</span>
-              Create Account
+              회원가입
             </button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Already have an account?{" "}
+              이미 계정이 있으신가요?{" "}
               <Link
                 to="/client/login"
                 className="text-[#1173d4] font-medium hover:underline"
               >
-                Sign in
+                로그인
               </Link>
             </p>
           </div>
@@ -174,11 +174,11 @@ const Register = () => {
             <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
               <div className="flex items-start gap-2">
                 <span className="material-symbols-outlined text-base">check_circle</span>
-                <p>Regular members can borrow up to 3 books at a time</p>
+                <p>일반 회원은 한 번에 최대 3권까지 대출할 수 있습니다.</p>
               </div>
               <div className="flex items-start gap-2">
                 <span className="material-symbols-outlined text-base">check_circle</span>
-                <p>Premium members can borrow up to 5 books at a time</p>
+                <p>프리미엄 회원은 한 번에 최대 5권까지 대출할 수 있습니다.</p>
               </div>
             </div>
           </div>
