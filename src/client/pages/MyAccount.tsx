@@ -91,7 +91,7 @@ const MyAccount = () => {
   }
 
   const membershipBadgeColor = user.membershipType === "PREMIUM"
-    ? "bg-[#1173d4] text-white"
+    ? "bg-[#2f9e5f] text-white"
     : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300";
 
   const statusBadgeColor = user.status === "ACTIVE"
@@ -111,7 +111,7 @@ const MyAccount = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-white dark:bg-[#1a2332] border border-gray-200 dark:border-gray-700 rounded-lg p-6">
           <div className="flex items-center gap-3 mb-2">
-            <span className="material-symbols-outlined text-[#1173d4] text-3xl">
+            <span className="material-symbols-outlined text-[#2f9e5f] text-3xl">
               auto_stories
             </span>
             <div>
@@ -125,7 +125,7 @@ const MyAccount = () => {
 
         <div className="bg-white dark:bg-[#1a2332] border border-gray-200 dark:border-gray-700 rounded-lg p-6">
           <div className="flex items-center gap-3 mb-2">
-            <span className="material-symbols-outlined text-[#1173d4] text-3xl">
+            <span className="material-symbols-outlined text-[#2f9e5f] text-3xl">
               shopping_bag
             </span>
             <div>
@@ -139,7 +139,7 @@ const MyAccount = () => {
 
         <div className="bg-white dark:bg-[#1a2332] border border-gray-200 dark:border-gray-700 rounded-lg p-6">
           <div className="flex items-center gap-3 mb-2">
-            <span className="material-symbols-outlined text-[#1173d4] text-3xl">
+            <span className="material-symbols-outlined text-[#2f9e5f] text-3xl">
               {user.membershipType === "PREMIUM" ? "workspace_premium" : "book"}
             </span>
             <div>
@@ -161,7 +161,7 @@ const MyAccount = () => {
           {!isEditing && (
             <button
               onClick={() => setIsEditing(true)}
-              className="inline-flex items-center px-4 py-2 rounded-lg bg-[#1173d4] text-white text-sm font-medium hover:bg-[#1173d4]/90 transition-colors"
+              className="inline-flex items-center px-4 py-2 rounded-lg bg-[#2f9e5f] text-white text-sm font-medium hover:bg-[#2f9e5f]/90 transition-colors"
             >
               <span className="material-symbols-outlined text-sm mr-1">edit</span>
               프로필 수정
@@ -180,7 +180,7 @@ const MyAccount = () => {
                 id="name"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-[#1173d4] focus:border-transparent"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-[#2f9e5f] focus:border-transparent"
               />
             </div>
 
@@ -209,12 +209,12 @@ const MyAccount = () => {
                   onClick={() => setFormData({ ...formData, membershipType: "REGULAR" })}
                   className={`p-4 rounded-lg border-2 transition-all ${
                     formData.membershipType === "REGULAR"
-                      ? "border-[#1173d4] bg-[#1173d4]/10"
-                      : "border-gray-300 dark:border-gray-700 hover:border-[#1173d4]/50"
+                      ? "border-[#2f9e5f] bg-[#2f9e5f]/10"
+                      : "border-gray-300 dark:border-gray-700 hover:border-[#2f9e5f]/50"
                   }`}
                 >
                   <div className="text-center">
-                    <span className="material-symbols-outlined text-3xl text-[#1173d4] mb-2">
+                    <span className="material-symbols-outlined text-3xl text-[#2f9e5f] mb-2">
                       book
                     </span>
                     <p className="font-bold text-gray-900 dark:text-white">일반</p>
@@ -229,12 +229,12 @@ const MyAccount = () => {
                   onClick={() => setFormData({ ...formData, membershipType: "PREMIUM" })}
                   className={`p-4 rounded-lg border-2 transition-all ${
                     formData.membershipType === "PREMIUM"
-                      ? "border-[#1173d4] bg-[#1173d4]/10"
-                      : "border-gray-300 dark:border-gray-700 hover:border-[#1173d4]/50"
+                      ? "border-[#2f9e5f] bg-[#2f9e5f]/10"
+                      : "border-gray-300 dark:border-gray-700 hover:border-[#2f9e5f]/50"
                   }`}
                 >
                   <div className="text-center">
-                    <span className="material-symbols-outlined text-3xl text-[#1173d4] mb-2">
+                    <span className="material-symbols-outlined text-3xl text-[#2f9e5f] mb-2">
                       workspace_premium
                     </span>
                     <p className="font-bold text-gray-900 dark:text-white">프리미엄</p>
@@ -260,7 +260,7 @@ const MyAccount = () => {
             <div className="flex gap-3">
               <button
                 type="submit"
-                className="flex-1 inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#1173d4] text-white font-bold hover:bg-[#1173d4]/90 transition-colors"
+                className="flex-1 inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#2f9e5f] text-white font-bold hover:bg-[#2f9e5f]/90 transition-colors"
               >
                 <span className="material-symbols-outlined mr-2">save</span>
                 변경 사항 저장

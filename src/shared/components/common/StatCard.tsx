@@ -18,7 +18,7 @@ const StatCard = ({
   subtitle,
   trend,
   bgColor = "bg-white dark:bg-[#1a2632]",
-  iconColor = "text-[#1173d4]",
+  iconColor = "text-[#2f9e5f]",
 }: StatCardProps) => {
   return (
     <div

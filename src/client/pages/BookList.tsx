@@ -67,7 +67,7 @@ const BookList = () => {
             type="search"
             value={localSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
-            className="w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] py-3 pl-12 pr-4 text-base placeholder-gray-500 dark:placeholder-gray-400 focus:border-[#1173d4] focus:ring-[#1173d4] text-gray-900 dark:text-gray-100"
+            className="w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] py-3 pl-12 pr-4 text-base placeholder-gray-500 dark:placeholder-gray-400 focus:border-[#2f9e5f] focus:ring-[#2f9e5f] text-gray-900 dark:text-gray-100"
             placeholder="제목·저자·ISBN으로 검색"
           />
         </form>
@@ -101,8 +101,8 @@ const BookList = () => {
                   }}
                 />
               ) : null}
-              <div className={`aspect-[3/4] w-full bg-gradient-to-br from-[#1173d4]/20 to-[#1173d4]/5 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 ${book.coverImage ? 'hidden' : ''}`}>
-                <span className="material-symbols-outlined text-6xl text-[#1173d4]/40">
+              <div className={`aspect-[3/4] w-full bg-gradient-to-br from-[#2f9e5f]/20 to-[#2f9e5f]/5 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 ${book.coverImage ? 'hidden' : ''}`}>
+                <span className="material-symbols-outlined text-6xl text-[#2f9e5f]/40">
                   book
                 </span>
               </div>
@@ -113,7 +113,7 @@ const BookList = () => {
               </h3>
               <p className="text-xs text-gray-600 dark:text-gray-400">저자 {book.author}</p>
               <div className="mt-1 flex items-center justify-between">
-                <p className="text-sm font-bold text-[#1173d4]">${book.price}</p>
+                <p className="text-sm font-bold text-[#2f9e5f]">${book.price}</p>
                 {book.available ? (
                   <span className="text-xs text-green-600 dark:text-green-400">재고 있음</span>
                 ) : (

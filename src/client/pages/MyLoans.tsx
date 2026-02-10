@@ -165,7 +165,7 @@ const MyLoans = () => {
           onClick={() => setFilterStatus("ALL")}
           className={`px-4 py-2 rounded-lg font-medium transition-colors ${
             filterStatus === "ALL"
-              ? "bg-[#1173d4] text-white"
+              ? "bg-[#2f9e5f] text-white"
               : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
           }`}
         >
@@ -175,7 +175,7 @@ const MyLoans = () => {
           onClick={() => setFilterStatus("ACTIVE")}
           className={`px-4 py-2 rounded-lg font-medium transition-colors ${
             filterStatus === "ACTIVE"
-              ? "bg-[#1173d4] text-white"
+              ? "bg-[#2f9e5f] text-white"
               : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
           }`}
         >
@@ -185,7 +185,7 @@ const MyLoans = () => {
           onClick={() => setFilterStatus("OVERDUE")}
           className={`px-4 py-2 rounded-lg font-medium transition-colors ${
             filterStatus === "OVERDUE"
-              ? "bg-[#1173d4] text-white"
+              ? "bg-[#2f9e5f] text-white"
               : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
           }`}
         >
@@ -195,7 +195,7 @@ const MyLoans = () => {
           onClick={() => setFilterStatus("RETURNED")}
           className={`px-4 py-2 rounded-lg font-medium transition-colors ${
             filterStatus === "RETURNED"
-              ? "bg-[#1173d4] text-white"
+              ? "bg-[#2f9e5f] text-white"
               : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
           }`}
         >
@@ -216,7 +216,7 @@ const MyLoans = () => {
           </p>
           <Link
             to="/client/books"
-            className="inline-flex items-center mt-4 px-6 py-3 rounded-lg bg-[#1173d4] text-white font-bold hover:bg-[#1173d4]/90 transition-colors"
+            className="inline-flex items-center mt-4 px-6 py-3 rounded-lg bg-[#2f9e5f] text-white font-bold hover:bg-[#2f9e5f]/90 transition-colors"
           >
             <span className="material-symbols-outlined mr-2">search</span>
             도서 둘러보기
@@ -235,7 +235,7 @@ const MyLoans = () => {
                     <div>
                       <Link
                         to={`/client/books/${loan.bookId}`}
-                        className="text-xl font-bold text-gray-900 dark:text-white hover:text-[#1173d4] dark:hover:text-[#1173d4] transition-colors"
+                        className="text-xl font-bold text-gray-900 dark:text-white hover:text-[#2f9e5f] dark:hover:text-[#2f9e5f] transition-colors"
                       >
                         {loan.bookTitle}
                       </Link>
@@ -294,7 +294,7 @@ const MyLoans = () => {
                   {loan.status === "ACTIVE" && (
                     <button
                       onClick={() => handleReturnBook(loan)}
-                      className="inline-flex items-center px-4 py-2 rounded-lg bg-[#1173d4] text-white text-sm font-medium hover:bg-[#1173d4]/90 transition-colors"
+                      className="inline-flex items-center px-4 py-2 rounded-lg bg-[#2f9e5f] text-white text-sm font-medium hover:bg-[#2f9e5f]/90 transition-colors"
                     >
                       <span className="material-symbols-outlined text-sm mr-1">assignment_return</span>
                       반납하기
@@ -326,7 +326,7 @@ const MyLoans = () => {
                 {loan.status === "ACTIVE" && (
                   <button
                     onClick={() => handleReturnBook(loan)}
-                    className="w-full inline-flex items-center justify-center px-4 py-2 rounded-lg bg-[#1173d4] text-white text-sm font-medium hover:bg-[#1173d4]/90 transition-colors"
+                    className="w-full inline-flex items-center justify-center px-4 py-2 rounded-lg bg-[#2f9e5f] text-white text-sm font-medium hover:bg-[#2f9e5f]/90 transition-colors"
                   >
                     <span className="material-symbols-outlined text-sm mr-1">assignment_return</span>
                     반납하기

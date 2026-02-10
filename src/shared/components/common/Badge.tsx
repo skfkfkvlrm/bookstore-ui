@@ -7,7 +7,7 @@ interface BadgeProps {
 
 const Badge = ({ variant, children }: BadgeProps) => {
   const variantStyles = {
-    premium: "bg-[#1173d4]/20 text-[#1173d4]",
+    premium: "bg-[#2f9e5f]/20 text-[#2f9e5f]",
     standard: "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200",
     available: "bg-green-500/20 text-green-600 dark:text-green-400",
     unavailable: "bg-red-500/20 text-red-600 dark:text-red-400",

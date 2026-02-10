@@ -41,7 +41,7 @@ const Contact = () => {
   return (
     <div className="space-y-12">
       <section className="rounded-3xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-700 dark:bg-[#1a2332]">
-        <p className="text-sm text-[#1173d4]">Contact</p>
+        <p className="text-sm text-[#2f9e5f]">Contact</p>
         <h1 className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">궁금한 내용을 알려주세요</h1>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
           프로그램 제안, 자료 기증, 파트너십, 서비스 문의 등 모든 질문을 환영합니다. 1영업일 이내 회신을 드립니다.
@@ -49,7 +49,7 @@ const Contact = () => {
         <div className="mt-8 grid gap-4 md:grid-cols-2">
           {supportChannels.map((channel) => (
             <div key={channel.label} className="flex items-center gap-4 rounded-2xl bg-gray-50 p-4 dark:bg-gray-800">
-              <span className="material-symbols-outlined text-3xl text-[#1173d4]">{channel.icon}</span>
+              <span className="material-symbols-outlined text-3xl text-[#2f9e5f]">{channel.icon}</span>
               <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">{channel.label}</p>
                 <p className="font-semibold text-gray-900 dark:text-white">{channel.value}</p>
@@ -74,7 +74,7 @@ const Contact = () => {
                 id="contact-name"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="mt-1 w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-[#1173d4] dark:border-gray-600 dark:bg-[#101922] dark:text-white"
+                className="mt-1 w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-[#2f9e5f] dark:border-gray-600 dark:bg-[#101922] dark:text-white"
                 required
               />
             </div>
@@ -85,7 +85,7 @@ const Contact = () => {
                 id="contact-email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="mt-1 w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-[#1173d4] dark:border-gray-600 dark:bg-[#101922] dark:text-white"
+                className="mt-1 w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-[#2f9e5f] dark:border-gray-600 dark:bg-[#101922] dark:text-white"
                 required
               />
             </div>
@@ -95,7 +95,7 @@ const Contact = () => {
                 value={formData.topic}
                 onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
                 id="contact-topic"
-                className="mt-1 w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-[#1173d4] dark:border-gray-600 dark:bg-[#101922] dark:text-white"
+                className="mt-1 w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-[#2f9e5f] dark:border-gray-600 dark:bg-[#101922] dark:text-white"
               >
                 <option>제휴/협업 문의</option>
                 <option>프로그램 제안</option>
@@ -110,14 +110,14 @@ const Contact = () => {
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 rows={5}
                 id="contact-message"
-                className="mt-1 w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-[#1173d4] dark:border-gray-600 dark:bg-[#101922] dark:text-white"
+                className="mt-1 w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-[#2f9e5f] dark:border-gray-600 dark:bg-[#101922] dark:text-white"
                 placeholder="필요한 지원이나 궁금한 점을 자세히 남겨 주세요"
               />
             </div>
           </div>
           <button
             type="submit"
-            className="mt-6 w-full rounded-xl bg-[#1173d4] py-3 text-sm font-semibold text-white shadow hover:bg-[#1173d4]/90"
+            className="mt-6 w-full rounded-xl bg-[#2f9e5f] py-3 text-sm font-semibold text-white shadow hover:bg-[#2f9e5f]/90"
           >
             문의 전송
           </button>

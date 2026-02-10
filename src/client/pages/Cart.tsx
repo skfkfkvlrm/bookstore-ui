@@ -97,7 +97,7 @@ const Cart = () => {
           </p>
           <Link
             to="/client/books"
-            className="inline-flex items-center px-6 py-3 rounded-lg bg-[#1173d4] text-white font-bold hover:bg-[#1173d4]/90 transition-colors"
+            className="inline-flex items-center px-6 py-3 rounded-lg bg-[#2f9e5f] text-white font-bold hover:bg-[#2f9e5f]/90 transition-colors"
           >
             <span className="material-symbols-outlined mr-2">search</span>
             도서 둘러보기
@@ -129,8 +129,8 @@ const Cart = () => {
                         }}
                       />
                     ) : null}
-                    <div className={`w-24 h-32 bg-gradient-to-br from-[#1173d4]/20 to-[#1173d4]/5 rounded-lg flex items-center justify-center ${item.book.coverImage ? 'hidden' : ''}`}>
-                      <span className="material-symbols-outlined text-4xl text-[#1173d4]/40">
+                    <div className={`w-24 h-32 bg-gradient-to-br from-[#2f9e5f]/20 to-[#2f9e5f]/5 rounded-lg flex items-center justify-center ${item.book.coverImage ? 'hidden' : ''}`}>
+                      <span className="material-symbols-outlined text-4xl text-[#2f9e5f]/40">
                         book
                       </span>
                     </div>
@@ -140,7 +140,7 @@ const Cart = () => {
                   <div className="flex-1 min-w-0">
                     <Link
                       to={`/client/books/${item.book.id}`}
-                      className="text-xl font-bold text-gray-900 dark:text-white hover:text-[#1173d4] dark:hover:text-[#1173d4] transition-colors block mb-1"
+                      className="text-xl font-bold text-gray-900 dark:text-white hover:text-[#2f9e5f] dark:hover:text-[#2f9e5f] transition-colors block mb-1"
                     >
                       {item.book.title}
                     </Link>
@@ -171,7 +171,7 @@ const Cart = () => {
                         <span className="text-sm text-gray-600 dark:text-gray-400">
                           ${item.book.price} × {item.quantity}
                         </span>
-                        <span className="text-lg font-bold text-[#1173d4]">
+                        <span className="text-lg font-bold text-[#2f9e5f]">
                           ${(item.book.price * item.quantity).toFixed(2)}
                         </span>
                       </div>
@@ -207,13 +207,13 @@ const Cart = () => {
                 </div>
                 <div className="border-t border-gray-200 dark:border-gray-700 pt-3 flex justify-between text-lg font-bold text-gray-900 dark:text-white">
                   <span>총액</span>
-                  <span className="text-[#1173d4]">${total.toFixed(2)}</span>
+                  <span className="text-[#2f9e5f]">${total.toFixed(2)}</span>
                 </div>
               </div>
 
               <button
                 onClick={handleCheckout}
-                className="w-full inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#1173d4] text-white font-bold text-base hover:bg-[#1173d4]/90 transition-all shadow-md mb-3"
+                className="w-full inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#2f9e5f] text-white font-bold text-base hover:bg-[#2f9e5f]/90 transition-all shadow-md mb-3"
               >
                 <span className="material-symbols-outlined mr-2">shopping_bag</span>
                 결제하기

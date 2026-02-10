@@ -35,7 +35,7 @@ const stats = [
 const About = () => {
   return (
     <div className="space-y-12">
-      <section className="rounded-3xl bg-gradient-to-br from-[#1173d4] to-[#0d5aa7] px-8 py-12 text-white shadow-lg">
+      <section className="rounded-3xl bg-gradient-to-br from-[#2f9e5f] to-[#1f7d57] px-8 py-12 text-white shadow-lg">
         <p className="text-sm uppercase tracking-widest text-white/80">About Spring Library</p>
         <h1 className="mt-4 text-4xl font-bold">지식과 사람을 연결하는 차세대 도서관</h1>
         <p className="mt-4 max-w-3xl text-lg text-white/90">
@@ -52,7 +52,7 @@ const About = () => {
           </Link>
           <Link
             to="/client/contact"
-            className="inline-flex items-center rounded-xl bg-white px-6 py-3 text-sm font-semibold text-[#0d5aa7] shadow hover:shadow-md"
+            className="inline-flex items-center rounded-xl bg-white px-6 py-3 text-sm font-semibold text-[#1f7d57] shadow hover:shadow-md"
           >
             <span className="material-symbols-outlined mr-2">handshake</span>
             협업 문의하기
@@ -66,7 +66,7 @@ const About = () => {
             key={item.title}
             className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-[#1a2332]"
           >
-            <span className="material-symbols-outlined text-4xl text-[#1173d4]">{item.icon}</span>
+            <span className="material-symbols-outlined text-4xl text-[#2f9e5f]">{item.icon}</span>
             <h2 className="mt-4 text-xl font-semibold text-gray-900 dark:text-white">{item.title}</h2>
             <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">{item.description}</p>
           </div>
@@ -95,12 +95,12 @@ const About = () => {
           <div className="mt-6 space-y-5">
             {milestones.map((item) => (
               <div key={item.year} className="flex items-start gap-4">
-                <div className="text-sm font-bold text-[#1173d4]">{item.year}</div>
+                <div className="text-sm font-bold text-[#2f9e5f]">{item.year}</div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">{item.detail}</p>
               </div>
             ))}
           </div>
-          <div className="mt-6 rounded-xl bg-[#1173d4]/10 p-4 text-sm text-[#0d5aa7] dark:bg-[#1173d4]/20 dark:text-white">
+          <div className="mt-6 rounded-xl bg-[#2f9e5f]/10 p-4 text-sm text-[#1f7d57] dark:bg-[#2f9e5f]/20 dark:text-white">
             2025년에는 AI 기반 서가 추천과 지역 대학과의 연구자료 상호 대차 프로그램을 순차적으로 열 계획입니다.
           </div>
         </div>
@@ -111,15 +111,15 @@ const About = () => {
           </p>
           <ul className="mt-6 space-y-3 text-sm text-gray-600 dark:text-gray-400">
             <li className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-[#1173d4]">workspace_premium</span>
+              <span className="material-symbols-outlined text-[#2f9e5f]">workspace_premium</span>
               전문 사서가 장르별·연구 주제별 상담을 제공합니다.
             </li>
             <li className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-[#1173d4]">devices</span>
+              <span className="material-symbols-outlined text-[#2f9e5f]">devices</span>
               디지털 히스토리 라운지에서 희귀 자료를 고해상도 스캔본으로 열람할 수 있습니다.
             </li>
             <li className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-[#1173d4]">local_activity</span>
+              <span className="material-symbols-outlined text-[#2f9e5f]">local_activity</span>
               매월 북토크, 번역 워크숍, 메이커 세션 등 다채로운 프로그램을 운영합니다.
             </li>
           </ul>
@@ -129,7 +129,7 @@ const About = () => {
       <section className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm text-sm text-gray-600 dark:border-gray-700 dark:bg-[#1a2332] dark:text-gray-300">
         <p>
           스프링 도서관은 공공기관, 학교, 문화예술 단체와의 협업을 언제나 환영합니다. 새로운 프로그램이나
-          기술 파트너십을 제안하고 싶다면 <Link to="/client/contact" className="text-[#1173d4] underline">문의 페이지</Link>로 연락 주세요.
+          기술 파트너십을 제안하고 싶다면 <Link to="/client/contact" className="text-[#2f9e5f] underline">문의 페이지</Link>로 연락 주세요.
         </p>
       </section>
     </div>

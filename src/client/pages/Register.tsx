@@ -48,7 +48,7 @@ const Register = () => {
     <div className="min-h-[80vh] flex items-center justify-center px-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
-          <span className="material-symbols-outlined text-6xl text-[#1173d4] mb-4">
+          <span className="material-symbols-outlined text-6xl text-[#2f9e5f] mb-4">
             person_add
           </span>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
@@ -70,7 +70,7 @@ const Register = () => {
                 id="name"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-[#1173d4] focus:border-transparent"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-[#2f9e5f] focus:border-transparent"
                 placeholder="이름을 입력하세요"
                 autoComplete="name"
               />
@@ -85,7 +85,7 @@ const Register = () => {
                 id="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-[#1173d4] focus:border-transparent"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-[#2f9e5f] focus:border-transparent"
                 placeholder="이메일을 입력하세요"
                 autoComplete="email"
               />
@@ -101,12 +101,12 @@ const Register = () => {
                   onClick={() => setFormData({ ...formData, membershipType: "REGULAR" })}
                   className={`p-4 rounded-lg border-2 transition-all ${
                     formData.membershipType === "REGULAR"
-                      ? "border-[#1173d4] bg-[#1173d4]/10"
-                      : "border-gray-300 dark:border-gray-700 hover:border-[#1173d4]/50"
+                      ? "border-[#2f9e5f] bg-[#2f9e5f]/10"
+                      : "border-gray-300 dark:border-gray-700 hover:border-[#2f9e5f]/50"
                   }`}
                 >
                   <div className="text-center">
-                    <span className="material-symbols-outlined text-3xl text-[#1173d4] mb-2">
+                    <span className="material-symbols-outlined text-3xl text-[#2f9e5f] mb-2">
                       book
                     </span>
                     <p className="font-bold text-gray-900 dark:text-white">일반</p>
@@ -121,12 +121,12 @@ const Register = () => {
                   onClick={() => setFormData({ ...formData, membershipType: "PREMIUM" })}
                   className={`p-4 rounded-lg border-2 transition-all ${
                     formData.membershipType === "PREMIUM"
-                      ? "border-[#1173d4] bg-[#1173d4]/10"
-                      : "border-gray-300 dark:border-gray-700 hover:border-[#1173d4]/50"
+                      ? "border-[#2f9e5f] bg-[#2f9e5f]/10"
+                      : "border-gray-300 dark:border-gray-700 hover:border-[#2f9e5f]/50"
                   }`}
                 >
                   <div className="text-center">
-                    <span className="material-symbols-outlined text-3xl text-[#1173d4] mb-2">
+                    <span className="material-symbols-outlined text-3xl text-[#2f9e5f] mb-2">
                       workspace_premium
                     </span>
                     <p className="font-bold text-gray-900 dark:text-white">프리미엄</p>
@@ -151,7 +151,7 @@ const Register = () => {
 
             <button
               type="submit"
-              className="w-full inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#1173d4] text-white font-bold text-base hover:bg-[#1173d4]/90 transition-all shadow-md"
+              className="w-full inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#2f9e5f] text-white font-bold text-base hover:bg-[#2f9e5f]/90 transition-all shadow-md"
             >
               <span className="material-symbols-outlined mr-2">person_add</span>
               회원가입
@@ -163,7 +163,7 @@ const Register = () => {
               이미 계정이 있으신가요?{" "}
               <Link
                 to="/client/login"
-                className="text-[#1173d4] font-medium hover:underline"
+                className="text-[#2f9e5f] font-medium hover:underline"
               >
                 로그인
               </Link>

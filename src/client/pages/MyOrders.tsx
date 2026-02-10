@@ -144,7 +144,7 @@ const MyOrders = () => {
             onClick={() => setFilterStatus(status)}
             className={`px-4 py-2 rounded-lg font-medium transition-colors ${
               filterStatus === status
-                ? "bg-[#1173d4] text-white"
+                ? "bg-[#2f9e5f] text-white"
                 : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
             }`}
           >
@@ -166,7 +166,7 @@ const MyOrders = () => {
           </p>
           <Link
             to="/client/books"
-            className="inline-flex items-center mt-4 px-6 py-3 rounded-lg bg-[#1173d4] text-white font-bold hover:bg-[#1173d4]/90 transition-colors"
+            className="inline-flex items-center mt-4 px-6 py-3 rounded-lg bg-[#2f9e5f] text-white font-bold hover:bg-[#2f9e5f]/90 transition-colors"
           >
             <span className="material-symbols-outlined mr-2">shopping_bag</span>
             쇼핑 시작하기
@@ -213,7 +213,7 @@ const MyOrders = () => {
                       <div className="flex-1">
                         <Link
                           to={`/client/books/${item.bookId}`}
-                          className="font-bold text-gray-900 dark:text-white hover:text-[#1173d4] dark:hover:text-[#1173d4] transition-colors"
+                          className="font-bold text-gray-900 dark:text-white hover:text-[#2f9e5f] dark:hover:text-[#2f9e5f] transition-colors"
                         >
                           {item.bookTitle}
                         </Link>
@@ -223,7 +223,7 @@ const MyOrders = () => {
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="font-bold text-[#1173d4]">${item.price.toFixed(2)}</p>
+                        <p className="font-bold text-[#2f9e5f]">${item.price.toFixed(2)}</p>
                         <p className="text-sm text-gray-600 dark:text-gray-400">
                           소계: ${(item.price * item.quantity).toFixed(2)}
                         </p>
@@ -235,7 +235,7 @@ const MyOrders = () => {
                 {/* Order Total */}
                 <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center">
                   <span className="text-lg font-bold text-gray-900 dark:text-white">총 결제 금액</span>
-                  <span className="text-2xl font-bold text-[#1173d4]">${order.totalAmount.toFixed(2)}</span>
+                  <span className="text-2xl font-bold text-[#2f9e5f]">${order.totalAmount.toFixed(2)}</span>
                 </div>
               </div>
             </div>

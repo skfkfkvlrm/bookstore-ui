@@ -64,37 +64,37 @@ const Header = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-8">
             <Link to="/client" className="flex items-center gap-2 text-gray-900 dark:text-white">
-              <span className="material-symbols-outlined text-[#1173d4] text-3xl">local_library</span>
+              <span className="material-symbols-outlined text-[#2f9e5f] text-3xl">local_library</span>
               <span className="text-xl font-bold">스프링 도서관</span>
             </Link>
             <nav className="hidden md:flex items-center gap-6">
               <Link
                 to="/client"
-                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#1173d4] dark:hover:text-[#1173d4] transition-colors"
+                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#2f9e5f] dark:hover:text-[#2f9e5f] transition-colors"
               >
                 홈
               </Link>
               <Link
                 to="/client/books"
-                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#1173d4] dark:hover:text-[#1173d4] transition-colors"
+                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#2f9e5f] dark:hover:text-[#2f9e5f] transition-colors"
               >
                 도서
               </Link>
               <Link
                 to="/client/my-loans"
-                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#1173d4] dark:hover:text-[#1173d4] transition-colors"
+                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#2f9e5f] dark:hover:text-[#2f9e5f] transition-colors"
               >
                 내 대출
               </Link>
               <Link
                 to="/client/cart"
-                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#1173d4] dark:hover:text-[#1173d4] transition-colors"
+                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#2f9e5f] dark:hover:text-[#2f9e5f] transition-colors"
               >
                 장바구니
               </Link>
               <Link
                 to="/client/orders"
-                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#1173d4] dark:hover:text-[#1173d4] transition-colors"
+                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#2f9e5f] dark:hover:text-[#2f9e5f] transition-colors"
               >
                 주문 내역
               </Link>
@@ -109,7 +109,7 @@ const Header = () => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-200/50 dark:bg-gray-800/50 border-transparent focus:ring-2 focus:ring-[#1173d4] focus:border-transparent transition-colors text-gray-900 dark:text-gray-100"
+                className="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-200/50 dark:bg-gray-800/50 border-transparent focus:ring-2 focus:ring-[#2f9e5f] focus:border-transparent transition-colors text-gray-900 dark:text-gray-100"
                 placeholder="도서를 검색하세요"
               />
             </form>
@@ -119,7 +119,7 @@ const Header = () => {
             >
               <span className="material-symbols-outlined">shopping_cart</span>
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#1173d4] text-xs font-bold text-white">
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#2f9e5f] text-xs font-bold text-white">
                   {cartCount > 9 ? '9+' : cartCount}
                 </span>
               )}
@@ -131,7 +131,7 @@ const Header = () => {
                   onClick={() => setShowUserMenu(!showUserMenu)}
                   className="flex items-center gap-2 p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-200/60 dark:hover:bg-gray-800/60 transition-colors"
                 >
-                  <div className="w-8 h-8 rounded-full bg-[#1173d4] flex items-center justify-center text-white font-bold text-sm">
+                  <div className="w-8 h-8 rounded-full bg-[#2f9e5f] flex items-center justify-center text-white font-bold text-sm">
                     {user.name.charAt(0).toUpperCase()}
                   </div>
                   <span className="hidden sm:block text-sm font-medium">
@@ -153,7 +153,7 @@ const Header = () => {
                       </p>
                       <span className={`inline-block mt-2 px-2 py-1 rounded-full text-xs font-medium ${
                         user.membershipType === 'PREMIUM'
-                          ? 'bg-[#1173d4] text-white'
+                          ? 'bg-[#2f9e5f] text-white'
                           : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
                       }`}>
                         {user.membershipType === 'PREMIUM' ? '프리미엄' : '일반'} 회원
@@ -201,13 +201,13 @@ const Header = () => {
               <div className="flex items-center gap-2">
                 <Link
                   to="/client/login"
-                  className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-[#1173d4] dark:hover:text-[#1173d4] transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-[#2f9e5f] dark:hover:text-[#2f9e5f] transition-colors"
                 >
                   로그인
                 </Link>
                 <Link
                   to="/client/register"
-                  className="px-4 py-2 rounded-lg bg-[#1173d4] text-white text-sm font-medium hover:bg-[#1173d4]/90 transition-colors"
+                  className="px-4 py-2 rounded-lg bg-[#2f9e5f] text-white text-sm font-medium hover:bg-[#2f9e5f]/90 transition-colors"
                 >
                   회원가입
                 </Link>

@@ -42,7 +42,7 @@ const Privacy = () => {
   return (
     <div className="mx-auto max-w-4xl space-y-10">
       <section className="rounded-3xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-700 dark:bg-[#1a2332]">
-        <p className="text-sm text-[#1173d4]">Privacy Policy</p>
+        <p className="text-sm text-[#2f9e5f]">Privacy Policy</p>
         <h1 className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">개인정보 처리방침</h1>
         <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
           스프링 도서관은 이용자의 개인정보를 소중히 여기며, 안전하게 보호하기 위해 아래와 같은 기준을 따릅니다.
@@ -64,8 +64,8 @@ const Privacy = () => {
         </section>
       ))}
 
-      <section className="rounded-2xl border border-[#1173d4]/30 bg-[#1173d4]/5 p-6 text-sm text-gray-700 dark:border-[#1173d4]/40 dark:bg-[#1173d4]/10 dark:text-gray-100">
-        <h3 className="font-semibold text-[#0d5aa7] dark:text-white">문의 및 신고</h3>
+      <section className="rounded-2xl border border-[#2f9e5f]/30 bg-[#2f9e5f]/5 p-6 text-sm text-gray-700 dark:border-[#2f9e5f]/40 dark:bg-[#2f9e5f]/10 dark:text-gray-100">
+        <h3 className="font-semibold text-[#1f7d57] dark:text-white">문의 및 신고</h3>
         <p className="mt-2">
           개인정보 보호 책임자: 김봄 책임사서 (privacy@springlibrary.kr, 02-123-4567 내선 2)
         </p>

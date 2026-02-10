@@ -8,7 +8,7 @@ const Footer = () => {
           href="https://electrowave.kr/"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[#1173d4] hover:underline font-medium"
+          className="text-[#2f9e5f] hover:underline font-medium"
         >
           electrowave.kr
         </a>

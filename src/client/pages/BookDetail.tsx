@@ -69,7 +69,7 @@ const BookDetail = () => {
   return (
     <div className="mx-auto">
       <div className="mb-6 text-sm text-gray-500 dark:text-gray-400">
-        <Link to="/client/books" className="hover:text-[#1173d4]">
+        <Link to="/client/books" className="hover:text-[#2f9e5f]">
           도서 목록
         </Link>
         <span className="mx-2">/</span>
@@ -89,8 +89,8 @@ const BookDetail = () => {
               }}
             />
           ) : null}
-          <div className={`w-full rounded-lg shadow-lg bg-gradient-to-br from-[#1173d4]/20 to-[#1173d4]/5 aspect-[3/4] flex items-center justify-center ${book.coverImage ? 'hidden' : ''}`}>
-            <span className="material-symbols-outlined text-[8rem] text-[#1173d4]/40">book</span>
+          <div className={`w-full rounded-lg shadow-lg bg-gradient-to-br from-[#2f9e5f]/20 to-[#2f9e5f]/5 aspect-[3/4] flex items-center justify-center ${book.coverImage ? 'hidden' : ''}`}>
+            <span className="material-symbols-outlined text-[8rem] text-[#2f9e5f]/40">book</span>
           </div>
         </div>
 
@@ -98,7 +98,7 @@ const BookDetail = () => {
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">{book.title}</h1>
           <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
             저자{" "}
-            <Link to={`/client/authors/${book.author}`} className="text-[#1173d4] hover:underline">
+            <Link to={`/client/authors/${book.author}`} className="text-[#2f9e5f] hover:underline">
               {book.author}
             </Link>
           </p>
@@ -111,7 +111,7 @@ const BookDetail = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">가격</p>
-                <p className="text-2xl font-bold text-[#1173d4]">${book.price}</p>
+                <p className="text-2xl font-bold text-[#2f9e5f]">${book.price}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">재고 상태</p>
@@ -142,7 +142,7 @@ const BookDetail = () => {
                     min="1"
                     value={quantity}
                     onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-16 text-center rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] py-1 focus:border-[#1173d4] focus:ring-[#1173d4]"
+                    className="w-16 text-center rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] py-1 focus:border-[#2f9e5f] focus:ring-[#2f9e5f]"
                     disabled={!book.available}
                   />
                   <button
@@ -161,7 +161,7 @@ const BookDetail = () => {
             {/* Borrow Section */}
             <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#1173d4]">library_books</span>
+                <span className="material-symbols-outlined text-[#2f9e5f]">library_books</span>
                 도서 대출
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
@@ -172,7 +172,7 @@ const BookDetail = () => {
                   <select
                     value={loanPeriod}
                     onChange={(e) => setLoanPeriod(e.target.value)}
-                    className="w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] py-2 px-3 focus:border-[#1173d4] focus:ring-[#1173d4] text-gray-900 dark:text-gray-100"
+                    className="w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] py-2 px-3 focus:border-[#2f9e5f] focus:ring-[#2f9e5f] text-gray-900 dark:text-gray-100"
                     disabled={!book.available}
                   >
                     <option value="7">7일</option>
@@ -203,14 +203,14 @@ const BookDetail = () => {
               <button
                 onClick={handleAddToCart}
                 disabled={!book.available}
-                className="flex-1 inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#1173d4] text-white font-bold text-base hover:bg-[#1173d4]/90 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#2f9e5f] text-white font-bold text-base hover:bg-[#2f9e5f]/90 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span className="material-symbols-outlined mr-2">add_shopping_cart</span>
                 장바구니 담기
               </button>
               <button
                 onClick={handleAddToWishlist}
-                className="flex-1 inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#1173d4]/20 dark:bg-[#1173d4]/20 text-[#1173d4] font-bold text-base hover:bg-[#1173d4]/30 dark:hover:bg-[#1173d4]/30 transition-all"
+                className="flex-1 inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#2f9e5f]/20 dark:bg-[#2f9e5f]/20 text-[#2f9e5f] font-bold text-base hover:bg-[#2f9e5f]/30 dark:hover:bg-[#2f9e5f]/30 transition-all"
               >
                 <span className="material-symbols-outlined mr-2">favorite</span>
                 위시리스트 추가

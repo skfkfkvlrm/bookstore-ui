@@ -104,7 +104,7 @@ const BookList = () => {
           type="checkbox"
           checked={selectedBooks.length === paginatedBooks.length && paginatedBooks.length > 0}
           onChange={handleSelectAll}
-          className="rounded border-gray-300 text-[#1173d4] focus:ring-[#1173d4]"
+          className="rounded border-gray-300 text-[#2f9e5f] focus:ring-[#2f9e5f]"
         />
       ),
       accessor: (row: Book) => (
@@ -115,7 +115,7 @@ const BookList = () => {
             e.stopPropagation();
             handleSelectBook(row.id);
           }}
-          className="rounded border-gray-300 text-[#1173d4] focus:ring-[#1173d4]"
+          className="rounded border-gray-300 text-[#2f9e5f] focus:ring-[#2f9e5f]"
         />
       ),
     },
@@ -134,8 +134,8 @@ const BookList = () => {
               }}
             />
           ) : null}
-          <div className={`w-full h-full bg-gradient-to-br from-[#1173d4]/20 to-[#1173d4]/5 flex items-center justify-center ${row.coverImage ? 'hidden' : ''}`}>
-            <span className="material-symbols-outlined text-2xl text-[#1173d4]/40">
+          <div className={`w-full h-full bg-gradient-to-br from-[#2f9e5f]/20 to-[#2f9e5f]/5 flex items-center justify-center ${row.coverImage ? 'hidden' : ''}`}>
+            <span className="material-symbols-outlined text-2xl text-[#2f9e5f]/40">
               book
             </span>
           </div>
@@ -147,7 +147,7 @@ const BookList = () => {
       accessor: (row: Book) => (
         <button
           onClick={() => navigate(`/admin/books/${row.id}`)}
-          className="font-medium text-[#1173d4] hover:underline text-left"
+          className="font-medium text-[#2f9e5f] hover:underline text-left"
         >
           {row.title}
         </button>
@@ -229,7 +229,7 @@ const BookList = () => {
                   setAvailabilityFilter(e.target.value as typeof availabilityFilter);
                   setCurrentPage(1);
                 }}
-                className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1a2632] text-sm focus:ring-2 focus:ring-[#1173d4] focus:border-transparent"
+                className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1a2632] text-sm focus:ring-2 focus:ring-[#2f9e5f] focus:border-transparent"
               >
                 <option value="all">전체 도서</option>
                 <option value="available">재고 있음</option>
@@ -244,7 +244,7 @@ const BookList = () => {
                   setSortBy(e.target.value as typeof sortBy);
                   setCurrentPage(1);
                 }}
-                className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1a2632] text-sm focus:ring-2 focus:ring-[#1173d4] focus:border-transparent"
+                className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1a2632] text-sm focus:ring-2 focus:ring-[#2f9e5f] focus:border-transparent"
               >
                 <option value="date">등록일순</option>
                 <option value="title">도서명</option>

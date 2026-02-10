@@ -14,7 +14,7 @@ const Sidebar = () => {
     <aside className="w-64 flex-shrink-0 bg-white dark:bg-[#1a2632] border-r border-gray-200 dark:border-gray-700 flex-col hidden md:flex">
       <div className="h-16 flex items-center px-6 gap-3">
         <svg
-          className="h-8 w-8 text-[#1173d4]"
+          className="h-8 w-8 text-[#2f9e5f]"
           fill="none"
           viewBox="0 0 48 48"
           xmlns="http://www.w3.org/2000/svg"
@@ -48,8 +48,8 @@ const Sidebar = () => {
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-2 rounded-lg ${
                 isActive
-                  ? "bg-[#1173d4]/10 dark:bg-[#1173d4]/20 text-[#1173d4] font-bold"
-                  : "text-gray-600 dark:text-gray-400 hover:bg-[#1173d4]/10 hover:text-[#1173d4] dark:hover:bg-[#1173d4]/20"
+                  ? "bg-[#2f9e5f]/10 dark:bg-[#2f9e5f]/20 text-[#2f9e5f] font-bold"
+                  : "text-gray-600 dark:text-gray-400 hover:bg-[#2f9e5f]/10 hover:text-[#2f9e5f] dark:hover:bg-[#2f9e5f]/20"
               }`
             }
           >

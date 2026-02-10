@@ -113,7 +113,7 @@ const OrderList = () => {
           type="checkbox"
           checked={selectedOrders.length === paginatedOrders.length && paginatedOrders.length > 0}
           onChange={handleSelectAll}
-          className="rounded border-gray-300 text-[#1173d4] focus:ring-[#1173d4]"
+          className="rounded border-gray-300 text-[#2f9e5f] focus:ring-[#2f9e5f]"
         />
       ),
       accessor: (row: Order) => (
@@ -124,7 +124,7 @@ const OrderList = () => {
             e.stopPropagation();
             handleSelectOrder(row.id);
           }}
-          className="rounded border-gray-300 text-[#1173d4] focus:ring-[#1173d4]"
+          className="rounded border-gray-300 text-[#2f9e5f] focus:ring-[#2f9e5f]"
         />
       ),
     },
@@ -133,7 +133,7 @@ const OrderList = () => {
       accessor: (row: Order) => (
         <button
           onClick={() => navigate(`/admin/orders/${row.id}`)}
-          className="font-mono text-[#1173d4] hover:underline"
+          className="font-mono text-[#2f9e5f] hover:underline"
         >
           #{String(row.id).padStart(8, "0")}
         </button>
@@ -214,7 +214,7 @@ const OrderList = () => {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
-                className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1a2632] text-sm focus:ring-2 focus:ring-[#1173d4] focus:border-transparent"
+                className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1a2632] text-sm focus:ring-2 focus:ring-[#2f9e5f] focus:border-transparent"
               >
                 <option value="all">전체 상태</option>
                 <option value="PENDING">접수</option>
@@ -229,7 +229,7 @@ const OrderList = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-                className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1a2632] text-sm focus:ring-2 focus:ring-[#1173d4] focus:border-transparent"
+                className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1a2632] text-sm focus:ring-2 focus:ring-[#2f9e5f] focus:border-transparent"
               >
                 <option value="orderDate">주문일</option>
                 <option value="totalAmount">결제 금액</option>

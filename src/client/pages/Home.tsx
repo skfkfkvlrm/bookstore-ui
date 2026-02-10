@@ -9,29 +9,35 @@ const Home = () => {
   return (
     <div className="space-y-12">
       {/* Hero Section */}
-      <section className="text-center py-16 bg-gradient-to-r from-[#1173d4]/10 to-[#1173d4]/5 rounded-2xl">
-        <span className="material-symbols-outlined text-7xl text-[#1173d4] mb-4">local_library</span>
-        <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-4">
+      <section
+        className="relative overflow-hidden text-center py-16 rounded-2xl bg-cover bg-center"
+        style={{ backgroundImage: "url('/pexels-element5-1370296.jpg')" }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-[#052813]/90 via-[#0b4d35]/70 to-[#052813]/70" />
+        <div className="relative z-10">
+          <span className="material-symbols-outlined text-7xl text-white mb-4">local_library</span>
+          <h1 className="text-5xl font-bold text-white mb-4">
           스프링 도서관에 오신 것을 환영합니다
-        </h1>
-        <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+          </h1>
+          <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
           방대한 소장 도서를 살펴보고, 손쉽게 대출하거나 구매해 보세요.
-        </p>
-        <div className="flex gap-4 justify-center">
-          <Link
-            to="/client/books"
-            className="inline-flex items-center px-8 py-3 rounded-lg bg-[#1173d4] text-white font-bold text-base hover:bg-[#1173d4]/90 transition-all shadow-md"
-          >
-            <span className="material-symbols-outlined mr-2">search</span>
-            도서 둘러보기
-          </Link>
-          <Link
-            to="/client/my-loans"
-            className="inline-flex items-center px-8 py-3 rounded-lg bg-[#1173d4]/20 text-[#1173d4] font-bold text-base hover:bg-[#1173d4]/30 transition-all"
-          >
-            <span className="material-symbols-outlined mr-2">book</span>
-            내 대출 확인
-          </Link>
+          </p>
+          <div className="flex gap-4 justify-center">
+            <Link
+              to="/client/books"
+              className="inline-flex items-center px-8 py-3 rounded-lg bg-white/90 text-[#0b2f53] font-bold text-base hover:bg-white transition-all shadow-md"
+            >
+              <span className="material-symbols-outlined mr-2">search</span>
+              도서 둘러보기
+            </Link>
+            <Link
+              to="/client/my-loans"
+              className="inline-flex items-center px-8 py-3 rounded-lg bg-white/20 text-white font-bold text-base hover:bg-white/30 transition-all"
+            >
+              <span className="material-symbols-outlined mr-2">book</span>
+              내 대출 확인
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -41,7 +47,7 @@ const Home = () => {
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white">추천 도서</h2>
           <Link
             to="/client/books"
-            className="text-[#1173d4] hover:underline font-medium flex items-center gap-1"
+            className="text-[#2f9e5f] hover:underline font-medium flex items-center gap-1"
           >
             전체 보기
             <span className="material-symbols-outlined text-sm">arrow_forward</span>
@@ -67,8 +73,8 @@ const Home = () => {
                     }}
                   />
                 ) : null}
-                <div className={`aspect-[3/4] w-full bg-gradient-to-br from-[#1173d4]/20 to-[#1173d4]/5 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 ${book.coverImage ? 'hidden' : ''}`}>
-                  <span className="material-symbols-outlined text-6xl text-[#1173d4]/40">
+                <div className={`aspect-[3/4] w-full bg-gradient-to-br from-[#2f9e5f]/20 to-[#2f9e5f]/5 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 ${book.coverImage ? 'hidden' : ''}`}>
+                  <span className="material-symbols-outlined text-6xl text-[#2f9e5f]/40">
                     book
                   </span>
                 </div>
@@ -79,7 +85,7 @@ const Home = () => {
                 </h3>
                 <p className="text-xs text-gray-600 dark:text-gray-400">저자 {book.author}</p>
                 <div className="mt-1 flex items-center justify-between">
-                  <p className="text-sm font-bold text-[#1173d4]">${book.price}</p>
+                  <p className="text-sm font-bold text-[#2f9e5f]">${book.price}</p>
                   {book.available ? (
                     <span className="text-xs text-green-600 dark:text-green-400">재고 있음</span>
                   ) : (
@@ -95,7 +101,7 @@ const Home = () => {
       {/* Features Section */}
       <section className="grid md:grid-cols-3 gap-8 py-8">
         <div className="text-center p-6 bg-white dark:bg-[#1a2632] rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-          <span className="material-symbols-outlined text-5xl text-[#1173d4] mb-4">
+          <span className="material-symbols-outlined text-5xl text-[#2f9e5f] mb-4">
             library_books
           </span>
           <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
@@ -107,7 +113,7 @@ const Home = () => {
         </div>
 
         <div className="text-center p-6 bg-white dark:bg-[#1a2632] rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-          <span className="material-symbols-outlined text-5xl text-[#1173d4] mb-4">
+          <span className="material-symbols-outlined text-5xl text-[#2f9e5f] mb-4">
             schedule
           </span>
           <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">간편한 대출</h3>
@@ -117,7 +123,7 @@ const Home = () => {
         </div>
 
         <div className="text-center p-6 bg-white dark:bg-[#1a2632] rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-          <span className="material-symbols-outlined text-5xl text-[#1173d4] mb-4">
+          <span className="material-symbols-outlined text-5xl text-[#2f9e5f] mb-4">
             shopping_cart
           </span>
           <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">구매 서비스</h3>

@@ -32,7 +32,7 @@ const Login = () => {
     <div className="min-h-[80vh] flex items-center justify-center px-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
-          <span className="material-symbols-outlined text-6xl text-[#1173d4] mb-4">
+          <span className="material-symbols-outlined text-6xl text-[#2f9e5f] mb-4">
             account_circle
           </span>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
@@ -54,7 +54,7 @@ const Login = () => {
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-[#1173d4] focus:border-transparent"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-[#2f9e5f] focus:border-transparent"
                 placeholder="이메일을 입력하세요"
                 autoComplete="email"
               />
@@ -73,7 +73,7 @@ const Login = () => {
 
             <button
               type="submit"
-              className="w-full inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#1173d4] text-white font-bold text-base hover:bg-[#1173d4]/90 transition-all shadow-md"
+              className="w-full inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#2f9e5f] text-white font-bold text-base hover:bg-[#2f9e5f]/90 transition-all shadow-md"
             >
               <span className="material-symbols-outlined mr-2">login</span>
               로그인
@@ -85,7 +85,7 @@ const Login = () => {
               아직 계정이 없으신가요?{" "}
               <Link
                 to="/client/register"
-                className="text-[#1173d4] font-medium hover:underline"
+                className="text-[#2f9e5f] font-medium hover:underline"
               >
                 회원가입
               </Link>

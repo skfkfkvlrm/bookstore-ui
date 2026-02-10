@@ -41,7 +41,7 @@ const AuthorPage = () => {
   return (
     <div className="space-y-10">
       <section className="rounded-3xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-700 dark:bg-[#1a2332]">
-        <p className="text-sm text-[#1173d4]">Featured Author</p>
+        <p className="text-sm text-[#2f9e5f]">Featured Author</p>
         <h1 className="mt-2 text-3xl font-bold text-gray-900 dark:text-white">{decodedName || "작가 정보"}</h1>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">{profile.tagline}</p>
         <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">{profile.bio}</p>
@@ -49,7 +49,7 @@ const AuthorPage = () => {
           {profile.themes.map((theme) => (
             <span
               key={theme}
-              className="rounded-full bg-[#1173d4]/10 px-4 py-1 text-xs font-medium text-[#0d5aa7] dark:bg-[#1173d4]/20 dark:text-white"
+              className="rounded-full bg-[#2f9e5f]/10 px-4 py-1 text-xs font-medium text-[#1f7d57] dark:bg-[#2f9e5f]/20 dark:text-white"
             >
               {theme}
             </span>
@@ -60,7 +60,7 @@ const AuthorPage = () => {
       <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-[#1a2332]">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">대표 도서</h2>
-          <Link to="/client/books" className="text-sm text-[#1173d4] underline">
+          <Link to="/client/books" className="text-sm text-[#2f9e5f] underline">
             다른 도서 살펴보기
           </Link>
         </div>
@@ -74,7 +74,7 @@ const AuthorPage = () => {
               <Link
                 key={book.id}
                 to={`/client/books/${book.id}`}
-                className="flex gap-4 rounded-2xl border border-gray-200 bg-gray-50 p-4 transition hover:border-[#1173d4] dark:border-gray-700 dark:bg-[#101922]"
+                className="flex gap-4 rounded-2xl border border-gray-200 bg-gray-50 p-4 transition hover:border-[#2f9e5f] dark:border-gray-700 dark:bg-[#101922]"
               >
                 <div className="h-24 w-24 overflow-hidden rounded-lg bg-gray-200">
                   {book.coverImage ? (
@@ -93,7 +93,7 @@ const AuthorPage = () => {
                   <p className="text-sm uppercase text-gray-500">{decodedName}</p>
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{book.title}</h3>
                   <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">ISBN {book.isbn}</p>
-                  <p className="mt-1 text-sm font-semibold text-[#1173d4]">${book.price}</p>
+                  <p className="mt-1 text-sm font-semibold text-[#2f9e5f]">${book.price}</p>
                 </div>
               </Link>
             ))}
@@ -107,7 +107,7 @@ const AuthorPage = () => {
           <li>저자 인터뷰, 강연 영상, 관련 논문 링크는 큐레이션 팀이 꾸준히 업데이트합니다.</li>
           <li>작가와의 만남, 온라인 북클럽 일정은 events@springlibrary.kr 로 문의해주세요.</li>
           <li>
-            새로운 자료를 제안하고 싶다면 <Link to="/client/contact" className="text-[#1173d4] underline">문의 페이지</Link>로 제안서를 보내주세요.
+            새로운 자료를 제안하고 싶다면 <Link to="/client/contact" className="text-[#2f9e5f] underline">문의 페이지</Link>로 제안서를 보내주세요.
           </li>
         </ul>
       </section>

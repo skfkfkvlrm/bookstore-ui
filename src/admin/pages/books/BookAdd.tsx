@@ -66,15 +66,15 @@ const BookAdd = () => {
                     className="aspect-[3/4] w-full object-cover"
                   />
                 ) : (
-                  <div className="aspect-[3/4] w-full bg-gradient-to-br from-[#1173d4]/20 to-[#1173d4]/5 flex items-center justify-center">
-                    <span className="material-symbols-outlined text-6xl text-[#1173d4]/40">
+                  <div className="aspect-[3/4] w-full bg-gradient-to-br from-[#2f9e5f]/20 to-[#2f9e5f]/5 flex items-center justify-center">
+                    <span className="material-symbols-outlined text-6xl text-[#2f9e5f]/40">
                       book
                     </span>
                   </div>
                 )}
               </div>
               <div className="flex-1">
-                <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-[#1173d4] transition-colors">
+                <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-[#2f9e5f] transition-colors">
                   <input
                     type="file"
                     id="cover-upload"
@@ -155,7 +155,7 @@ const BookAdd = () => {
                   placeholder="10.25"
                   value={formData.price}
                   onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                  className="w-full pl-7 pr-4 py-2 bg-white dark:bg-[#1a2632] border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#1173d4] focus:border-transparent dark:text-white"
+                  className="w-full pl-7 pr-4 py-2 bg-white dark:bg-[#1a2632] border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#2f9e5f] focus:border-transparent dark:text-white"
                   required
                 />
               </div>
