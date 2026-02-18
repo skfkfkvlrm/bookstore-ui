@@ -72,7 +72,7 @@ const BookDetail = () => {
   };
 
   const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete this book?")) {
+    if (window.confirm("이 도서를 삭제하시겠습니까?")) {
       // TODO: API call to delete book
       console.log("Delete book:", id);
       navigate("/admin/books");
@@ -83,9 +83,9 @@ const BookDetail = () => {
     <div className="max-w-7xl mx-auto">
       <div className="mb-6">
         <div>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Book Details</h2>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">도서 상세</h2>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
-            View and manage book information.
+            도서 정보를 확인하고 수정하세요.
           </p>
         </div>
       </div>
@@ -95,16 +95,16 @@ const BookDetail = () => {
           <div className="flex justify-between items-center">
             <div>
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                Book Information
+                도서 정보
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                ID: {book.id}
+                도서 ID: {book.id}
               </p>
             </div>
             {!isEditing && (
               <Button onClick={handleEdit}>
                 <span className="material-symbols-outlined">edit</span>
-                Edit
+                편집
               </Button>
             )}
           </div>
@@ -114,7 +114,7 @@ const BookDetail = () => {
           {/* Book Cover Image */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Cover Image
+              표지 이미지
             </label>
             <div className="flex items-start gap-6">
               <div className="w-48 overflow-hidden rounded-lg bg-gray-200 dark:bg-gray-800 shadow-md">
@@ -129,15 +129,15 @@ const BookDetail = () => {
                     }}
                   />
                 ) : null}
-                <div className={`aspect-[3/4] w-full bg-gradient-to-br from-[#1173d4]/20 to-[#1173d4]/5 flex items-center justify-center ${previewImage ? 'hidden' : ''}`}>
-                  <span className="material-symbols-outlined text-6xl text-[#1173d4]/40">
+                <div className={`aspect-[3/4] w-full bg-gradient-to-br from-[#2f9e5f]/20 to-[#2f9e5f]/5 flex items-center justify-center ${previewImage ? 'hidden' : ''}`}>
+                  <span className="material-symbols-outlined text-6xl text-[#2f9e5f]/40">
                     book
                   </span>
                 </div>
               </div>
               {isEditing && (
                 <div className="flex-1">
-                  <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-[#1173d4] transition-colors">
+                  <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-[#2f9e5f] transition-colors">
                     <input
                       type="file"
                       id="cover-upload"
@@ -153,10 +153,10 @@ const BookDetail = () => {
                         upload
                       </span>
                       <span className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Click to upload new cover image
+                        새 표지 이미지를 업로드하세요
                       </span>
                       <span className="text-xs text-gray-500 dark:text-gray-400">
-                        PNG, JPG up to 10MB
+                        PNG, JPG 최대 10MB
                       </span>
                     </label>
                   </div>
@@ -169,7 +169,7 @@ const BookDetail = () => {
                       }}
                       className="mt-2 text-sm text-red-600 dark:text-red-400 hover:underline"
                     >
-                      Remove image
+                      이미지 제거
                     </button>
                   )}
                 </div>
@@ -178,18 +178,18 @@ const BookDetail = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input
-              label="Title"
+              label="도서명"
               type="text"
-              placeholder="e.g., The Great Gatsby"
+              placeholder="예: 위대한 개츠비"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               disabled={!isEditing}
               required
             />
             <Input
-              label="Author"
+              label="저자"
               type="text"
-              placeholder="e.g., F. Scott Fitzgerald"
+              placeholder="예: F. Scott Fitzgerald"
               value={formData.author}
               onChange={(e) => setFormData({ ...formData, author: e.target.value })}
               disabled={!isEditing}
@@ -201,7 +201,7 @@ const BookDetail = () => {
             <Input
               label="ISBN"
               type="text"
-              placeholder="e.g., 978-0743273565"
+              placeholder="예: 978-0743273565"
               value={formData.isbn}
               onChange={(e) => setFormData({ ...formData, isbn: e.target.value })}
               disabled={!isEditing}
@@ -209,7 +209,7 @@ const BookDetail = () => {
             />
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Price
+                가격
               </label>
               {isEditing ? (
                 <div className="relative">
@@ -222,7 +222,7 @@ const BookDetail = () => {
                     placeholder="10.25"
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                    className="w-full pl-7 pr-4 py-2 bg-white dark:bg-[#1a2632] border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#1173d4] focus:border-transparent dark:text-white"
+                    className="w-full pl-7 pr-4 py-2 bg-white dark:bg-[#1a2632] border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#2f9e5f] focus:border-transparent dark:text-white"
                     required
                   />
                 </div>
@@ -237,28 +237,28 @@ const BookDetail = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Availability
+                재고 상태
               </label>
               {isEditing ? (
                 <Select
                   value={formData.available}
                   onChange={(e) => setFormData({ ...formData, available: e.target.value })}
                   options={[
-                    { value: "true", label: "Available" },
-                    { value: "false", label: "Unavailable" },
+                    { value: "true", label: "재고 있음" },
+                    { value: "false", label: "재고 없음" },
                   ]}
                 />
               ) : (
                 <div className="py-2">
                   <Badge variant={book.available ? "available" : "unavailable"}>
-                    {book.available ? "Available" : "Unavailable"}
+                    {book.available ? "재고 있음" : "재고 없음"}
                   </Badge>
                 </div>
               )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Created Date
+                등록일
               </label>
               <div className="py-2 text-gray-600 dark:text-gray-400">
                 {new Date(book.createdDate).toLocaleDateString()}
@@ -269,11 +269,11 @@ const BookDetail = () => {
           {isEditing && (
             <div className="flex justify-end gap-4 pt-4">
               <Button variant="secondary" type="button" onClick={handleCancel}>
-                Cancel
+                취소
               </Button>
               <Button type="submit">
                 <span className="material-symbols-outlined">save</span>
-                Save Changes
+                변경 사항 저장
               </Button>
             </div>
           )}
@@ -282,11 +282,11 @@ const BookDetail = () => {
         {!isEditing && (
           <div className="p-6 border-t border-gray-200 dark:border-gray-700">
             <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              Danger Zone
+              주의 영역
             </h4>
             <Button variant="danger" onClick={handleDelete}>
               <span className="material-symbols-outlined">delete</span>
-              Delete Book
+              도서 삭제
             </Button>
           </div>
         )}
@@ -295,7 +295,7 @@ const BookDetail = () => {
       <div className="flex justify-end mt-6">
         <Button variant="secondary" onClick={() => navigate("/admin/books")}>
           <span className="material-symbols-outlined">arrow_back</span>
-          Back to Catalog
+          목록으로 돌아가기
         </Button>
       </div>
     </div>

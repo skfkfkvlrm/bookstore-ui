@@ -9,6 +9,10 @@ import MyOrders from "./pages/MyOrders";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MyAccount from "./pages/MyAccount";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Privacy from "./pages/Privacy";
+import AuthorPage from "./pages/AuthorPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function ClientApp() {
@@ -57,10 +61,10 @@ function ClientApp() {
         />
 
         {/* Placeholder routes */}
-        <Route path="/about" element={<div className="text-center py-16"><h2 className="text-2xl font-bold text-gray-900 dark:text-white">About Us - Coming Soon</h2></div>} />
-        <Route path="/contact" element={<div className="text-center py-16"><h2 className="text-2xl font-bold text-gray-900 dark:text-white">Contact - Coming Soon</h2></div>} />
-        <Route path="/privacy" element={<div className="text-center py-16"><h2 className="text-2xl font-bold text-gray-900 dark:text-white">Privacy Policy - Coming Soon</h2></div>} />
-        <Route path="/authors/:name" element={<div className="text-center py-16"><h2 className="text-2xl font-bold text-gray-900 dark:text-white">Author Page - Coming Soon</h2></div>} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/authors/:name" element={<AuthorPage />} />
       </Routes>
     </Layout>
   );

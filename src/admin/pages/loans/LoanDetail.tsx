@@ -229,7 +229,7 @@ const LoanDetail = () => {
                 id="newDueDate"
                 value={newDueDate}
                 onChange={(e) => setNewDueDate(e.target.value)}
-                className="mt-1 block w-full md:w-1/3 rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-[#101922] shadow-sm focus:border-[#1173d4] focus:ring-[#1173d4] sm:text-sm"
+                className="mt-1 block w-full md:w-1/3 rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-[#101922] shadow-sm focus:border-[#2f9e5f] focus:ring-[#2f9e5f] sm:text-sm"
               />
             </div>
             <div className="flex gap-4">

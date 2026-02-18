@@ -12,7 +12,7 @@ const BookList = () => {
   const searchQuery = searchParams.get("search") || "";
   const pageParam = searchParams.get("page") || "1";
   const [localSearch, setLocalSearch] = useState(searchQuery);
-  const [currentPage, setCurrentPage] = useState(parseInt(pageParam));
+  const [currentPage, setCurrentPage] = useState(() => parseInt(pageParam));
 
   useEffect(() => {
     setCurrentPage(parseInt(pageParam));
@@ -67,18 +67,18 @@ const BookList = () => {
             type="search"
             value={localSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
-            className="w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] py-3 pl-12 pr-4 text-base placeholder-gray-500 dark:placeholder-gray-400 focus:border-[#1173d4] focus:ring-[#1173d4] text-gray-900 dark:text-gray-100"
-            placeholder="Search by title, author, or ISBN"
+            className="w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] py-3 pl-12 pr-4 text-base placeholder-gray-500 dark:placeholder-gray-400 focus:border-[#2f9e5f] focus:ring-[#2f9e5f] text-gray-900 dark:text-gray-100"
+            placeholder="제목·저자·ISBN으로 검색"
           />
         </form>
       </div>
 
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-          {searchQuery ? `Search Results for "${searchQuery}"` : "All Books"}
+          {searchQuery ? `"${searchQuery}" 검색 결과` : "전체 도서"}
         </h2>
         <p className="text-sm text-gray-600 dark:text-gray-400">
-          {filteredBooks.length} {filteredBooks.length === 1 ? "book" : "books"} found
+          총 {filteredBooks.length}권이 검색되었습니다
         </p>
       </div>
 
@@ -93,7 +93,7 @@ const BookList = () => {
               {book.coverImage ? (
                 <img
                   src={book.coverImage}
-                  alt={`Cover of ${book.title}`}
+                  alt={`${book.title} 표지 이미지`}
                   className="aspect-[3/4] w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';
@@ -101,8 +101,8 @@ const BookList = () => {
                   }}
                 />
               ) : null}
-              <div className={`aspect-[3/4] w-full bg-gradient-to-br from-[#1173d4]/20 to-[#1173d4]/5 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 ${book.coverImage ? 'hidden' : ''}`}>
-                <span className="material-symbols-outlined text-6xl text-[#1173d4]/40">
+              <div className={`aspect-[3/4] w-full bg-gradient-to-br from-[#2f9e5f]/20 to-[#2f9e5f]/5 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 ${book.coverImage ? 'hidden' : ''}`}>
+                <span className="material-symbols-outlined text-6xl text-[#2f9e5f]/40">
                   book
                 </span>
               </div>
@@ -111,13 +111,13 @@ const BookList = () => {
               <h3 className="font-bold text-gray-900 dark:text-white text-sm line-clamp-2">
                 {book.title}
               </h3>
-              <p className="text-xs text-gray-600 dark:text-gray-400">by {book.author}</p>
+              <p className="text-xs text-gray-600 dark:text-gray-400">저자 {book.author}</p>
               <div className="mt-1 flex items-center justify-between">
-                <p className="text-sm font-bold text-[#1173d4]">${book.price}</p>
+                <p className="text-sm font-bold text-[#2f9e5f]">${book.price}</p>
                 {book.available ? (
-                  <span className="text-xs text-green-600 dark:text-green-400">In Stock</span>
+                  <span className="text-xs text-green-600 dark:text-green-400">재고 있음</span>
                 ) : (
-                  <span className="text-xs text-red-600 dark:text-red-400">Out of Stock</span>
+                  <span className="text-xs text-red-600 dark:text-red-400">재고 없음</span>
                 )}
               </div>
             </div>
@@ -131,7 +131,7 @@ const BookList = () => {
             search_off
           </span>
           <p className="text-lg text-gray-600 dark:text-gray-400">
-            No books found matching your search.
+            조건에 맞는 도서를 찾지 못했습니다.
           </p>
         </div>
       )}

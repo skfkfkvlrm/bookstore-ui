@@ -10,6 +10,12 @@ const MyLoans = () => {
   const currentMemberId = getCurrentMemberId();
   const [filterStatus, setFilterStatus] = useState<FilterStatus>("ALL");
   const [userLoans, setUserLoans] = useState<Loan[]>([]);
+  const statusLabelMap: Record<FilterStatus, string> = {
+    ALL: "전체",
+    ACTIVE: "대여 중",
+    OVERDUE: "연체",
+    RETURNED: "반납 완료",
+  };
 
   useEffect(() => {
     setUserLoans(getUserLoans());
@@ -42,7 +48,7 @@ const MyLoans = () => {
 
   const handleReturnBook = (loan: Loan) => {
     const confirmed = window.confirm(
-      `Are you sure you want to return "${loan.bookTitle}"?`
+      `"${loan.bookTitle}"을(를) 반납하시겠습니까?`
     );
 
     if (confirmed) {
@@ -63,7 +69,7 @@ const MyLoans = () => {
 
   const handleDeleteLoan = (loan: Loan) => {
     const confirmed = window.confirm(
-      `Are you sure you want to delete the loan history for "${loan.bookTitle}"?`
+      `"${loan.bookTitle}" 대출 기록을 삭제하시겠습니까?`
     );
 
     if (confirmed) {
@@ -83,7 +89,7 @@ const MyLoans = () => {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
+    return new Date(dateString).toLocaleDateString("ko-KR", {
       year: "numeric",
       month: "short",
       day: "numeric",
@@ -104,21 +110,21 @@ const MyLoans = () => {
         return (
           <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300">
             <span className="material-symbols-outlined text-base mr-1">check_circle</span>
-            Active
+            대여 중
           </span>
         );
       case "OVERDUE":
         return (
           <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300">
             <span className="material-symbols-outlined text-base mr-1">error</span>
-            Overdue
+            연체
           </span>
         );
       case "RETURNED":
         return (
           <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300">
             <span className="material-symbols-outlined text-base mr-1">task_alt</span>
-            Returned
+            반납 완료
           </span>
         );
     }
@@ -127,28 +133,28 @@ const MyLoans = () => {
   return (
     <div className="mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">My Loans</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">내 대출 내역</h1>
         <p className="text-gray-600 dark:text-gray-400">
-          View and manage your borrowed books
+          대출한 도서를 확인하고 관리하세요
         </p>
       </div>
 
       {/* Statistics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <div className="bg-white dark:bg-[#1a2332] p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-          <p className="text-sm text-gray-600 dark:text-gray-400">Total Loans</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">총 대출 건수</p>
           <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.total}</p>
         </div>
         <div className="bg-white dark:bg-[#1a2332] p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-          <p className="text-sm text-gray-600 dark:text-gray-400">Active</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">대여 중</p>
           <p className="text-2xl font-bold text-green-600 dark:text-green-400">{stats.active}</p>
         </div>
         <div className="bg-white dark:bg-[#1a2332] p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-          <p className="text-sm text-gray-600 dark:text-gray-400">Overdue</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">연체</p>
           <p className="text-2xl font-bold text-red-600 dark:text-red-400">{stats.overdue}</p>
         </div>
         <div className="bg-white dark:bg-[#1a2332] p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-          <p className="text-sm text-gray-600 dark:text-gray-400">Returned</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">반납 완료</p>
           <p className="text-2xl font-bold text-gray-600 dark:text-gray-400">{stats.returned}</p>
         </div>
       </div>
@@ -159,41 +165,41 @@ const MyLoans = () => {
           onClick={() => setFilterStatus("ALL")}
           className={`px-4 py-2 rounded-lg font-medium transition-colors ${
             filterStatus === "ALL"
-              ? "bg-[#1173d4] text-white"
+              ? "bg-[#2f9e5f] text-white"
               : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
           }`}
         >
-          All ({myLoans.length})
+          전체 ({myLoans.length})
         </button>
         <button
           onClick={() => setFilterStatus("ACTIVE")}
           className={`px-4 py-2 rounded-lg font-medium transition-colors ${
             filterStatus === "ACTIVE"
-              ? "bg-[#1173d4] text-white"
+              ? "bg-[#2f9e5f] text-white"
               : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
           }`}
         >
-          Active ({stats.active})
+          대여 중 ({stats.active})
         </button>
         <button
           onClick={() => setFilterStatus("OVERDUE")}
           className={`px-4 py-2 rounded-lg font-medium transition-colors ${
             filterStatus === "OVERDUE"
-              ? "bg-[#1173d4] text-white"
+              ? "bg-[#2f9e5f] text-white"
               : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
           }`}
         >
-          Overdue ({stats.overdue})
+          연체 ({stats.overdue})
         </button>
         <button
           onClick={() => setFilterStatus("RETURNED")}
           className={`px-4 py-2 rounded-lg font-medium transition-colors ${
             filterStatus === "RETURNED"
-              ? "bg-[#1173d4] text-white"
+              ? "bg-[#2f9e5f] text-white"
               : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
           }`}
         >
-          Returned ({stats.returned})
+          반납 완료 ({stats.returned})
         </button>
       </div>
 
@@ -205,15 +211,15 @@ const MyLoans = () => {
           </span>
           <p className="text-lg text-gray-600 dark:text-gray-400">
             {filterStatus === "ALL"
-              ? "You don't have any loans yet."
-              : `No ${filterStatus.toLowerCase()} loans found.`}
+              ? "대출한 도서가 아직 없습니다."
+              : `${statusLabelMap[filterStatus]} 상태의 내역이 없습니다.`}
           </p>
           <Link
             to="/client/books"
-            className="inline-flex items-center mt-4 px-6 py-3 rounded-lg bg-[#1173d4] text-white font-bold hover:bg-[#1173d4]/90 transition-colors"
+            className="inline-flex items-center mt-4 px-6 py-3 rounded-lg bg-[#2f9e5f] text-white font-bold hover:bg-[#2f9e5f]/90 transition-colors"
           >
             <span className="material-symbols-outlined mr-2">search</span>
-            Browse Books
+            도서 둘러보기
           </Link>
         </div>
       ) : (
@@ -229,11 +235,11 @@ const MyLoans = () => {
                     <div>
                       <Link
                         to={`/client/books/${loan.bookId}`}
-                        className="text-xl font-bold text-gray-900 dark:text-white hover:text-[#1173d4] dark:hover:text-[#1173d4] transition-colors"
+                        className="text-xl font-bold text-gray-900 dark:text-white hover:text-[#2f9e5f] dark:hover:text-[#2f9e5f] transition-colors"
                       >
                         {loan.bookTitle}
                       </Link>
-                      <p className="text-gray-600 dark:text-gray-400">by {loan.bookAuthor}</p>
+                      <p className="text-gray-600 dark:text-gray-400">저자 {loan.bookAuthor}</p>
                     </div>
                     <div className="sm:hidden">
                       {getStatusBadge(loan)}
@@ -242,14 +248,14 @@ const MyLoans = () => {
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
                     <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">Loan Date</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">대출일</p>
                       <p className="text-sm font-medium text-gray-900 dark:text-white flex items-center gap-1">
                         <span className="material-symbols-outlined text-sm">calendar_today</span>
                         {formatDate(loan.loanDate)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">Due Date</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">반납 기한</p>
                       <p className="text-sm font-medium text-gray-900 dark:text-white flex items-center gap-1">
                         <span className="material-symbols-outlined text-sm">event</span>
                         {formatDate(loan.dueDate)}
@@ -257,7 +263,7 @@ const MyLoans = () => {
                     </div>
                     {loan.returnDate ? (
                       <div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">Return Date</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">반납일</p>
                         <p className="text-sm font-medium text-gray-900 dark:text-white flex items-center gap-1">
                           <span className="material-symbols-outlined text-sm">check_circle</span>
                           {formatDate(loan.returnDate)}
@@ -265,7 +271,7 @@ const MyLoans = () => {
                       </div>
                     ) : (
                       <div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">Days Remaining</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">남은 기간</p>
                         <p className={`text-sm font-medium flex items-center gap-1 ${
                           loan.status === "OVERDUE"
                             ? "text-red-600 dark:text-red-400"
@@ -275,8 +281,8 @@ const MyLoans = () => {
                         }`}>
                           <span className="material-symbols-outlined text-sm">schedule</span>
                           {loan.status === "OVERDUE"
-                            ? `${Math.abs(getDaysRemaining(loan.dueDate))} days overdue`
-                            : `${getDaysRemaining(loan.dueDate)} days`}
+                            ? `${Math.abs(getDaysRemaining(loan.dueDate))}일 연체`
+                            : `${getDaysRemaining(loan.dueDate)}일 남음`}
                         </p>
                       </div>
                     )}
@@ -288,10 +294,10 @@ const MyLoans = () => {
                   {loan.status === "ACTIVE" && (
                     <button
                       onClick={() => handleReturnBook(loan)}
-                      className="inline-flex items-center px-4 py-2 rounded-lg bg-[#1173d4] text-white text-sm font-medium hover:bg-[#1173d4]/90 transition-colors"
+                      className="inline-flex items-center px-4 py-2 rounded-lg bg-[#2f9e5f] text-white text-sm font-medium hover:bg-[#2f9e5f]/90 transition-colors"
                     >
                       <span className="material-symbols-outlined text-sm mr-1">assignment_return</span>
-                      Return Book
+                      반납하기
                     </button>
                   )}
                   {loan.status === "OVERDUE" && (
@@ -300,7 +306,7 @@ const MyLoans = () => {
                       className="inline-flex items-center px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition-colors"
                     >
                       <span className="material-symbols-outlined text-sm mr-1">assignment_return</span>
-                      Return Now
+                      지금 반납
                     </button>
                   )}
                   {loan.status === "RETURNED" && (
@@ -309,7 +315,7 @@ const MyLoans = () => {
                       className="inline-flex items-center px-4 py-2 rounded-lg bg-gray-600 dark:bg-gray-700 text-white text-sm font-medium hover:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
                     >
                       <span className="material-symbols-outlined text-sm mr-1">delete</span>
-                      Delete
+                      삭제
                     </button>
                   )}
                 </div>
@@ -320,10 +326,10 @@ const MyLoans = () => {
                 {loan.status === "ACTIVE" && (
                   <button
                     onClick={() => handleReturnBook(loan)}
-                    className="w-full inline-flex items-center justify-center px-4 py-2 rounded-lg bg-[#1173d4] text-white text-sm font-medium hover:bg-[#1173d4]/90 transition-colors"
+                    className="w-full inline-flex items-center justify-center px-4 py-2 rounded-lg bg-[#2f9e5f] text-white text-sm font-medium hover:bg-[#2f9e5f]/90 transition-colors"
                   >
                     <span className="material-symbols-outlined text-sm mr-1">assignment_return</span>
-                    Return Book
+                    반납하기
                   </button>
                 )}
                 {loan.status === "OVERDUE" && (
@@ -332,7 +338,7 @@ const MyLoans = () => {
                     className="w-full inline-flex items-center justify-center px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition-colors"
                   >
                     <span className="material-symbols-outlined text-sm mr-1">assignment_return</span>
-                    Return Now
+                    지금 반납
                   </button>
                 )}
                 {loan.status === "RETURNED" && (
@@ -341,7 +347,7 @@ const MyLoans = () => {
                     className="w-full inline-flex items-center justify-center px-4 py-2 rounded-lg bg-gray-600 dark:bg-gray-700 text-white text-sm font-medium hover:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
                   >
                     <span className="material-symbols-outlined text-sm mr-1">delete</span>
-                    Delete
+                    삭제
                   </button>
                 )}
               </div>

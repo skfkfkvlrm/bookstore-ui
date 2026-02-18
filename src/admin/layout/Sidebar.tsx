@@ -1,12 +1,12 @@
 import { NavLink } from "react-router-dom";
 
 const navItems = [
-  { to: "/admin/dashboard", icon: "dashboard", label: "Dashboard" },
-  { to: "/admin/members", icon: "group", label: "Members" },
-  { to: "/admin/books", icon: "menu_book", label: "Books" },
-  { to: "/admin/loans", icon: "library_books", label: "Loans" },
-  { to: "/admin/orders", icon: "receipt_long", label: "Orders" },
-  { to: "/admin/settings", icon: "settings", label: "Settings" },
+  { to: "/admin/dashboard", icon: "dashboard", label: "대시보드" },
+  { to: "/admin/members", icon: "group", label: "회원 관리" },
+  { to: "/admin/books", icon: "menu_book", label: "도서 관리" },
+  { to: "/admin/loans", icon: "library_books", label: "대여 관리" },
+  { to: "/admin/orders", icon: "receipt_long", label: "주문 관리" },
+  { to: "/admin/settings", icon: "settings", label: "설정" },
 ];
 
 const Sidebar = () => {
@@ -14,7 +14,7 @@ const Sidebar = () => {
     <aside className="w-64 flex-shrink-0 bg-white dark:bg-[#1a2632] border-r border-gray-200 dark:border-gray-700 flex-col hidden md:flex">
       <div className="h-16 flex items-center px-6 gap-3">
         <svg
-          className="h-8 w-8 text-[#1173d4]"
+          className="h-8 w-8 text-[#2f9e5f]"
           fill="none"
           viewBox="0 0 48 48"
           xmlns="http://www.w3.org/2000/svg"
@@ -37,7 +37,7 @@ const Sidebar = () => {
             </clipPath>
           </defs>
         </svg>
-        <h1 className="text-xl font-bold">Spring Library</h1>
+        <h1 className="text-xl font-bold">스프링 도서관</h1>
       </div>
 
       <nav className="flex-1 px-4 py-4 space-y-2">
@@ -48,8 +48,8 @@ const Sidebar = () => {
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-2 rounded-lg ${
                 isActive
-                  ? "bg-[#1173d4]/10 dark:bg-[#1173d4]/20 text-[#1173d4] font-bold"
-                  : "text-gray-600 dark:text-gray-400 hover:bg-[#1173d4]/10 hover:text-[#1173d4] dark:hover:bg-[#1173d4]/20"
+                  ? "bg-[#2f9e5f]/10 dark:bg-[#2f9e5f]/20 text-[#2f9e5f] font-bold"
+                  : "text-gray-600 dark:text-gray-400 hover:bg-[#2f9e5f]/10 hover:text-[#2f9e5f] dark:hover:bg-[#2f9e5f]/20"
               }`
             }
           >

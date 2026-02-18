@@ -14,8 +14,8 @@ const LoanAdd = () => {
   const [isMemberModalOpen, setMemberModalOpen] = useState(false);
   const [isBookModalOpen, setBookModalOpen] = useState(false);
 
-  const [loanDate, setLoanDate] = useState(new Date());
-  const [dueDate, setDueDate] = useState(addDays(new Date(), 14));
+  const [loanDate, setLoanDate] = useState(() => new Date());
+  const [dueDate, setDueDate] = useState(() => addDays(new Date(), 14));
 
   useEffect(() => {
     // When loan date changes, update due date to be 14 days after
@@ -125,7 +125,7 @@ const LoanAdd = () => {
                     id="loanDate"
                     value={format(loanDate, "yyyy-MM-dd")}
                     onChange={(e) => setLoanDate(parseISO(e.target.value))}
-                    className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-[#101922] shadow-sm focus:border-[#1173d4] focus:ring-[#1173d4] sm:text-sm"
+                    className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-[#101922] shadow-sm focus:border-[#2f9e5f] focus:ring-[#2f9e5f] sm:text-sm"
                   />
                 </div>
                 <div>
@@ -137,7 +137,7 @@ const LoanAdd = () => {
                     id="dueDate"
                     value={format(dueDate, "yyyy-MM-dd")}
                     onChange={(e) => setDueDate(parseISO(e.target.value))}
-                    className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-[#101922] shadow-sm focus:border-[#1173d4] focus:ring-[#1173d4] sm:text-sm"
+                    className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-[#101922] shadow-sm focus:border-[#2f9e5f] focus:ring-[#2f9e5f] sm:text-sm"
                   />
                 </div>
               </div>
@@ -279,7 +279,7 @@ const SearchModal = <T extends { id: number }>({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search..."
-            className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-[#101922] py-2 pl-4 pr-10 text-base focus:border-[#1173d4] focus:ring-[#1173d4]"
+            className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-[#101922] py-2 pl-4 pr-10 text-base focus:border-[#2f9e5f] focus:ring-[#2f9e5f]"
             autoFocus
           />
         </div>
@@ -301,7 +301,7 @@ const SearchModal = <T extends { id: number }>({
           )}
         </div>
         <div className="p-4 border-t border-gray-200 dark:border-gray-700 text-center">
-          <Link to={addNewLink} className="text-sm text-[#1173d4] hover:underline">
+          <Link to={addNewLink} className="text-sm text-[#2f9e5f] hover:underline">
             {addNewLinkText}
           </Link>
         </div>

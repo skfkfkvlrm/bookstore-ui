@@ -92,7 +92,7 @@ const Settings = () => {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-6 py-4 border-b-2 font-medium text-sm transition-colors whitespace-nowrap ${
                   activeTab === tab.id
-                    ? "border-[#1173d4] text-[#1173d4]"
+                    ? "border-[#2f9e5f] text-[#2f9e5f]"
                     : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
                 }`}
               >
@@ -121,7 +121,7 @@ const Settings = () => {
 
                 <form onSubmit={handleSaveProfile} className="space-y-6">
                   <div className="flex items-center gap-6">
-                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#1173d4] to-[#0d5aa7] flex items-center justify-center">
+                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#2f9e5f] to-[#1f7d57] flex items-center justify-center">
                       <span className="material-symbols-outlined text-white text-5xl">
                         person
                       </span>
@@ -292,7 +292,7 @@ const Settings = () => {
                               autoEmailReminder: e.target.checked,
                             })
                           }
-                          className="w-4 h-4 text-[#1173d4] bg-gray-100 border-gray-300 rounded focus:ring-[#1173d4] dark:bg-gray-700 dark:border-gray-600"
+                          className="w-4 h-4 text-[#2f9e5f] bg-gray-100 border-gray-300 rounded focus:ring-[#2f9e5f] dark:bg-gray-700 dark:border-gray-600"
                         />
                         <span className="text-sm text-gray-700 dark:text-gray-300">
                           반납일 이전 자동 알림 발송
@@ -360,7 +360,7 @@ const Settings = () => {
                               emailNewMember: e.target.checked,
                             })
                           }
-                          className="w-4 h-4 mt-1 text-[#1173d4] bg-gray-100 border-gray-300 rounded focus:ring-[#1173d4] dark:bg-gray-700 dark:border-gray-600"
+                          className="w-4 h-4 mt-1 text-[#2f9e5f] bg-gray-100 border-gray-300 rounded focus:ring-[#2f9e5f] dark:bg-gray-700 dark:border-gray-600"
                         />
                         <div className="flex-1">
                           <p className="text-sm font-medium text-gray-900 dark:text-white">
@@ -382,7 +382,7 @@ const Settings = () => {
                               emailNewOrder: e.target.checked,
                             })
                           }
-                          className="w-4 h-4 mt-1 text-[#1173d4] bg-gray-100 border-gray-300 rounded focus:ring-[#1173d4] dark:bg-gray-700 dark:border-gray-600"
+                          className="w-4 h-4 mt-1 text-[#2f9e5f] bg-gray-100 border-gray-300 rounded focus:ring-[#2f9e5f] dark:bg-gray-700 dark:border-gray-600"
                         />
                         <div className="flex-1">
                           <p className="text-sm font-medium text-gray-900 dark:text-white">
@@ -404,7 +404,7 @@ const Settings = () => {
                               emailOverdueLoan: e.target.checked,
                             })
                           }
-                          className="w-4 h-4 mt-1 text-[#1173d4] bg-gray-100 border-gray-300 rounded focus:ring-[#1173d4] dark:bg-gray-700 dark:border-gray-600"
+                          className="w-4 h-4 mt-1 text-[#2f9e5f] bg-gray-100 border-gray-300 rounded focus:ring-[#2f9e5f] dark:bg-gray-700 dark:border-gray-600"
                         />
                         <div className="flex-1">
                           <p className="text-sm font-medium text-gray-900 dark:text-white">
@@ -426,7 +426,7 @@ const Settings = () => {
                               emailLowStock: e.target.checked,
                             })
                           }
-                          className="w-4 h-4 mt-1 text-[#1173d4] bg-gray-100 border-gray-300 rounded focus:ring-[#1173d4] dark:bg-gray-700 dark:border-gray-600"
+                          className="w-4 h-4 mt-1 text-[#2f9e5f] bg-gray-100 border-gray-300 rounded focus:ring-[#2f9e5f] dark:bg-gray-700 dark:border-gray-600"
                         />
                         <div className="flex-1">
                           <p className="text-sm font-medium text-gray-900 dark:text-white">
@@ -455,7 +455,7 @@ const Settings = () => {
                               pushNewMember: e.target.checked,
                             })
                           }
-                          className="w-4 h-4 mt-1 text-[#1173d4] bg-gray-100 border-gray-300 rounded focus:ring-[#1173d4] dark:bg-gray-700 dark:border-gray-600"
+                          className="w-4 h-4 mt-1 text-[#2f9e5f] bg-gray-100 border-gray-300 rounded focus:ring-[#2f9e5f] dark:bg-gray-700 dark:border-gray-600"
                         />
                         <div className="flex-1">
                           <p className="text-sm font-medium text-gray-900 dark:text-white">
@@ -477,7 +477,7 @@ const Settings = () => {
                               pushNewOrder: e.target.checked,
                             })
                           }
-                          className="w-4 h-4 mt-1 text-[#1173d4] bg-gray-100 border-gray-300 rounded focus:ring-[#1173d4] dark:bg-gray-700 dark:border-gray-600"
+                          className="w-4 h-4 mt-1 text-[#2f9e5f] bg-gray-100 border-gray-300 rounded focus:ring-[#2f9e5f] dark:bg-gray-700 dark:border-gray-600"
                         />
                         <div className="flex-1">
                           <p className="text-sm font-medium text-gray-900 dark:text-white">
@@ -499,7 +499,7 @@ const Settings = () => {
                               pushOverdueLoan: e.target.checked,
                             })
                           }
-                          className="w-4 h-4 mt-1 text-[#1173d4] bg-gray-100 border-gray-300 rounded focus:ring-[#1173d4] dark:bg-gray-700 dark:border-gray-600"
+                          className="w-4 h-4 mt-1 text-[#2f9e5f] bg-gray-100 border-gray-300 rounded focus:ring-[#2f9e5f] dark:bg-gray-700 dark:border-gray-600"
                         />
                         <div className="flex-1">
                           <p className="text-sm font-medium text-gray-900 dark:text-white">
@@ -627,7 +627,7 @@ const Settings = () => {
                       미리보기
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="border-2 border-[#1173d4] rounded-lg p-4 bg-white">
+                      <div className="border-2 border-[#2f9e5f] rounded-lg p-4 bg-white">
                         <div className="flex items-center gap-2 mb-2">
                           <div className="w-3 h-3 rounded-full bg-red-500"></div>
                           <div className="w-3 h-3 rounded-full bg-yellow-500"></div>

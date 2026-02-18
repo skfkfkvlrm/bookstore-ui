@@ -74,7 +74,7 @@ const MemberManagement = () => {
                   {new Date(member.joinDate).toLocaleDateString()}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right">
-                  <button className="text-gray-500 hover:text-gray-800">
+                  <button className="text-gray-500 hover:text-gray-800" aria-label="더보기 메뉴">
                     <MoreVertical className="h-5 w-5" />
                   </button>
                 </td>

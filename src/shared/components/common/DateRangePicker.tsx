@@ -44,14 +44,14 @@ const DateRangePicker = ({
             type="date"
             value={localStartDate}
             onChange={(e) => setLocalStartDate(e.target.value)}
-            className="flex-1 px-3 py-2 bg-white dark:bg-[#1a2632] border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#1173d4] focus:border-transparent dark:text-white text-sm"
+            className="flex-1 px-3 py-2 bg-white dark:bg-[#1a2632] border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#2f9e5f] focus:border-transparent dark:text-white text-sm"
           />
           <span className="text-gray-500 dark:text-gray-400">~</span>
           <input
             type="date"
             value={localEndDate}
             onChange={(e) => setLocalEndDate(e.target.value)}
-            className="flex-1 px-3 py-2 bg-white dark:bg-[#1a2632] border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#1173d4] focus:border-transparent dark:text-white text-sm"
+            className="flex-1 px-3 py-2 bg-white dark:bg-[#1a2632] border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#2f9e5f] focus:border-transparent dark:text-white text-sm"
           />
         </div>
         <div className="flex gap-2">
@@ -79,7 +79,7 @@ const DateRangePicker = ({
           <button
             type="button"
             onClick={handleApply}
-            className="px-4 py-2 text-xs font-medium text-white bg-[#1173d4] hover:bg-[#0d5aa7] rounded-lg transition-colors"
+            className="px-4 py-2 text-xs font-medium text-white bg-[#2f9e5f] hover:bg-[#1f7d57] rounded-lg transition-colors"
           >
             적용
           </button>

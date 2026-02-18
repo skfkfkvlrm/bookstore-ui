@@ -143,7 +143,7 @@ const MemberList = () => {
           type="checkbox"
           checked={selectedMembers.length === paginatedMembers.length && paginatedMembers.length > 0}
           onChange={handleSelectAll}
-          className="rounded border-gray-300 text-[#1173d4] focus:ring-[#1173d4]"
+          className="rounded border-gray-300 text-[#2f9e5f] focus:ring-[#2f9e5f]"
         />
       ),
       accessor: (row: Member) => (
@@ -154,7 +154,7 @@ const MemberList = () => {
             e.stopPropagation();
             handleSelectMember(row.id);
           }}
-          className="rounded border-gray-300 text-[#1173d4] focus:ring-[#1173d4]"
+          className="rounded border-gray-300 text-[#2f9e5f] focus:ring-[#2f9e5f]"
         />
       ),
     },
@@ -163,7 +163,7 @@ const MemberList = () => {
       accessor: (row: Member) => (
         <button
           onClick={() => navigate(`/admin/members/${row.id}`)}
-          className="font-medium text-[#1173d4] hover:underline text-left"
+          className="font-medium text-[#2f9e5f] hover:underline text-left"
         >
           {row.name}
         </button>
@@ -245,7 +245,7 @@ const MemberList = () => {
                   setStatusFilter(e.target.value as typeof statusFilter);
                   setCurrentPage(1);
                 }}
-                className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1a2632] text-sm focus:ring-2 focus:ring-[#1173d4] focus:border-transparent"
+                className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1a2632] text-sm focus:ring-2 focus:ring-[#2f9e5f] focus:border-transparent"
               >
                 <option value="all">All Status</option>
                 <option value="ACTIVE">Active</option>
@@ -262,7 +262,7 @@ const MemberList = () => {
                   setMembershipFilter(e.target.value as typeof membershipFilter);
                   setCurrentPage(1);
                 }}
-                className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1a2632] text-sm focus:ring-2 focus:ring-[#1173d4] focus:border-transparent"
+                className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1a2632] text-sm focus:ring-2 focus:ring-[#2f9e5f] focus:border-transparent"
               >
                 <option value="all">All Types</option>
                 <option value="REGULAR">Regular</option>
@@ -277,7 +277,7 @@ const MemberList = () => {
                   setSortBy(e.target.value as typeof sortBy);
                   setCurrentPage(1);
                 }}
-                className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1a2632] text-sm focus:ring-2 focus:ring-[#1173d4] focus:border-transparent"
+                className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1a2632] text-sm focus:ring-2 focus:ring-[#2f9e5f] focus:border-transparent"
               >
                 <option value="joinDate">Join Date</option>
                 <option value="name">Name</option>

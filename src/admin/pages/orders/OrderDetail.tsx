@@ -85,7 +85,7 @@ const OrderDetail = () => {
         <div>
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Order Details</h2>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
-            Order <span className="font-mono text-[#1173d4]">#{String(order.id).padStart(8, "0")}</span>
+            Order <span className="font-mono text-[#2f9e5f]">#{String(order.id).padStart(8, "0")}</span>
           </p>
         </div>
       </div>

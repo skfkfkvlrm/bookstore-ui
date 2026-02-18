@@ -98,7 +98,7 @@ const LoanList = () => {
           type="checkbox"
           checked={selectedLoans.length === paginatedLoans.length && paginatedLoans.length > 0}
           onChange={handleSelectAll}
-          className="rounded border-gray-300 text-[#1173d4] focus:ring-[#1173d4]"
+          className="rounded border-gray-300 text-[#2f9e5f] focus:ring-[#2f9e5f]"
         />
       ),
       accessor: (row: Loan) => (
@@ -109,7 +109,7 @@ const LoanList = () => {
             e.stopPropagation();
             handleSelectLoan(row.id);
           }}
-          className="rounded border-gray-300 text-[#1173d4] focus:ring-[#1173d4]"
+          className="rounded border-gray-300 text-[#2f9e5f] focus:ring-[#2f9e5f]"
         />
       ),
     },
@@ -120,7 +120,7 @@ const LoanList = () => {
           onClick={() => navigate(`/admin/loans/${row.id}`)}
           className="text-left"
         >
-          <p className="font-medium text-[#1173d4] hover:underline">{row.bookTitle}</p>
+          <p className="font-medium text-[#2f9e5f] hover:underline">{row.bookTitle}</p>
           <p className="text-xs text-gray-600 dark:text-gray-400">by {row.bookAuthor}</p>
         </button>
       ),
@@ -215,7 +215,7 @@ const LoanList = () => {
                   setStatusFilter(e.target.value as typeof statusFilter);
                   setCurrentPage(1);
                 }}
-                className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1a2632] text-sm focus:ring-2 focus:ring-[#1173d4] focus:border-transparent"
+                className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1a2632] text-sm focus:ring-2 focus:ring-[#2f9e5f] focus:border-transparent"
               >
                 <option value="all">All Status</option>
                 <option value="ACTIVE">Active</option>
@@ -231,7 +231,7 @@ const LoanList = () => {
                   setSortBy(e.target.value as typeof sortBy);
                   setCurrentPage(1);
                 }}
-                className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1a2632] text-sm focus:ring-2 focus:ring-[#1173d4] focus:border-transparent"
+                className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1a2632] text-sm focus:ring-2 focus:ring-[#2f9e5f] focus:border-transparent"
               >
                 <option value="loanDate">Loan Date</option>
                 <option value="dueDate">Due Date</option>

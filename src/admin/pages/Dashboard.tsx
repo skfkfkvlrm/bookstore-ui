@@ -149,7 +149,7 @@ const Dashboard = () => {
       {
         label: "일별 매출",
         data: salesData,
-        borderColor: "#1173d4",
+        borderColor: "#2f9e5f",
         backgroundColor: "rgba(17, 115, 212, 0.1)",
         fill: true,
         tension: 0.4,
@@ -164,7 +164,7 @@ const Dashboard = () => {
       {
         label: "일별 주문 수",
         data: ordersData,
-        backgroundColor: "#1173d4",
+        backgroundColor: "#2f9e5f",
         borderRadius: 4,
       },
     ],
@@ -191,7 +191,7 @@ const Dashboard = () => {
     datasets: [
       {
         data: [mockStats.loans.active, mockStats.loans.overdue, mockStats.loans.returned],
-        backgroundColor: ["#1173d4", "#ef4444", "#10b981"],
+        backgroundColor: ["#2f9e5f", "#ef4444", "#10b981"],
         borderWidth: 0,
       },
     ],

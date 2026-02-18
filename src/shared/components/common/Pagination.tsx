@@ -55,7 +55,7 @@ const Pagination = ({
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
       {itemsPerPage && totalItems && (
         <div className="text-sm text-gray-600 dark:text-gray-400">
-          Showing {startItem} to {endItem} of {totalItems} results
+          총 {totalItems}개 중 {startItem}–{endItem}번 항목
         </div>
       )}
 
@@ -64,7 +64,7 @@ const Pagination = ({
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
           className="inline-flex items-center justify-center w-10 h-10 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          aria-label="Previous page"
+          aria-label="이전 페이지"
         >
           <span className="material-symbols-outlined">chevron_left</span>
         </button>
@@ -87,7 +87,7 @@ const Pagination = ({
               onClick={() => onPageChange(page as number)}
               className={`inline-flex items-center justify-center w-10 h-10 rounded-lg text-sm font-medium transition-colors ${
                 currentPage === page
-                  ? "bg-[#1173d4] text-white"
+                  ? "bg-[#2f9e5f] text-white"
                   : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
               }`}
             >
@@ -100,7 +100,7 @@ const Pagination = ({
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
           className="inline-flex items-center justify-center w-10 h-10 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          aria-label="Next page"
+          aria-label="다음 페이지"
         >
           <span className="material-symbols-outlined">chevron_right</span>
         </button>
