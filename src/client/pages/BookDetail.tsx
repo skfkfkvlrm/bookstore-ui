@@ -1,70 +1,101 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import type { Book } from "../../shared/types";
-import booksData from "../../shared/data/books.json";
-import { addLoan, getCurrentMemberId } from "../utils/loanStorage";
+import { bookService } from "../../services/bookService";
+import { loanService } from "../../services/loanService";
 import { addToCart } from "../utils/cartStorage";
-import { getAllUsers } from "../utils/authStorage";
+import { getCurrentUser } from "../utils/authStorage";
+import axios from "axios";
+import type { ApiError } from "../../shared/types";
 
 const BookDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const initialBook = (booksData as Book[]).find((b) => b.id === Number(id)) || (booksData[0] as Book);
-  const [book] = useState<Book>(initialBook);
+  const [book, setBook] = useState<Book | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
-  const [loanPeriod, setLoanPeriod] = useState("14");
+  const [loanPeriod, setLoanPeriod] = useState(14);
+  const [loanLoading, setLoanLoading] = useState(false);
+
+  useEffect(() => {
+    if (!id) return;
+    setLoading(true);
+    setError(null);
+    bookService.getBook(Number(id))
+      .then(setBook)
+      .catch(() => setError("도서 정보를 불러오는 데 실패했습니다."))
+      .finally(() => setLoading(false));
+  }, [id]);
 
   const handleAddToCart = () => {
+    if (!book) return;
     addToCart(book, quantity);
     const confirmNavigate = window.confirm(
       `"${book.title}" ${quantity}권을 장바구니에 담았습니다.\n\n장바구니로 이동할까요?`
     );
-    if (confirmNavigate) {
-      navigate("/client/cart");
-    }
+    if (confirmNavigate) navigate("/client/cart");
   };
 
   const handleAddToWishlist = () => {
-    console.log("Add to wishlist:", id);
+    if (!book) return;
     alert(`"${book.title}"을(를) 위시리스트에 담았습니다.`);
   };
 
-  const handleBorrowBook = () => {
-    const memberId = getCurrentMemberId();
-    const allUsers = getAllUsers();
-    const member = allUsers.find(m => m.id === memberId);
+  const handleBorrowBook = async () => {
+    if (!book) return;
 
-    if (!member) {
+    const currentUser = getCurrentUser();
+    if (!currentUser) {
       alert("로그인 후 대출할 수 있습니다.");
+      navigate("/client/login");
       return;
     }
 
-    const loanDate = new Date();
-    const dueDate = new Date();
-    dueDate.setDate(dueDate.getDate() + parseInt(loanPeriod));
-
-    const newLoan = addLoan({
-      bookId: book.id,
-      bookTitle: book.title,
-      bookAuthor: book.author,
-      memberId: member.id,
-      memberName: member.name,
-      memberEmail: member.email,
-      loanDate: loanDate.toISOString(),
-      dueDate: dueDate.toISOString(),
-      status: "ACTIVE",
-    });
-
-    console.log("Book borrowed:", newLoan);
-
-    const confirmNavigate = window.confirm(
-      `"${book.title}"을(를) ${loanPeriod}일 동안 대출했습니다!\n\n내 대출 내역을 확인할까요?`
-    );
-
-    if (confirmNavigate) {
-      navigate("/client/my-loans");
+    setLoanLoading(true);
+    try {
+      await loanService.requestLoan({ bookId: book.id, loanPeriod });
+      const confirmNavigate = window.confirm(
+        `"${book.title}"을(를) ${loanPeriod}일 동안 대출했습니다!\n\n내 대출 내역을 확인할까요?`
+      );
+      if (confirmNavigate) navigate("/client/my-loans");
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        const apiError = err.response?.data as ApiError | undefined;
+        if (err.response?.status === 409) {
+          alert("이미 대출 중인 도서입니다.");
+        } else if (err.response?.status === 400) {
+          alert(apiError?.message ?? "대출 한도를 초과했습니다.");
+        } else {
+          alert(apiError?.message ?? "대출 처리 중 오류가 발생했습니다.");
+        }
+      } else {
+        alert("서버에 연결할 수 없습니다. 잠시 후 다시 시도하세요.");
+      }
+    } finally {
+      setLoanLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-32">
+        <span className="material-symbols-outlined text-4xl text-[#2f9e5f] animate-spin">progress_activity</span>
+      </div>
+    );
+  }
+
+  if (error || !book) {
+    return (
+      <div className="text-center py-16">
+        <span className="material-symbols-outlined text-6xl text-gray-400 mb-4">error</span>
+        <p className="text-lg text-gray-600 dark:text-gray-400">{error ?? "도서를 찾을 수 없습니다."}</p>
+        <Link to="/client/books" className="mt-4 inline-block text-[#2f9e5f] hover:underline">
+          도서 목록으로 돌아가기
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto">
@@ -84,12 +115,12 @@ const BookDetail = () => {
               alt={`${book.title} 표지 이미지`}
               className="w-full rounded-lg shadow-lg aspect-[3/4] object-cover"
               onError={(e) => {
-                e.currentTarget.style.display = 'none';
-                e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                e.currentTarget.style.display = "none";
+                e.currentTarget.nextElementSibling?.classList.remove("hidden");
               }}
             />
           ) : null}
-          <div className={`w-full rounded-lg shadow-lg bg-gradient-to-br from-[#2f9e5f]/20 to-[#2f9e5f]/5 aspect-[3/4] flex items-center justify-center ${book.coverImage ? 'hidden' : ''}`}>
+          <div className={`w-full rounded-lg shadow-lg bg-gradient-to-br from-[#2f9e5f]/20 to-[#2f9e5f]/5 aspect-[3/4] flex items-center justify-center ${book.coverImage ? "hidden" : ""}`}>
             <span className="material-symbols-outlined text-[8rem] text-[#2f9e5f]/40">book</span>
           </div>
         </div>
@@ -111,7 +142,7 @@ const BookDetail = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">가격</p>
-                <p className="text-2xl font-bold text-[#2f9e5f]">${book.price}</p>
+                <p className="text-2xl font-bold text-[#2f9e5f]">{book.price.toLocaleString()}원</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">재고 상태</p>
@@ -171,24 +202,33 @@ const BookDetail = () => {
                   </label>
                   <select
                     value={loanPeriod}
-                    onChange={(e) => setLoanPeriod(e.target.value)}
+                    onChange={(e) => setLoanPeriod(Number(e.target.value))}
                     className="w-full rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] py-2 px-3 focus:border-[#2f9e5f] focus:ring-[#2f9e5f] text-gray-900 dark:text-gray-100"
-                    disabled={!book.available}
+                    disabled={!book.available || loanLoading}
                   >
-                    <option value="7">7일</option>
-                    <option value="14">14일 (기본)</option>
-                    <option value="21">21일</option>
-                    <option value="30">30일</option>
+                    <option value={7}>7일</option>
+                    <option value={14}>14일 (기본)</option>
+                    <option value={21}>21일</option>
+                    <option value={30}>30일</option>
                   </select>
                 </div>
                 <div className="flex items-end">
                   <button
                     onClick={handleBorrowBook}
-                    disabled={!book.available}
+                    disabled={!book.available || loanLoading}
                     className="w-full inline-flex items-center justify-center px-6 py-2 rounded-lg bg-green-600 text-white font-bold text-base hover:bg-green-700 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <span className="material-symbols-outlined mr-2">book</span>
-                    대출하기
+                    {loanLoading ? (
+                      <>
+                        <span className="material-symbols-outlined mr-2 animate-spin">progress_activity</span>
+                        처리 중...
+                      </>
+                    ) : (
+                      <>
+                        <span className="material-symbols-outlined mr-2">book</span>
+                        대출하기
+                      </>
+                    )}
                   </button>
                 </div>
               </div>
