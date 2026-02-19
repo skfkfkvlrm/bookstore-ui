@@ -3,6 +3,22 @@ import membersData from "../../shared/data/members.json";
 
 const AUTH_STORAGE_KEY = "library_current_user";
 const USERS_STORAGE_KEY = "library_users";
+const TOKEN_STORAGE_KEY = "library_access_token";
+
+// Token management
+export const getToken = (): string | null => {
+  return localStorage.getItem(TOKEN_STORAGE_KEY);
+};
+
+export const setToken = (token: string): void => {
+  localStorage.setItem(TOKEN_STORAGE_KEY, token);
+};
+
+export const clearAuth = (): void => {
+  localStorage.removeItem(AUTH_STORAGE_KEY);
+  localStorage.removeItem(TOKEN_STORAGE_KEY);
+  dispatchAuthChangeEvent();
+};
 
 // Helper function to dispatch auth change event
 const dispatchAuthChangeEvent = () => {
