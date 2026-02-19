@@ -1,16 +1,21 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { login } from "../utils/authStorage";
+import { authService } from "../../services/authService";
+import { setCurrentUserFromToken } from "../utils/authStorage";
+import axios from "axios";
+import type { ApiError } from "../../shared/types";
 
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const from = (location.state as any)?.from?.pathname || "/client";
+  const from = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname || "/client";
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
@@ -18,13 +23,29 @@ const Login = () => {
       setError("이메일을 입력하세요.");
       return;
     }
+    if (!password.trim()) {
+      setError("비밀번호를 입력하세요.");
+      return;
+    }
 
-    const user = login(email);
-
-    if (user) {
+    setLoading(true);
+    try {
+      const token = await authService.login({ email, password });
+      setCurrentUserFromToken(token.accessToken);
       navigate(from, { replace: true });
-    } else {
-      setError("해당 이메일로 등록된 계정이 없습니다. 이메일을 확인하거나 회원가입을 진행하세요.");
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        const apiError = err.response?.data as ApiError | undefined;
+        if (err.response?.status === 401) {
+          setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+        } else {
+          setError(apiError?.message ?? "로그인에 실패했습니다. 다시 시도하세요.");
+        }
+      } else {
+        setError("서버에 연결할 수 없습니다. 잠시 후 다시 시도하세요.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -57,6 +78,23 @@ const Login = () => {
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-[#2f9e5f] focus:border-transparent"
                 placeholder="이메일을 입력하세요"
                 autoComplete="email"
+                disabled={loading}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                비밀번호
+              </label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-[#2f9e5f] focus:border-transparent"
+                placeholder="비밀번호를 입력하세요"
+                autoComplete="current-password"
+                disabled={loading}
               />
             </div>
 
@@ -73,10 +111,20 @@ const Login = () => {
 
             <button
               type="submit"
-              className="w-full inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#2f9e5f] text-white font-bold text-base hover:bg-[#2f9e5f]/90 transition-all shadow-md"
+              disabled={loading}
+              className="w-full inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#2f9e5f] text-white font-bold text-base hover:bg-[#2f9e5f]/90 transition-all shadow-md disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              <span className="material-symbols-outlined mr-2">login</span>
-              로그인
+              {loading ? (
+                <>
+                  <span className="material-symbols-outlined mr-2 animate-spin">progress_activity</span>
+                  로그인 중...
+                </>
+              ) : (
+                <>
+                  <span className="material-symbols-outlined mr-2">login</span>
+                  로그인
+                </>
+              )}
             </button>
           </form>
 

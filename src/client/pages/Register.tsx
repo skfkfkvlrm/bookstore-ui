@@ -1,17 +1,21 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { register } from "../utils/authStorage";
+import { authService } from "../../services/authService";
+import axios from "axios";
+import type { ApiError } from "../../shared/types";
 
 const Register = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    membershipType: "REGULAR" as "REGULAR" | "PREMIUM",
+    password: "",
+    confirmPassword: "",
   });
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
@@ -19,28 +23,45 @@ const Register = () => {
       setError("이름을 입력하세요.");
       return;
     }
-
     if (!formData.email.trim()) {
       setError("이메일을 입력하세요.");
       return;
     }
-
-    // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       setError("올바른 이메일 형식을 입력하세요.");
       return;
     }
+    if (formData.password.length < 6) {
+      setError("비밀번호는 6자 이상이어야 합니다.");
+      return;
+    }
+    if (formData.password !== formData.confirmPassword) {
+      setError("비밀번호가 일치하지 않습니다.");
+      return;
+    }
 
+    setLoading(true);
     try {
-      register(formData);
-      navigate("/client", { replace: true });
+      await authService.signup({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      });
+      navigate("/client/login", { replace: true, state: { message: "회원가입이 완료되었습니다. 로그인하세요." } });
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
+      if (axios.isAxiosError(err)) {
+        const apiError = err.response?.data as ApiError | undefined;
+        if (err.response?.status === 409) {
+          setError("이미 사용 중인 이메일입니다.");
+        } else {
+          setError(apiError?.message ?? "회원가입에 실패했습니다. 다시 시도하세요.");
+        }
       } else {
-        setError("회원가입에 실패했습니다. 다시 시도하세요.");
+        setError("서버에 연결할 수 없습니다. 잠시 후 다시 시도하세요.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -73,6 +94,7 @@ const Register = () => {
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-[#2f9e5f] focus:border-transparent"
                 placeholder="이름을 입력하세요"
                 autoComplete="name"
+                disabled={loading}
               />
             </div>
 
@@ -88,54 +110,40 @@ const Register = () => {
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-[#2f9e5f] focus:border-transparent"
                 placeholder="이메일을 입력하세요"
                 autoComplete="email"
+                disabled={loading}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                회원 등급
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                비밀번호
               </label>
-              <div className="grid grid-cols-2 gap-4">
-                <button
-                  type="button"
-                  onClick={() => setFormData({ ...formData, membershipType: "REGULAR" })}
-                  className={`p-4 rounded-lg border-2 transition-all ${
-                    formData.membershipType === "REGULAR"
-                      ? "border-[#2f9e5f] bg-[#2f9e5f]/10"
-                      : "border-gray-300 dark:border-gray-700 hover:border-[#2f9e5f]/50"
-                  }`}
-                >
-                  <div className="text-center">
-                    <span className="material-symbols-outlined text-3xl text-[#2f9e5f] mb-2">
-                      book
-                    </span>
-                    <p className="font-bold text-gray-900 dark:text-white">일반</p>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                      기본 이용 혜택
-                    </p>
-                  </div>
-                </button>
+              <input
+                type="password"
+                id="password"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-[#2f9e5f] focus:border-transparent"
+                placeholder="6자 이상 입력하세요"
+                autoComplete="new-password"
+                disabled={loading}
+              />
+            </div>
 
-                <button
-                  type="button"
-                  onClick={() => setFormData({ ...formData, membershipType: "PREMIUM" })}
-                  className={`p-4 rounded-lg border-2 transition-all ${
-                    formData.membershipType === "PREMIUM"
-                      ? "border-[#2f9e5f] bg-[#2f9e5f]/10"
-                      : "border-gray-300 dark:border-gray-700 hover:border-[#2f9e5f]/50"
-                  }`}
-                >
-                  <div className="text-center">
-                    <span className="material-symbols-outlined text-3xl text-[#2f9e5f] mb-2">
-                      workspace_premium
-                    </span>
-                    <p className="font-bold text-gray-900 dark:text-white">프리미엄</p>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                      확대된 혜택 제공
-                    </p>
-                  </div>
-                </button>
-              </div>
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                비밀번호 확인
+              </label>
+              <input
+                type="password"
+                id="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#101922] text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-[#2f9e5f] focus:border-transparent"
+                placeholder="비밀번호를 다시 입력하세요"
+                autoComplete="new-password"
+                disabled={loading}
+              />
             </div>
 
             {error && (
@@ -151,10 +159,20 @@ const Register = () => {
 
             <button
               type="submit"
-              className="w-full inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#2f9e5f] text-white font-bold text-base hover:bg-[#2f9e5f]/90 transition-all shadow-md"
+              disabled={loading}
+              className="w-full inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#2f9e5f] text-white font-bold text-base hover:bg-[#2f9e5f]/90 transition-all shadow-md disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              <span className="material-symbols-outlined mr-2">person_add</span>
-              회원가입
+              {loading ? (
+                <>
+                  <span className="material-symbols-outlined mr-2 animate-spin">progress_activity</span>
+                  처리 중...
+                </>
+              ) : (
+                <>
+                  <span className="material-symbols-outlined mr-2">person_add</span>
+                  회원가입
+                </>
+              )}
             </button>
           </form>
 

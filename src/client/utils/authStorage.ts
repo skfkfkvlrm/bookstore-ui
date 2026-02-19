@@ -20,6 +20,36 @@ export const clearAuth = (): void => {
   dispatchAuthChangeEvent();
 };
 
+// Decode JWT payload (client-side, no verification)
+export const decodeToken = (token: string): Record<string, unknown> | null => {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
+    );
+    return JSON.parse(jsonPayload);
+  } catch {
+    return null;
+  }
+};
+
+// Store minimal user info after API login
+export const setCurrentUserFromToken = (token: string, name?: string): void => {
+  const payload = decodeToken(token);
+  const email = (payload?.sub ?? payload?.email ?? '') as string;
+  const memberId = (payload?.memberId ?? payload?.id ?? 0) as number;
+  const partial: Member = {
+    id: memberId,
+    name: name ?? email.split('@')[0],
+    email,
+    membershipType: 'REGULAR',
+    joinDate: new Date().toISOString(),
+  };
+  localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(partial));
+  dispatchAuthChangeEvent();
+};
+
 // Helper function to dispatch auth change event
 const dispatchAuthChangeEvent = () => {
   window.dispatchEvent(new CustomEvent('authChange'));
