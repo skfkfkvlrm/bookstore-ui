@@ -1,5 +1,5 @@
 import { apiClient } from './apiClient';
-import type { Loan, ClientLoanRequest } from '../shared/types';
+import type { Loan, ClientLoanRequest, PageResponse } from '../shared/types';
 
 export const loanService = {
   // 클라이언트 API
@@ -16,8 +16,11 @@ export const loanService = {
     apiClient.delete(`/api/client/loans/${loanId}`).then(() => undefined),
 
   // 관리자 API
-  getAllLoans: (): Promise<Loan[]> =>
-    apiClient.get<Loan[]>('/api/admin/loans').then((r) => r.data),
+  getAllLoans: async (size = 500): Promise<Loan[]> => {
+    const r = await apiClient.get<PageResponse<Loan> | Loan[]>('/api/admin/loans', { params: { page: 0, size } });
+    const data = r.data;
+    return Array.isArray(data) ? data : data.content;
+  },
 
   getLoan: (id: number): Promise<Loan> =>
     apiClient.get<Loan>(`/api/admin/loans/${id}`).then((r) => r.data),

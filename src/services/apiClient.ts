@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getToken, clearAuth } from '../client/utils/authStorage';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '';
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -23,7 +23,8 @@ apiClient.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       clearAuth();
-      window.location.href = '/client/login';
+      const isAdmin = window.location.pathname.startsWith('/admin');
+      window.location.href = isAdmin ? '/admin/login' : '/client/login';
     }
     return Promise.reject(error);
   }

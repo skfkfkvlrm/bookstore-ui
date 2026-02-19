@@ -6,8 +6,20 @@ const USERS_STORAGE_KEY = "library_users";
 const TOKEN_STORAGE_KEY = "library_access_token";
 
 // Token management
+export const isTokenExpired = (token: string): boolean => {
+  const payload = decodeToken(token);
+  if (!payload?.exp) return true;
+  return Date.now() / 1000 > (payload.exp as number);
+};
+
 export const getToken = (): string | null => {
-  return localStorage.getItem(TOKEN_STORAGE_KEY);
+  const token = localStorage.getItem(TOKEN_STORAGE_KEY);
+  if (!token) return null;
+  if (isTokenExpired(token)) {
+    clearAuth();
+    return null;
+  }
+  return token;
 };
 
 export const setToken = (token: string): void => {
@@ -39,15 +51,23 @@ export const setCurrentUserFromToken = (token: string, name?: string): void => {
   const payload = decodeToken(token);
   const email = (payload?.sub ?? payload?.email ?? '') as string;
   const memberId = (payload?.memberId ?? payload?.id ?? 0) as number;
+  // role: Spring Boot JWT claim — 필드명이 auth / role / roles 중 하나일 수 있음
+  const rawRole = payload?.auth ?? payload?.role ?? payload?.roles?.[0] ?? 'USER';
+  const role = (typeof rawRole === 'string' ? rawRole.replace('ROLE_', '') : 'USER') as 'USER' | 'ADMIN';
   const partial: Member = {
     id: memberId,
     name: name ?? email.split('@')[0],
     email,
     membershipType: 'REGULAR',
     joinDate: new Date().toISOString(),
+    role,
   };
   localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(partial));
   dispatchAuthChangeEvent();
+};
+
+export const isAdmin = (): boolean => {
+  return getCurrentUser()?.role === 'ADMIN';
 };
 
 // Helper function to dispatch auth change event
@@ -76,6 +96,11 @@ export const getAllUsers = (): Member[] => {
 };
 
 export const getCurrentUser = (): Member | null => {
+  const token = localStorage.getItem(TOKEN_STORAGE_KEY);
+  if (token && isTokenExpired(token)) {
+    clearAuth();
+    return null;
+  }
   const stored = localStorage.getItem(AUTH_STORAGE_KEY);
   if (!stored) return null;
   try {

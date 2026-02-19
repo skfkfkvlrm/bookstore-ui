@@ -125,9 +125,9 @@ const BookList = () => {
                 className="group flex cursor-pointer flex-col gap-2"
               >
                 <div className="w-full overflow-hidden rounded-lg bg-gray-200 dark:bg-gray-800 transition-shadow duration-300 group-hover:shadow-xl">
-                  {book.coverImage ? (
+                  {book.coverImageUrl ? (
                     <img
-                      src={book.coverImage}
+                      src={book.coverImageUrl}
                       alt={`${book.title} 표지 이미지`}
                       className="aspect-[3/4] w-full object-cover transition-transform duration-300 group-hover:scale-105"
                       onError={(e) => {
@@ -136,7 +136,7 @@ const BookList = () => {
                       }}
                     />
                   ) : null}
-                  <div className={`aspect-[3/4] w-full bg-gradient-to-br from-[#2f9e5f]/20 to-[#2f9e5f]/5 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 ${book.coverImage ? "hidden" : ""}`}>
+                  <div className={`aspect-[3/4] w-full bg-gradient-to-br from-[#2f9e5f]/20 to-[#2f9e5f]/5 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 ${book.coverImageUrl ? "hidden" : ""}`}>
                     <span className="material-symbols-outlined text-6xl text-[#2f9e5f]/40">book</span>
                   </div>
                 </div>

@@ -28,7 +28,7 @@ export interface Book {
   price: number;
   available: boolean;
   createdDate: string;
-  coverImage?: string;
+  coverImageUrl?: string;
 }
 
 export interface BookCreateRequest {
@@ -42,13 +42,17 @@ export interface BookCreateRequest {
 // Order Types
 export interface Order {
   id: number;
-  totalAmount: number;
-  orderDate: string;
+  memberId: number;
+  memberName: string;
+  memberEmail: string;
   status: 'PENDING' | 'CONFIRMED' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
-  items: OrderItem[];
-  customerEmail?: string;
-  paymentMethod?: 'CREDIT_CARD' | 'BANK_TRANSFER';
-  paymentStatus?: 'PENDING' | 'COMPLETED' | 'FAILED';
+  orderItems: OrderItem[];
+  totalAmount: number;
+  discountAmount: number;
+  finalAmount: number;
+  orderDate: string;
+  payment?: OrderPayment;
+  delivery?: OrderDelivery;
 }
 
 export interface OrderItem {
@@ -58,6 +62,23 @@ export interface OrderItem {
   bookAuthor: string;
   quantity: number;
   price: number;
+  totalPrice: number;
+}
+
+export interface OrderPayment {
+  method: 'CREDIT_CARD' | 'DEBIT_CARD' | 'BANK_TRANSFER' | 'KAKAO_PAY' | 'NAVER_PAY' | 'TOSS_PAY';
+  status: 'PENDING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
+  amount: number;
+}
+
+export interface OrderDelivery {
+  recipientName: string;
+  phoneNumber: string;
+  address: string;
+  addressDetail?: string;
+  zipCode?: string;
+  deliveryMemo?: string;
+  status: string;
 }
 
 export interface OrderCreateRequest {

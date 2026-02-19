@@ -109,9 +109,9 @@ const BookDetail = () => {
 
       <div className="grid md:grid-cols-3 gap-8">
         <div className="md:col-span-1">
-          {book.coverImage ? (
+          {book.coverImageUrl ? (
             <img
-              src={book.coverImage}
+              src={book.coverImageUrl}
               alt={`${book.title} 표지 이미지`}
               className="w-full rounded-lg shadow-lg aspect-[3/4] object-cover"
               onError={(e) => {
@@ -120,7 +120,7 @@ const BookDetail = () => {
               }}
             />
           ) : null}
-          <div className={`w-full rounded-lg shadow-lg bg-gradient-to-br from-[#2f9e5f]/20 to-[#2f9e5f]/5 aspect-[3/4] flex items-center justify-center ${book.coverImage ? "hidden" : ""}`}>
+          <div className={`w-full rounded-lg shadow-lg bg-gradient-to-br from-[#2f9e5f]/20 to-[#2f9e5f]/5 aspect-[3/4] flex items-center justify-center ${book.coverImageUrl ? "hidden" : ""}`}>
             <span className="material-symbols-outlined text-[8rem] text-[#2f9e5f]/40">book</span>
           </div>
         </div>

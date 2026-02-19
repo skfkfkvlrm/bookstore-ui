@@ -137,9 +137,9 @@ const BookList = () => {
       header: "표지",
       accessor: (row: Book) => (
         <div className="w-12 h-16 overflow-hidden rounded bg-gray-200 dark:bg-gray-800">
-          {row.coverImage ? (
+          {row.coverImageUrl ? (
             <img
-              src={row.coverImage}
+              src={row.coverImageUrl}
               alt={`Cover of ${row.title}`}
               className="w-full h-full object-cover"
               onError={(e) => {
@@ -148,7 +148,7 @@ const BookList = () => {
               }}
             />
           ) : null}
-          <div className={`w-full h-full bg-gradient-to-br from-[#2f9e5f]/20 to-[#2f9e5f]/5 flex items-center justify-center ${row.coverImage ? 'hidden' : ''}`}>
+          <div className={`w-full h-full bg-gradient-to-br from-[#2f9e5f]/20 to-[#2f9e5f]/5 flex items-center justify-center ${row.coverImageUrl ? 'hidden' : ''}`}>
             <span className="material-symbols-outlined text-2xl text-[#2f9e5f]/40">
               book
             </span>
@@ -180,7 +180,7 @@ const BookList = () => {
     {
       header: "가격",
       accessor: (row: Book) => `${row.price.toLocaleString()}원`,
-      className: "text-gray-600 dark:text-gray-400 cursor-pointer",
+      className: "text-gray-600 dark:text-gray-400 cursor-pointer whitespace-nowrap",
     },
     {
       header: "재고 상태",
@@ -189,6 +189,7 @@ const BookList = () => {
           {row.available ? "재고 있음" : "재고 없음"}
         </Badge>
       ),
+      className: "whitespace-nowrap",
     },
   ];
 

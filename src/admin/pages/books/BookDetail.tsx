@@ -23,7 +23,7 @@ const BookDetail = () => {
     isbn: "",
     price: "",
     available: "true",
-    coverImage: "",
+    coverImageUrl: "",
   });
   const [previewImage, setPreviewImage] = useState<string>("");
 
@@ -40,9 +40,9 @@ const BookDetail = () => {
           isbn: data.isbn,
           price: data.price.toString(),
           available: data.available.toString(),
-          coverImage: data.coverImage || "",
+          coverImageUrl: data.coverImageUrl || "",
         });
-        setPreviewImage(data.coverImage || "");
+        setPreviewImage(data.coverImageUrl || "");
       })
       .catch(() => setError("도서 정보를 불러오는 데 실패했습니다."))
       .finally(() => setLoading(false));
@@ -59,7 +59,7 @@ const BookDetail = () => {
       reader.onloadend = () => {
         const imageUrl = reader.result as string;
         setPreviewImage(imageUrl);
-        setFormData({ ...formData, coverImage: imageUrl });
+        setFormData({ ...formData, coverImageUrl: imageUrl });
       };
       reader.readAsDataURL(file);
     }
@@ -68,14 +68,14 @@ const BookDetail = () => {
   const handleCancel = () => {
     setIsEditing(false);
     if (book) {
-      setPreviewImage(book.coverImage || "");
+      setPreviewImage(book.coverImageUrl || "");
       setFormData({
         title: book.title,
         author: book.author,
         isbn: book.isbn,
         price: book.price.toString(),
         available: book.available.toString(),
-        coverImage: book.coverImage || "",
+        coverImageUrl: book.coverImageUrl || "",
       });
     }
   };
@@ -234,7 +234,7 @@ const BookDetail = () => {
                       type="button"
                       onClick={() => {
                         setPreviewImage("");
-                        setFormData({ ...formData, coverImage: "" });
+                        setFormData({ ...formData, coverImageUrl: "" });
                       }}
                       className="mt-2 text-sm text-red-600 dark:text-red-400 hover:underline"
                     >

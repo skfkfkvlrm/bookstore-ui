@@ -19,10 +19,16 @@ export const bookService = {
   getBook: (id: number): Promise<Book> =>
     apiClient.get<Book>(`/api/books/${id}`).then((r) => r.data),
 
-  searchByKeyword: (keyword: string, page = 0, size = 12): Promise<PageResponse<Book>> =>
-    apiClient.get<PageResponse<Book>>('/api/books/search/keyword', {
+  searchByKeyword: async (keyword: string, page = 0, size = 12): Promise<PageResponse<Book>> => {
+    const r = await apiClient.get<Book[] | PageResponse<Book>>('/api/books/search/keyword', {
       params: { keyword, page, size },
-    }).then((r) => r.data),
+    });
+    const data = r.data;
+    if (Array.isArray(data)) {
+      return { content: data, totalElements: data.length, totalPages: 1, size: data.length, number: 0 };
+    }
+    return data;
+  },
 
   searchByTitle: (title: string, page = 0, size = 12): Promise<PageResponse<Book>> =>
     apiClient.get<PageResponse<Book>>('/api/books/search/title', {
@@ -43,10 +49,10 @@ export const bookService = {
   getStatistics: (): Promise<{ totalBooks: number; activeBooks: number; deletedBooks: number }> =>
     apiClient.get('/api/books/statistics').then((r) => r.data),
 
-  create: (data: Omit<Book, 'id' | 'createdDate' | 'coverImage'>): Promise<Book> =>
+  create: (data: Omit<Book, 'id' | 'createdDate'>): Promise<Book> =>
     apiClient.post<Book>('/api/books', data).then((r) => r.data),
 
-  update: (id: number, data: Omit<Book, 'id' | 'createdDate' | 'coverImage'>): Promise<Book> =>
+  update: (id: number, data: Omit<Book, 'id' | 'createdDate'>): Promise<Book> =>
     apiClient.put<Book>(`/api/books/${id}`, data).then((r) => r.data),
 
   delete: (id: number): Promise<void> =>

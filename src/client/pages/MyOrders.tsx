@@ -223,7 +223,7 @@ const MyOrders = () => {
                 {/* Order Items */}
                 <div className="p-6">
                   <div className="space-y-4">
-                    {order.items.map((item) => (
+                    {(order.orderItems ?? []).map((item) => (
                       <div key={item.id} className="flex items-start gap-4 pb-4 border-b border-gray-100 dark:border-gray-800 last:border-0 last:pb-0">
                         <div className="flex-1">
                           <Link

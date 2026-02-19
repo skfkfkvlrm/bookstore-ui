@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import type { CartItem } from "../utils/cartStorage";
 import { getCart, updateCartItemQuantity, removeFromCart, clearCart, getCartTotal } from "../utils/cartStorage";
-import { createOrder, getCurrentUserEmail } from "../utils/orderStorage";
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -38,33 +37,7 @@ const Cart = () => {
       alert("장바구니가 비어 있습니다.");
       return;
     }
-
-    const confirmed = window.confirm(`총 $${getCartTotal().toFixed(2)} 결제를 진행할까요?`);
-    if (confirmed) {
-      // Create order from cart items
-      const orderItems = cartItems.map((item, index) => ({
-        id: index + 1,
-        bookId: item.book.id,
-        bookTitle: item.book.title,
-        bookAuthor: item.book.author,
-        quantity: item.quantity,
-        price: item.book.price,
-      }));
-
-      const order = createOrder({
-        totalAmount: getCartTotal(),
-        orderDate: new Date().toISOString(),
-        status: "PENDING",
-        customerEmail: getCurrentUserEmail(),
-        items: orderItems,
-      });
-
-      console.log("Order created:", order);
-      alert("주문이 정상적으로 접수되었습니다!");
-      clearCart();
-      setCartItems([]);
-      navigate("/client/orders");
-    }
+    navigate("/client/checkout");
   };
 
   const total = getCartTotal();
@@ -118,9 +91,9 @@ const Cart = () => {
                     to={`/client/books/${item.book.id}`}
                     className="flex-shrink-0"
                   >
-                    {item.book.coverImage ? (
+                    {item.book.coverImageUrl ? (
                       <img
-                        src={item.book.coverImage}
+                        src={item.book.coverImageUrl}
                         alt={`${item.book.title} 표지 이미지`}
                         className="w-24 h-32 object-cover rounded-lg"
                         onError={(e) => {
@@ -129,7 +102,7 @@ const Cart = () => {
                         }}
                       />
                     ) : null}
-                    <div className={`w-24 h-32 bg-gradient-to-br from-[#2f9e5f]/20 to-[#2f9e5f]/5 rounded-lg flex items-center justify-center ${item.book.coverImage ? 'hidden' : ''}`}>
+                    <div className={`w-24 h-32 bg-gradient-to-br from-[#2f9e5f]/20 to-[#2f9e5f]/5 rounded-lg flex items-center justify-center ${item.book.coverImageUrl ? 'hidden' : ''}`}>
                       <span className="material-symbols-outlined text-4xl text-[#2f9e5f]/40">
                         book
                       </span>
@@ -169,10 +142,10 @@ const Cart = () => {
                       {/* Price */}
                       <div className="flex items-center gap-2">
                         <span className="text-sm text-gray-600 dark:text-gray-400">
-                          ${item.book.price} × {item.quantity}
+                          {item.book.price.toLocaleString()}원 × {item.quantity}
                         </span>
                         <span className="text-lg font-bold text-[#2f9e5f]">
-                          ${(item.book.price * item.quantity).toFixed(2)}
+                          {(item.book.price * item.quantity).toLocaleString()}원
                         </span>
                       </div>
 
@@ -199,7 +172,7 @@ const Cart = () => {
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between text-gray-600 dark:text-gray-400">
                   <span>소계</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>{total.toLocaleString()}원</span>
                 </div>
                 <div className="flex justify-between text-gray-600 dark:text-gray-400">
                   <span>배송비</span>
@@ -207,7 +180,7 @@ const Cart = () => {
                 </div>
                 <div className="border-t border-gray-200 dark:border-gray-700 pt-3 flex justify-between text-lg font-bold text-gray-900 dark:text-white">
                   <span>총액</span>
-                  <span className="text-[#2f9e5f]">${total.toFixed(2)}</span>
+                  <span className="text-[#2f9e5f]">{total.toLocaleString()}원</span>
                 </div>
               </div>
 

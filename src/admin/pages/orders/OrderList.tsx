@@ -62,7 +62,7 @@ const OrderList = () => {
     const matchesSearch =
       searchQuery === "" ||
       String(order.id).includes(searchQuery) ||
-      order.customerEmail?.toLowerCase().includes(searchQuery.toLowerCase());
+      order.memberEmail?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === "all" || order.status === statusFilter;
     return matchesSearch && matchesStatus;
   }), [allOrders, searchQuery, statusFilter]);
@@ -167,9 +167,13 @@ const OrderList = () => {
       ),
     },
     {
-      header: "고객 이메일",
-      accessor: "customerEmail" as keyof Order,
-      className: "font-medium text-gray-900 dark:text-white cursor-pointer",
+      header: "고객",
+      accessor: (row: Order) => (
+        <div>
+          <p className="font-medium text-gray-900 dark:text-white">{row.memberName}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400">{row.memberEmail}</p>
+        </div>
+      ),
     },
     {
       header: "주문일",

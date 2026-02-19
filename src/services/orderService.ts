@@ -5,24 +5,17 @@ export interface CreateOrderRequest {
   memberId: number;
   items: { bookId: number; quantity: number }[];
   payment: {
-    method: 'CREDIT_CARD' | 'DEBIT_CARD' | 'BANK_TRANSFER' | 'VIRTUAL_ACCOUNT' | 'KAKAO_PAY' | 'NAVER_PAY' | 'TOSS_PAY' | 'PAYCO' | 'PHONE_BILL';
+    method: 'CREDIT_CARD' | 'DEBIT_CARD' | 'BANK_TRANSFER' | 'KAKAO_PAY' | 'NAVER_PAY' | 'TOSS_PAY';
     amount: number;
-    pgProvider?: string;
-    cardCompany?: string;
-    cardNumber?: string;
-    installmentMonths?: number;
   };
   delivery: {
     recipientName: string;
     phoneNumber: string;
-    zipCode?: string;
     address: string;
     addressDetail?: string;
+    zipCode?: string;
     deliveryMemo?: string;
   };
-  discountAmount?: number;
-  pointsUsed?: number;
-  couponCode?: string;
 }
 
 export type OrderStatus = 'PENDING' | 'CONFIRMED' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
@@ -41,8 +34,8 @@ export const orderService = {
   confirmOrder: (id: number): Promise<Order> =>
     apiClient.patch<Order>(`/api/orders/${id}/confirm`).then((r) => r.data),
 
-  shipOrder: (id: number): Promise<Order> =>
-    apiClient.patch<Order>(`/api/orders/${id}/ship`).then((r) => r.data),
+  shipOrder: (id: number, trackingNumber: string, courierCompany: string): Promise<Order> =>
+    apiClient.patch<Order>(`/api/orders/${id}/ship`, null, { params: { trackingNumber, courierCompany } }).then((r) => r.data),
 
   deliverOrder: (id: number): Promise<Order> =>
     apiClient.patch<Order>(`/api/orders/${id}/deliver`).then((r) => r.data),
