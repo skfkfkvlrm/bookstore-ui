@@ -52,7 +52,7 @@ export const setCurrentUserFromToken = (token: string, name?: string): void => {
   const email = (payload?.sub ?? payload?.email ?? '') as string;
   const memberId = (payload?.memberId ?? payload?.id ?? 0) as number;
   // role: Spring Boot JWT claim — 필드명이 auth / role / roles 중 하나일 수 있음
-  const rawRole = payload?.auth ?? payload?.role ?? payload?.roles?.[0] ?? 'USER';
+  const rawRole = payload?.auth ?? payload?.role ?? (payload as any)?.roles?.[0] ?? 'USER';
   const role = (typeof rawRole === 'string' ? rawRole.replace('ROLE_', '') : 'USER') as 'USER' | 'ADMIN';
   const partial: Member = {
     id: memberId,

@@ -69,9 +69,9 @@ const OrderDetail = () => {
       let updated: Order;
       switch (action) {
         case "confirm": updated = await orderService.confirmOrder(order.id); break;
-        case "ship": updated = await orderService.shipOrder(order.id, trackingNumber, courierCompany); break;
         case "deliver": updated = await orderService.deliverOrder(order.id); break;
         case "cancel": updated = await orderService.cancelOrder(order.id); break;
+        default: throw new Error("Unsupported action");
       }
       setOrder(updated);
     } catch (err) {
