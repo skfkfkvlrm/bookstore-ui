@@ -87,6 +87,27 @@ describe('Login', () => {
         await screen.findByText('이메일 또는 비밀번호가 올바르지 않습니다.')
       ).toBeInTheDocument();
     });
+
+    it('응답 message가 있으면 해당 메시지를 우선 노출한다', async () => {
+      const error = Object.assign(new Error('Unauthorized'), {
+        response: {
+          status: 401,
+          data: { message: '이메일 또는 비밀번호가 올바르지 않습니다.' },
+        },
+        isAxiosError: true,
+      });
+      loginMock.mockRejectedValue(error);
+
+      renderLogin();
+
+      await userEvent.type(screen.getByLabelText('이메일'), 'wrong@example.com');
+      await userEvent.type(screen.getByLabelText('비밀번호'), 'wrongpass');
+      await userEvent.click(screen.getByRole('button', { name: /로그인/ }));
+
+      expect(
+        await screen.findByText('이메일 또는 비밀번호가 올바르지 않습니다.')
+      ).toBeInTheDocument();
+    });
   });
 
   describe('LP-04: 로그인 실패 — 네트워크 오류', () => {

@@ -155,3 +155,16 @@ firebase deploy --only hosting
 - UI 접속 확인
 - 로그인/회원가입 API 호출 확인
 - 브라우저 콘솔 CORS 에러 없는지 확인
+
+## 10. 데이터 관리(네이버 수집) 주의사항
+
+`/admin/settings`의 "데이터 등록 시작" 기능은 **localhost 개발 환경에서만 동작**합니다.
+
+이유:
+- 해당 기능은 프론트에서 `/naver-api/**`를 호출하고, Vite dev server 프록시가 네이버 Open API로 전달하는 구조입니다.
+- Firebase Hosting(GCP) 배포 환경에는 Vite 프록시가 없으므로 동일 방식으로는 동작하지 않습니다.
+
+운영에서 데이터 적재가 필요할 때:
+- UI 버튼 대신 `npm run seed` 사용
+- 실행 전 `.env`의 `API_BASE_URL`을 운영 Cloud Run URL로 설정
+- 운영 관리자 계정(`ADMIN_EMAIL`, `ADMIN_PASSWORD`)이 실제 존재하고 ADMIN 권한인지 확인

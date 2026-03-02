@@ -37,7 +37,7 @@ const Login = () => {
       if (axios.isAxiosError(err)) {
         const apiError = err.response?.data as ApiError | undefined;
         if (err.response?.status === 401) {
-          setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+          setError(apiError?.message ?? "이메일 또는 비밀번호가 올바르지 않습니다.");
         } else {
           setError(apiError?.message ?? "로그인에 실패했습니다. 다시 시도하세요.");
         }

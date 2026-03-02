@@ -866,6 +866,9 @@ const Settings = () => {
                       )}
                     </div>
                   </div>
+                  <p className="text-xs text-red-600 dark:text-red-400">
+                    비고: 데이터 등록 시작은 localhost 개발 환경(Vite 프록시)에서만 동작하며, GCP(Firebase Hosting) 배포 환경에서는 동작하지 않습니다.
+                  </p>
 
                   {/* 진행 로그 */}
                   {seedLogs.length > 0 && (
