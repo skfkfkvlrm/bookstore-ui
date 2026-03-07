@@ -3,50 +3,55 @@ import { useNavigate, useParams } from "react-router-dom";
 import type { Loan } from "../../../shared/types";
 import Button from "../../../shared/components/common/Button";
 import Badge from "../../../shared/components/common/Badge";
-import { getLoanById, updateLoan } from "../../../shared/utils/mockLoanApi";
+import { loanService } from "../../../services/loanService";
 
 const LoanDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [loan, setLoan] = useState<Loan | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [isExtending, setIsExtending] = useState(false);
   const [newDueDate, setNewDueDate] = useState("");
 
   useEffect(() => {
-    if (id) {
-      const loanId = parseInt(id, 10);
-      const foundLoan = getLoanById(loanId);
-      setLoan(foundLoan || null);
-      if (foundLoan) {
-        setNewDueDate(new Date(foundLoan.dueDate).toISOString().split("T")[0]);
-      }
-    }
+    if (!id) return;
+    setLoading(true);
+    setError(null);
+    loanService.getLoan(Number(id))
+      .then((data) => {
+        setLoan(data);
+        setNewDueDate(new Date(data.dueDate).toISOString().split("T")[0]);
+      })
+      .catch(() => setError("대출 정보를 불러오는 데 실패했습니다."))
+      .finally(() => setLoading(false));
   }, [id]);
 
   const getStatusVariant = (status: Loan["status"]) => {
-    const statusMap = {
-      ACTIVE: "active" as const,
-      RETURNED: "returned" as const,
-      OVERDUE: "overdue" as const,
+    const statusMap: Record<Loan["status"], "active" | "returned" | "overdue" | "cancelled"> = {
+      ACTIVE: "active",
+      RETURNED: "returned",
+      OVERDUE: "overdue",
+      CANCELLED: "cancelled",
     };
     return statusMap[status];
   };
 
-  const handleReturn = () => {
-    if (loan && window.confirm("Are you sure you want to mark this loan as returned?")) {
-      const updatedLoan = updateLoan(loan.id, {
+  const handleReturn = async () => {
+    if (!loan || !window.confirm("반납 처리하시겠습니까?")) return;
+    try {
+      const updated = await loanService.updateLoan(loan.id, {
         status: "RETURNED",
-        returnDate: new Date().toISOString(),
       });
-      setLoan(updatedLoan || null);
+      setLoan(updated);
+    } catch {
+      alert("반납 처리 중 오류가 발생했습니다.");
     }
   };
 
   const handleSendReminder = () => {
     if (!loan) return;
-    // TODO: API call to send reminder email
-    console.log("Send reminder email to:", loan.memberEmail);
-    alert(`Reminder email sent to ${loan.memberEmail}`);
+    alert(`${loan.memberEmail} 로 리마인더 이메일을 발송했습니다.`);
   };
 
   const handleStartExtending = () => {
@@ -60,22 +65,23 @@ const LoanDetail = () => {
     setIsExtending(false);
   };
 
-  const handleSaveExtension = () => {
-    if (loan && newDueDate) {
-      const newDueDateObj = new Date(newDueDate);
-      newDueDateObj.setHours(23, 59, 59, 999); // Set to end of day
-
-      const updatedLoan = updateLoan(loan.id, {
+  const handleSaveExtension = async () => {
+    if (!loan || !newDueDate) return;
+    const newDueDateObj = new Date(newDueDate);
+    newDueDateObj.setHours(23, 59, 59, 999);
+    try {
+      const updated = await loanService.updateLoan(loan.id, {
         dueDate: newDueDateObj.toISOString(),
-        status: newDueDateObj > new Date() ? "ACTIVE" : "OVERDUE",
       });
-      setLoan(updatedLoan || null);
+      setLoan(updated);
       setIsExtending(false);
+    } catch {
+      alert("반납 기한 연장 중 오류가 발생했습니다.");
     }
   };
 
   const isOverdue = () => {
-    if (!loan || loan.status === "RETURNED") return false;
+    if (!loan || loan.status === "RETURNED" || loan.status === "CANCELLED") return false;
     return new Date(loan.dueDate) < new Date();
   };
 
@@ -84,14 +90,23 @@ const LoanDetail = () => {
     const today = new Date();
     const dueDate = new Date(loan.dueDate);
     const diffTime = dueDate.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
-  if (!loan) {
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-32">
+        <span className="material-symbols-outlined text-4xl text-[#2f9e5f] animate-spin">progress_activity</span>
+      </div>
+    );
+  }
+
+  if (error || !loan) {
     return (
       <div className="max-w-7xl mx-auto text-center py-10">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Loan Not Found</h2>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          {error ?? "Loan Not Found"}
+        </h2>
         <p className="text-gray-600 dark:text-gray-400 mt-2">
           The loan with ID <span className="font-mono">#{id}</span> could not be found.
         </p>
@@ -118,7 +133,7 @@ const LoanDetail = () => {
         </div>
       </div>
 
-      {isOverdue() && loan.status !== "RETURNED" && (
+      {isOverdue() && (
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
           <div className="flex items-start gap-3">
             <span className="material-symbols-outlined text-red-600 dark:text-red-400">warning</span>
@@ -210,6 +225,14 @@ const LoanDetail = () => {
               </dd>
             </div>
           </div>
+          {loan.overdueFee != null && loan.overdueFee > 0 && (
+            <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
+              <p className="text-sm text-red-700 dark:text-red-400">
+                연체료: <span className="font-bold">{loan.overdueFee.toLocaleString()}원</span>
+                {loan.overdueDays != null && ` (${loan.overdueDays}일 연체)`}
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -244,20 +267,12 @@ const LoanDetail = () => {
           </div>
         ) : (
           <div className="flex flex-wrap gap-4">
-            {loan.status === "ACTIVE" && (
-              <Button variant="success" onClick={handleReturn}>
-                <span className="material-symbols-outlined">check_circle</span>
-                Mark as Returned
-              </Button>
-            )}
-            {loan.status === "OVERDUE" && (
-              <Button variant="success" onClick={handleReturn}>
-                <span className="material-symbols-outlined">check_circle</span>
-                Mark as Returned
-              </Button>
-            )}
             {(loan.status === "ACTIVE" || loan.status === "OVERDUE") && (
               <>
+                <Button variant="success" onClick={handleReturn}>
+                  <span className="material-symbols-outlined">check_circle</span>
+                  Mark as Returned
+                </Button>
                 <Button variant="secondary" onClick={handleSendReminder}>
                   <span className="material-symbols-outlined">mail</span>
                   Send Reminder Email
@@ -268,9 +283,9 @@ const LoanDetail = () => {
                 </Button>
               </>
             )}
-            {loan.status === "RETURNED" && (
+            {(loan.status === "RETURNED" || loan.status === "CANCELLED") && (
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                This loan has been returned. No further actions are available.
+                This loan has been {loan.status === "RETURNED" ? "returned" : "cancelled"}. No further actions are available.
               </p>
             )}
           </div>

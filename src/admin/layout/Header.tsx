@@ -1,4 +1,16 @@
+import { useNavigate } from "react-router-dom";
+import { clearAuth, getCurrentUser } from "../../client/utils/authStorage";
+
 const Header = () => {
+  const navigate = useNavigate();
+  const user = getCurrentUser();
+
+  const handleLogout = () => {
+    if (!window.confirm("로그아웃하시겠습니까?")) return;
+    clearAuth();
+    navigate("/admin/login");
+  };
+
   return (
     <header className="h-16 flex items-center justify-end px-6 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a2632] flex-shrink-0">
       <div className="flex items-center gap-4">
@@ -17,10 +29,19 @@ const Header = () => {
             notifications
           </span>
         </button>
-        <div
-          className="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-10 w-10"
-          style={{ backgroundImage: 'url("https://i.pravatar.cc/40?u=sarah")' }}
-        />
+        <div className="flex items-center gap-2 pl-2 border-l border-gray-200 dark:border-gray-700">
+          <div className="text-right hidden sm:block">
+            <p className="text-sm font-medium text-gray-900 dark:text-white">{user?.name ?? '관리자'}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{user?.email ?? ''}</p>
+          </div>
+          <button
+            onClick={handleLogout}
+            title="로그아웃"
+            className="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#101922] hover:text-red-500 dark:hover:text-red-400 transition-colors"
+          >
+            <span className="material-symbols-outlined">logout</span>
+          </button>
+        </div>
       </div>
     </header>
   );

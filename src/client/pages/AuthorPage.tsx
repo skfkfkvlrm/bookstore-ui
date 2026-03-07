@@ -77,9 +77,9 @@ const AuthorPage = () => {
                 className="flex gap-4 rounded-2xl border border-gray-200 bg-gray-50 p-4 transition hover:border-[#2f9e5f] dark:border-gray-700 dark:bg-[#101922]"
               >
                 <div className="h-24 w-24 overflow-hidden rounded-lg bg-gray-200">
-                  {book.coverImage ? (
+                  {book.coverImageUrl ? (
                     <img
-                      src={book.coverImage}
+                      src={book.coverImageUrl}
                       alt={`${book.title} 표지 이미지`}
                       className="h-full w-full object-cover"
                     />

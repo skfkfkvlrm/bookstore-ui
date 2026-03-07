@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getCurrentUser, updateUser, logout } from "../utils/authStorage";
 import { getUserLoans } from "../utils/loanStorage";
 import { getUserOrders } from "../utils/orderStorage";
-import type { Member } from "../../shared/types";
+import type { Member, MembershipType } from "../../shared/types";
 
 const MyAccount = () => {
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ const MyAccount = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
-    membershipType: "REGULAR" as "REGULAR" | "PREMIUM",
+    membershipType: "REGULAR" as MembershipType,
   });
   const [error, setError] = useState("");
   const [stats, setStats] = useState({

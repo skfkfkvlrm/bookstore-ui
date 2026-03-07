@@ -1,6 +1,6 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { getCurrentUser, logout } from "../utils/authStorage";
+import { useState, useEffect, useRef } from "react";
+import { getCurrentUser, clearAuth } from "../utils/authStorage";
 import { getCart } from "../utils/cartStorage";
 
 const Header = () => {
@@ -10,6 +10,7 @@ const Header = () => {
   const [user, setUser] = useState(() => getCurrentUser());
   const [cartCount, setCartCount] = useState(0);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   // Update user state on location change (page navigation)
   useEffect(() => {
@@ -30,14 +31,22 @@ const Header = () => {
       setUser(getCurrentUser());
     };
 
+    const handleClickOutside = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setShowUserMenu(false);
+      }
+    };
+
     window.addEventListener('cartChange', handleCartChange);
     window.addEventListener('authChange', handleAuthChange);
-    window.addEventListener('storage', handleCartChange); // For cross-tab updates
+    window.addEventListener('storage', handleCartChange);
+    document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
       window.removeEventListener('cartChange', handleCartChange);
       window.removeEventListener('authChange', handleAuthChange);
       window.removeEventListener('storage', handleCartChange);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
@@ -51,7 +60,7 @@ const Header = () => {
   const handleLogout = () => {
     const confirmed = window.confirm("로그아웃하시겠습니까?");
     if (confirmed) {
-      logout();
+      clearAuth();
       setUser(null);
       setShowUserMenu(false);
       navigate("/client/login");
@@ -59,7 +68,7 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-10 bg-[#f6f7f8]/80 dark:bg-[#101922]/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
+    <header className="sticky top-0 z-50 bg-[#f6f7f8]/80 dark:bg-[#101922]/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-8">
@@ -126,7 +135,7 @@ const Header = () => {
             </Link>
 
             {user ? (
-              <div className="relative">
+              <div className="relative" ref={userMenuRef}>
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
                   className="flex items-center gap-2 p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-200/60 dark:hover:bg-gray-800/60 transition-colors"
@@ -143,7 +152,7 @@ const Header = () => {
                 </button>
 
                 {showUserMenu && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-[#1a2332] border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden">
+                  <div className="absolute right-0 mt-2 w-56 z-50 bg-white dark:bg-[#1a2332] border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-gray-700">
                       <p className="text-sm font-medium text-gray-900 dark:text-white">
                         {user.name}

@@ -1,44 +1,60 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Book } from "../../../shared/types";
 import Button from "../../../shared/components/common/Button";
 import Badge from "../../../shared/components/common/Badge";
 import SearchInput from "../../../shared/components/common/SearchInput";
-
 import Pagination from "../../../shared/components/common/Pagination";
-import booksData from "../../../shared/data/books.json";
+import { bookService } from "../../../services/bookService";
 
 const ITEMS_PER_PAGE = 10;
 
 const BookList = () => {
   const navigate = useNavigate();
-  const [books] = useState<Book[]>(booksData as Book[]);
+  const [books, setBooks] = useState<Book[]>([]);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedBooks, setSelectedBooks] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [localSearch, setLocalSearch] = useState("");
   const [sortBy, setSortBy] = useState<"title" | "author" | "price" | "date">("date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [availabilityFilter, setAvailabilityFilter] = useState<"all" | "available" | "unavailable">("all");
 
-  // Filter books
-  const filteredBooks = books.filter((book) => {
-    const matchesSearch = searchQuery === "" ||
-      book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      book.isbn.includes(searchQuery);
+  const fetchBooks = useCallback(async (keyword: string, page: number) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const apiPage = page - 1;
+      const response = keyword
+        ? await bookService.searchByKeyword(keyword, apiPage, 100)
+        : await bookService.getBooks(apiPage, 100);
+      setBooks(response.content);
+      setTotalItems(response.totalElements);
+      setTotalPages(response.totalPages);
+    } catch {
+      setError("도서 목록을 불러오는 데 실패했습니다.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-    const matchesAvailability =
-      availabilityFilter === "all" ||
-      (availabilityFilter === "available" && book.available) ||
-      (availabilityFilter === "unavailable" && !book.available);
+  useEffect(() => {
+    fetchBooks(searchQuery, currentPage);
+  }, [searchQuery, currentPage, fetchBooks]);
 
-    return matchesSearch && matchesAvailability;
-  });
+  const filteredBooks = useMemo(() => {
+    if (availabilityFilter === "all") return books;
+    return books.filter((book) =>
+      availabilityFilter === "available" ? book.available : !book.available
+    );
+  }, [books, availabilityFilter]);
 
-  // Sort books
-  const sortedBooks = [...filteredBooks].sort((a, b) => {
+  const sortedBooks = useMemo(() => [...filteredBooks].sort((a, b) => {
     let comparison = 0;
-
     switch (sortBy) {
       case "title":
         comparison = a.title.localeCompare(b.title);
@@ -53,13 +69,15 @@ const BookList = () => {
         comparison = new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime();
         break;
     }
-
     return sortOrder === "asc" ? comparison : -comparison;
-  });
+  }), [filteredBooks, sortBy, sortOrder]);
 
-  const totalPages = Math.ceil(sortedBooks.length / ITEMS_PER_PAGE);
+  const pagedTotalPages = Math.ceil(sortedBooks.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedBooks = sortedBooks.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const paginatedBooks = useMemo(
+    () => sortedBooks.slice(startIndex, startIndex + ITEMS_PER_PAGE),
+    [sortedBooks, startIndex]
+  );
 
   const handleSelectAll = () => {
     if (selectedBooks.length === paginatedBooks.length) {
@@ -75,8 +93,9 @@ const BookList = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSearchQuery(localSearch.trim());
     setCurrentPage(1);
   };
 
@@ -90,11 +109,6 @@ const BookList = () => {
     } else {
       setSelectedBooks([...selectedBooks, bookId]);
     }
-  };
-
-  const handleBulkAction = (action: string) => {
-    console.log(`Bulk action ${action} on books:`, selectedBooks);
-    alert(`선택한 ${selectedBooks.length}권에 ${action} 작업을 수행했습니다.`);
   };
 
   const columns = [
@@ -123,9 +137,9 @@ const BookList = () => {
       header: "표지",
       accessor: (row: Book) => (
         <div className="w-12 h-16 overflow-hidden rounded bg-gray-200 dark:bg-gray-800">
-          {row.coverImage ? (
+          {row.coverImageUrl ? (
             <img
-              src={row.coverImage}
+              src={row.coverImageUrl}
               alt={`Cover of ${row.title}`}
               className="w-full h-full object-cover"
               onError={(e) => {
@@ -134,7 +148,7 @@ const BookList = () => {
               }}
             />
           ) : null}
-          <div className={`w-full h-full bg-gradient-to-br from-[#2f9e5f]/20 to-[#2f9e5f]/5 flex items-center justify-center ${row.coverImage ? 'hidden' : ''}`}>
+          <div className={`w-full h-full bg-gradient-to-br from-[#2f9e5f]/20 to-[#2f9e5f]/5 flex items-center justify-center ${row.coverImageUrl ? 'hidden' : ''}`}>
             <span className="material-symbols-outlined text-2xl text-[#2f9e5f]/40">
               book
             </span>
@@ -165,8 +179,8 @@ const BookList = () => {
     },
     {
       header: "가격",
-      accessor: (row: Book) => `$${row.price.toFixed(2)}`,
-      className: "text-gray-600 dark:text-gray-400 cursor-pointer",
+      accessor: (row: Book) => `${row.price.toLocaleString()}원`,
+      className: "text-gray-600 dark:text-gray-400 cursor-pointer whitespace-nowrap",
     },
     {
       header: "재고 상태",
@@ -175,6 +189,7 @@ const BookList = () => {
           {row.available ? "재고 있음" : "재고 없음"}
         </Badge>
       ),
+      className: "whitespace-nowrap",
     },
   ];
 
@@ -183,7 +198,9 @@ const BookList = () => {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white">도서 관리</h2>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">등록된 도서를 관리하세요.</p>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
+            등록된 도서를 관리하세요. {!loading && `(총 ${totalItems.toLocaleString()}권)`}
+          </p>
         </div>
         <Button onClick={() => navigate("/admin/books/add")}>
           <span className="material-symbols-outlined">add</span>
@@ -197,29 +214,19 @@ const BookList = () => {
             <span className="text-sm font-medium text-blue-800 dark:text-blue-300">
               선택된 도서 {selectedBooks.length}권
             </span>
-            <div className="flex gap-2">
-              <Button variant="secondary" size="sm" onClick={() => handleBulkAction("내보내기")}>
-                <span className="material-symbols-outlined">download</span>
-                내보내기
-              </Button>
-              <Button variant="danger" size="sm" onClick={() => handleBulkAction("삭제")}>
-                <span className="material-symbols-outlined">delete</span>
-                삭제
-              </Button>
-            </div>
           </div>
         </div>
       )}
 
       <div className="bg-white dark:bg-[#1a2632] p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-          <div className="md:col-span-4">
+          <form onSubmit={handleSearch} className="md:col-span-4">
             <SearchInput
-              placeholder="제목·저자·ISBN으로 검색"
-              value={searchQuery}
-              onChange={(e) => handleSearch(e.target.value)}
+              placeholder="제목·저자·ISBN으로 검색 후 Enter"
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
             />
-          </div>
+          </form>
           <div className="md:col-span-8 flex items-center gap-3 justify-end flex-wrap">
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600 dark:text-gray-400">필터:</span>
@@ -265,50 +272,81 @@ const BookList = () => {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-[#1a2632] rounded-lg shadow-sm overflow-hidden border border-gray-200 dark:border-gray-700">
-        <table className="w-full text-sm text-left">
-          <thead className="bg-gray-50 dark:bg-white/5 text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-            <tr>
-              {columns.map((col, index) => (
-                <th key={index} scope="col" className="px-6 py-3">
-                  {typeof col.header === "function" ? col.header : col.header}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-            {paginatedBooks.map((book) => (
-              <tr
-                key={book.id}
-                onClick={(e) => {
-                  const target = e.target as HTMLElement;
-                  if (
-                    !target.closest('input[type="checkbox"]') &&
-                    !target.closest("button")
-                  ) {
-                    navigate(`/admin/books/${book.id}`);
-                  }
-                }}
-                className="hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer transition-colors"
-              >
-                {columns.map((col, colIndex) => (
-                  <td key={colIndex} className={`px-6 py-4 ${col.className || ""}`}>
-                    {typeof col.accessor === "function" ? col.accessor(book) : book[col.accessor]}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {loading && (
+        <div className="flex items-center justify-center py-16">
+          <span className="material-symbols-outlined text-4xl text-[#2f9e5f] animate-spin">progress_activity</span>
+        </div>
+      )}
 
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-        itemsPerPage={ITEMS_PER_PAGE}
-        totalItems={books.length}
-      />
+      {error && (
+        <div className="text-center py-16">
+          <span className="material-symbols-outlined text-6xl text-red-400 mb-4">error</span>
+          <p className="text-lg text-red-600 dark:text-red-400">{error}</p>
+          <button
+            onClick={() => fetchBooks(searchQuery, currentPage)}
+            className="mt-4 px-6 py-2 rounded-lg bg-[#2f9e5f] text-white font-medium hover:bg-[#2f9e5f]/90"
+          >
+            다시 시도
+          </button>
+        </div>
+      )}
+
+      {!loading && !error && (
+        <>
+          <div className="bg-white dark:bg-[#1a2632] rounded-lg shadow-sm overflow-hidden border border-gray-200 dark:border-gray-700">
+            <table className="w-full text-sm text-left">
+              <thead className="bg-gray-50 dark:bg-white/5 text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                <tr>
+                  {columns.map((col, index) => (
+                    <th key={index} scope="col" className="px-6 py-3">
+                      {typeof col.header === "function" ? col.header : col.header}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                {paginatedBooks.length === 0 ? (
+                  <tr>
+                    <td colSpan={columns.length} className="px-6 py-16 text-center text-gray-500 dark:text-gray-400">
+                      조건에 맞는 도서가 없습니다.
+                    </td>
+                  </tr>
+                ) : (
+                  paginatedBooks.map((book) => (
+                    <tr
+                      key={book.id}
+                      onClick={(e) => {
+                        const target = e.target as HTMLElement;
+                        if (
+                          !target.closest('input[type="checkbox"]') &&
+                          !target.closest("button")
+                        ) {
+                          navigate(`/admin/books/${book.id}`);
+                        }
+                      }}
+                      className="hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer transition-colors"
+                    >
+                      {columns.map((col, colIndex) => (
+                        <td key={colIndex} className={`px-6 py-4 ${col.className || ""}`}>
+                          {typeof col.accessor === "function" ? col.accessor(book) : book[col.accessor]}
+                        </td>
+                      ))}
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={availabilityFilter !== "all" ? pagedTotalPages : totalPages}
+            onPageChange={handlePageChange}
+            itemsPerPage={ITEMS_PER_PAGE}
+            totalItems={availabilityFilter !== "all" ? sortedBooks.length : totalItems}
+          />
+        </>
+      )}
     </div>
   );
 };

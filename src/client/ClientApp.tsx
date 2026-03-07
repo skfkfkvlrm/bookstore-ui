@@ -5,6 +5,7 @@ import BookList from "./pages/BookList";
 import BookDetail from "./pages/BookDetail";
 import MyLoans from "./pages/MyLoans";
 import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
 import MyOrders from "./pages/MyOrders";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -40,6 +41,14 @@ function ClientApp() {
           element={
             <ProtectedRoute>
               <Cart />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute>
+              <Checkout />
             </ProtectedRoute>
           }
         />

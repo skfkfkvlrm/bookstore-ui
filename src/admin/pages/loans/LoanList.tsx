@@ -1,17 +1,19 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Loan } from "../../../shared/types";
 import Button from "../../../shared/components/common/Button";
 import Badge from "../../../shared/components/common/Badge";
 import SearchInput from "../../../shared/components/common/SearchInput";
 import Pagination from "../../../shared/components/common/Pagination";
-import { getLoans, updateLoan } from "../../../shared/utils/mockLoanApi";
+import { loanService } from "../../../services/loanService";
 
 const ITEMS_PER_PAGE = 10;
 
 const LoanList = () => {
   const navigate = useNavigate();
   const [allLoans, setAllLoans] = useState<Loan[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedLoans, setSelectedLoans] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -19,31 +21,62 @@ const LoanList = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [statusFilter, setStatusFilter] = useState<"all" | Loan["status"]>("all");
 
+  const fetchLoans = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const loans = await loanService.getAllLoans();
+      setAllLoans(loans);
+    } catch {
+      setError("대출 목록을 불러오는 데 실패했습니다.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
-    const loansFromApi = getLoans({
-      searchQuery,
-      statusFilter,
-      sortKey: sortBy,
-      sortOrder,
+    fetchLoans();
+  }, [fetchLoans]);
+
+  const filteredLoans = useMemo(() => {
+    return allLoans.filter((loan) => {
+      const matchesSearch =
+        searchQuery === "" ||
+        loan.bookTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        loan.memberName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        loan.memberEmail.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesStatus = statusFilter === "all" || loan.status === statusFilter;
+      return matchesSearch && matchesStatus;
     });
-    setAllLoans(loansFromApi);
-  }, [searchQuery, statusFilter, sortBy, sortOrder]);
+  }, [allLoans, searchQuery, statusFilter]);
+
+  const sortedLoans = useMemo(() => {
+    return [...filteredLoans].sort((a, b) => {
+      const aVal = a[sortBy];
+      const bVal = b[sortBy];
+      if (aVal == null && bVal == null) return 0;
+      if (aVal == null) return 1;
+      if (bVal == null) return -1;
+      const comparison = String(aVal).localeCompare(String(bVal));
+      return sortOrder === "asc" ? comparison : -comparison;
+    });
+  }, [filteredLoans, sortBy, sortOrder]);
+
+  const totalPages = Math.ceil(sortedLoans.length / ITEMS_PER_PAGE);
+  const paginatedLoans = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return sortedLoans.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [sortedLoans, currentPage]);
 
   const getStatusVariant = (status: Loan["status"]) => {
-    const statusMap = {
-      ACTIVE: "active" as const,
-      RETURNED: "returned" as const,
-      OVERDUE: "overdue" as const,
+    const statusMap: Record<Loan["status"], "active" | "returned" | "overdue" | "cancelled"> = {
+      ACTIVE: "active",
+      RETURNED: "returned",
+      OVERDUE: "overdue",
+      CANCELLED: "cancelled",
     };
     return statusMap[status];
   };
-
-  const paginatedLoans = useMemo(() => {
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    return allLoans.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-  }, [allLoans, currentPage]);
-
-  const totalPages = Math.ceil(allLoans.length / ITEMS_PER_PAGE);
 
   const handleSelectAll = () => {
     if (selectedLoans.length === paginatedLoans.length) {
@@ -67,18 +100,19 @@ const LoanList = () => {
     }
   };
 
-  const handleBulkAction = (action: string) => {
-    if (action === "Mark as Returned") {
-      selectedLoans.forEach(id => {
-        updateLoan(id, { status: "RETURNED", returnDate: new Date().toISOString() });
-      });
-      // Refresh data
-      const loansFromApi = getLoans({ searchQuery, statusFilter, sortKey: sortBy, sortOrder });
-      setAllLoans(loansFromApi);
+  const handleBulkReturn = async () => {
+    if (!window.confirm(`선택된 ${selectedLoans.length}건의 대출을 반납 처리하시겠습니까?`)) return;
+    try {
+      await Promise.all(
+        selectedLoans.map((id) =>
+          loanService.updateLoan(id, { status: "RETURNED" })
+        )
+      );
       setSelectedLoans([]);
-    } else {
-      console.log(`Bulk action ${action} on loans:`, selectedLoans);
-      alert(`${action} on ${selectedLoans.length} selected loan(s)`);
+      await fetchLoans();
+    } catch {
+      alert("일부 대출 반납 처리에 실패했습니다.");
+      await fetchLoans();
     }
   };
 
@@ -180,14 +214,10 @@ const LoanList = () => {
               {selectedLoans.length} loan(s) selected
             </span>
             <div className="flex gap-2">
-              <Button variant="secondary" size="sm" onClick={() => handleBulkAction("Export")}>
-                <span className="material-symbols-outlined">download</span>
-                Export
-              </Button>
               <Button
                 variant="success"
                 size="sm"
-                onClick={() => handleBulkAction("Mark as Returned")}
+                onClick={handleBulkReturn}
               >
                 <span className="material-symbols-outlined">check_circle</span>
                 Mark as Returned
@@ -221,6 +251,7 @@ const LoanList = () => {
                 <option value="ACTIVE">Active</option>
                 <option value="RETURNED">Returned</option>
                 <option value="OVERDUE">Overdue</option>
+                <option value="CANCELLED">Cancelled</option>
               </select>
             </div>
             <div className="flex items-center gap-2">
@@ -251,50 +282,81 @@ const LoanList = () => {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-[#1a2632] rounded-lg shadow-sm overflow-hidden border border-gray-200 dark:border-gray-700">
-        <table className="w-full text-sm text-left">
-          <thead className="bg-gray-50 dark:bg-white/5 text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-            <tr>
-              {columns.map((col, index) => (
-                <th key={index} scope="col" className="px-6 py-3">
-                  {col.header}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-            {paginatedLoans.map((loan) => (
-              <tr
-                key={loan.id}
-                onClick={(e) => {
-                  const target = e.target as HTMLElement;
-                  if (
-                    !target.closest('input[type="checkbox"]') &&
-                    !target.closest("button")
-                  ) {
-                    navigate(`/admin/loans/${loan.id}`);
-                  }
-                }}
-                className="hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer transition-colors"
-              >
-                {columns.map((col, colIndex) => (
-                  <td key={colIndex} className={`px-6 py-4 ${col.className || ""}`}>
-                    {typeof col.accessor === "function" ? col.accessor(loan) : loan[col.accessor as keyof Loan]}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {loading && (
+        <div className="flex items-center justify-center py-16">
+          <span className="material-symbols-outlined text-4xl text-[#2f9e5f] animate-spin">progress_activity</span>
+        </div>
+      )}
 
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-        itemsPerPage={ITEMS_PER_PAGE}
-        totalItems={allLoans.length}
-      />
+      {error && (
+        <div className="text-center py-16">
+          <span className="material-symbols-outlined text-6xl text-red-400 mb-4">error</span>
+          <p className="text-lg text-red-600 dark:text-red-400">{error}</p>
+          <button
+            onClick={fetchLoans}
+            className="mt-4 px-6 py-2 rounded-lg bg-[#2f9e5f] text-white font-medium hover:bg-[#2f9e5f]/90"
+          >
+            다시 시도
+          </button>
+        </div>
+      )}
+
+      {!loading && !error && (
+        <>
+          <div className="bg-white dark:bg-[#1a2632] rounded-lg shadow-sm overflow-hidden border border-gray-200 dark:border-gray-700">
+            <table className="w-full text-sm text-left">
+              <thead className="bg-gray-50 dark:bg-white/5 text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                <tr>
+                  {columns.map((col, index) => (
+                    <th key={index} scope="col" className="px-6 py-3">
+                      {col.header}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                {paginatedLoans.length === 0 ? (
+                  <tr>
+                    <td colSpan={columns.length} className="px-6 py-16 text-center text-gray-500 dark:text-gray-400">
+                      조건에 맞는 대출 내역이 없습니다.
+                    </td>
+                  </tr>
+                ) : (
+                  paginatedLoans.map((loan) => (
+                    <tr
+                      key={loan.id}
+                      onClick={(e) => {
+                        const target = e.target as HTMLElement;
+                        if (
+                          !target.closest('input[type="checkbox"]') &&
+                          !target.closest("button")
+                        ) {
+                          navigate(`/admin/loans/${loan.id}`);
+                        }
+                      }}
+                      className="hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer transition-colors"
+                    >
+                      {columns.map((col, colIndex) => (
+                        <td key={colIndex} className={`px-6 py-4 ${col.className || ""}`}>
+                          {typeof col.accessor === "function" ? col.accessor(loan) : loan[col.accessor as keyof Loan]}
+                        </td>
+                      ))}
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            itemsPerPage={ITEMS_PER_PAGE}
+            totalItems={sortedLoans.length}
+          />
+        </>
+      )}
     </div>
   );
 };

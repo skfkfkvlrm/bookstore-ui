@@ -1,10 +1,128 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Input from "../../shared/components/common/Input";
 import Button from "../../shared/components/common/Button";
 import Select from "../../shared/components/common/Select";
+import { getToken } from "../../client/utils/authStorage";
+
+// 네이버 도서 검색 키워드
+const SEED_KEYWORDS = [
+  '프로그래밍', '알고리즘', '자바', '파이썬', '리액트',
+  '스프링', '데이터베이스', '인공지능', '클라우드', '네트워크',
+  '운영체제', '보안', '자바스크립트', '타입스크립트', '도커',
+  '머신러닝', '딥러닝', '소프트웨어공학', '컴퓨터과학', '데이터분석',
+];
+
+function stripHtml(str = '') {
+  return str.replace(/<[^>]*>/g, '').trim();
+}
+
+interface NaverBookItem {
+  title: string;
+  author: string;
+  isbn: string;
+  discount: string;
+  price: string;
+  image: string;
+}
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState("profile");
+
+  // 도서 시드 상태
+  const [seedTarget, setSeedTarget] = useState("1000");
+  const [seedRunning, setSeedRunning] = useState(false);
+  const [seedLogs, setSeedLogs] = useState<string[]>([]);
+  const [seedResult, setSeedResult] = useState<{ success: number; duplicate: number; fail: number } | null>(null);
+  const abortRef = useRef(false);
+  const logEndRef = useRef<HTMLDivElement>(null);
+
+  const addLog = (msg: string) => {
+    setSeedLogs((prev) => {
+      const next = [...prev, msg];
+      setTimeout(() => logEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 50);
+      return next;
+    });
+  };
+
+  const handleStartSeed = async () => {
+    const target = parseInt(seedTarget, 10);
+    if (!target || target <= 0) return;
+
+    abortRef.current = false;
+    setSeedRunning(true);
+    setSeedLogs([]);
+    setSeedResult(null);
+
+    addLog(`🚀 도서 시드 시작 (목표: ${target}권)`);
+
+    const token = getToken();
+    const bookMap = new Map<string, object>();
+
+    // 1. 네이버 API 수집
+    for (const keyword of SEED_KEYWORDS) {
+      if (abortRef.current || bookMap.size >= target) break;
+
+      try {
+        for (const start of [1, 101]) {
+          if (abortRef.current || bookMap.size >= target) break;
+
+          const res = await fetch(
+            `/naver-api/v1/search/book.json?query=${encodeURIComponent(keyword)}&display=100&start=${start}`
+          );
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const data = await res.json();
+          const items: NaverBookItem[] = data.items || [];
+
+          for (const item of items) {
+            if (bookMap.size >= target) break;
+            const isbn = item.isbn?.split(' ').find((s: string) => s.length === 13)
+              || item.isbn?.split(' ').find((s: string) => s.length >= 10) || '';
+            if (!isbn || bookMap.has(isbn)) continue;
+            const price = parseInt(item.discount || item.price || '0', 10);
+            if (!price) continue;
+            const title = stripHtml(item.title);
+            const author = stripHtml(item.author);
+            if (!title || !author) continue;
+            bookMap.set(isbn, { title, author, isbn, price, available: true, coverImageUrl: item.image || '' });
+          }
+
+          await new Promise((r) => setTimeout(r, 150));
+        }
+        addLog(`  ✔ "${keyword}" → 누적 ${bookMap.size}권`);
+      } catch (e) {
+        addLog(`  ✘ "${keyword}" 실패: ${(e as Error).message}`);
+      }
+    }
+
+    addLog(`\n📦 수집 완료 ${bookMap.size}권 → 백엔드 등록 시작`);
+
+    // 2. 백엔드 등록
+    let success = 0, duplicate = 0, fail = 0;
+    const books = [...bookMap.values()];
+
+    for (const book of books) {
+      if (abortRef.current) break;
+
+      const res = await fetch('/api/books', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(book),
+      });
+
+      if (res.ok) success++;
+      else if (res.status === 409) duplicate++;
+      else fail++;
+
+      const done = success + duplicate + fail;
+      if (done % 100 === 0) addLog(`  📖 진행: 등록 ${success} / 중복 ${duplicate} / 실패 ${fail}`);
+
+      await new Promise((r) => setTimeout(r, 80));
+    }
+
+    setSeedResult({ success, duplicate, fail });
+    addLog(`\n✅ 완료 — 등록 ${success}권 / 중복 스킵 ${duplicate}권 / 실패 ${fail}권`);
+    setSeedRunning(false);
+  };
 
   // Profile Settings State
   const [profileData, setProfileData] = useState({
@@ -71,6 +189,7 @@ const Settings = () => {
     { id: "system", label: "시스템 설정", icon: "settings" },
     { id: "notifications", label: "알림 설정", icon: "notifications" },
     { id: "appearance", label: "테마 설정", icon: "palette" },
+    { id: "data", label: "데이터 관리", icon: "database" },
   ];
 
   return (
@@ -684,6 +803,104 @@ const Settings = () => {
                     </Button>
                   </div>
                 </form>
+              </div>
+            )}
+            {/* Data Management */}
+            {activeTab === "data" && (
+              <div className="p-6 space-y-6">
+                <div>
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">데이터 관리</h2>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    네이버 도서 API를 이용해 초기 도서 데이터를 등록합니다.
+                  </p>
+                </div>
+
+                <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6 space-y-4">
+                  <div className="flex items-center gap-3">
+                    <span className="material-symbols-outlined text-2xl text-[#2f9e5f]">library_books</span>
+                    <div>
+                      <h3 className="font-semibold text-gray-900 dark:text-white">도서 초기 데이터 등록</h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        네이버 책 검색 API로 IT/개발 도서를 검색해 백엔드에 자동 등록합니다. ISBN 중복은 자동 스킵됩니다.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4">
+                    <div className="w-40">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        목표 권수
+                      </label>
+                      <input
+                        type="number"
+                        value={seedTarget}
+                        onChange={(e) => setSeedTarget(e.target.value)}
+                        min="1"
+                        max="2000"
+                        disabled={seedRunning}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#101922] text-gray-900 dark:text-white focus:ring-2 focus:ring-[#2f9e5f] disabled:opacity-50"
+                      />
+                    </div>
+                    <div className="flex gap-2 mt-5">
+                      <Button
+                        onClick={handleStartSeed}
+                        disabled={seedRunning}
+                      >
+                        {seedRunning ? (
+                          <>
+                            <span className="material-symbols-outlined animate-spin">progress_activity</span>
+                            진행 중...
+                          </>
+                        ) : (
+                          <>
+                            <span className="material-symbols-outlined">download</span>
+                            데이터 등록 시작
+                          </>
+                        )}
+                      </Button>
+                      {seedRunning && (
+                        <Button variant="danger" onClick={() => { abortRef.current = true; }}>
+                          <span className="material-symbols-outlined">stop</span>
+                          중단
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                  <p className="text-xs text-red-600 dark:text-red-400">
+                    비고: 데이터 등록 시작은 localhost 개발 환경(Vite 프록시)에서만 동작하며, GCP(Firebase Hosting) 배포 환경에서는 동작하지 않습니다.
+                  </p>
+
+                  {/* 진행 로그 */}
+                  {seedLogs.length > 0 && (
+                    <div className="mt-4">
+                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">진행 로그</p>
+                      <div className="bg-gray-900 rounded-lg p-4 h-56 overflow-y-auto font-mono text-xs text-green-400 space-y-0.5">
+                        {seedLogs.map((log, i) => (
+                          <p key={i} className="whitespace-pre-wrap">{log}</p>
+                        ))}
+                        <div ref={logEndRef} />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 완료 결과 */}
+                  {seedResult && (
+                    <div className="grid grid-cols-3 gap-4 mt-4">
+                      <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 text-center">
+                        <p className="text-2xl font-bold text-green-600 dark:text-green-400">{seedResult.success}</p>
+                        <p className="text-sm text-green-700 dark:text-green-300">등록 성공</p>
+                      </div>
+                      <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4 text-center">
+                        <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{seedResult.duplicate}</p>
+                        <p className="text-sm text-yellow-700 dark:text-yellow-300">중복 스킵</p>
+                      </div>
+                      <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-4 text-center">
+                        <p className="text-2xl font-bold text-red-600 dark:text-red-400">{seedResult.fail}</p>
+                        <p className="text-sm text-red-700 dark:text-red-300">실패</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
         </div>

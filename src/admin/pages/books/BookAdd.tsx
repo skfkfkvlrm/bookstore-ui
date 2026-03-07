@@ -12,7 +12,7 @@ const BookAdd = () => {
     isbn: "",
     price: "",
     available: "true",
-    coverImage: "",
+    coverImageUrl: "",
   });
   const [previewImage, setPreviewImage] = useState<string>("");
 
@@ -25,7 +25,7 @@ const BookAdd = () => {
       reader.onloadend = () => {
         const imageUrl = reader.result as string;
         setPreviewImage(imageUrl);
-        setFormData({ ...formData, coverImage: imageUrl });
+        setFormData({ ...formData, coverImageUrl: imageUrl });
       };
       reader.readAsDataURL(file);
     }
@@ -102,7 +102,7 @@ const BookAdd = () => {
                     type="button"
                     onClick={() => {
                       setPreviewImage("");
-                      setFormData({ ...formData, coverImage: "" });
+                      setFormData({ ...formData, coverImageUrl: "" });
                     }}
                     className="mt-2 text-sm text-red-600 dark:text-red-400 hover:underline"
                   >

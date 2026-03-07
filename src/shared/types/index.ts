@@ -1,22 +1,22 @@
 // Member Types
 export type MemberStatus = 'ACTIVE' | 'SUSPENDED' | 'DORMANT' | 'WITHDRAWN';
-export type MemberGrade = 'BASIC' | 'SILVER' | 'GOLD' | 'VIP';
+export type MembershipType = 'REGULAR' | 'PREMIUM' | 'SUSPENDED';
+export type UserRole = 'USER' | 'ADMIN';
 
 export interface Member {
   id: number;
   name: string;
   email: string;
-  membershipType: 'REGULAR' | 'PREMIUM';
-  memberGrade?: MemberGrade;    // 회원 등급 (대출 권수 제한 기준)
-  status: MemberStatus;
+  membershipType: MembershipType;
+  role?: UserRole;
+  status?: MemberStatus;  // 로컬 전용 (API 응답에는 없음)
   joinDate: string;
 }
 
 export interface MemberCreateRequest {
   name: string;
   email: string;
-  membershipType: 'REGULAR' | 'PREMIUM';
-  status?: MemberStatus;
+  membershipType?: MembershipType;
 }
 
 // Book Types
@@ -28,7 +28,7 @@ export interface Book {
   price: number;
   available: boolean;
   createdDate: string;
-  coverImage?: string;
+  coverImageUrl?: string;
 }
 
 export interface BookCreateRequest {
@@ -42,13 +42,17 @@ export interface BookCreateRequest {
 // Order Types
 export interface Order {
   id: number;
-  totalAmount: number;
-  orderDate: string;
+  memberId: number;
+  memberName: string;
+  memberEmail: string;
   status: 'PENDING' | 'CONFIRMED' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
-  items: OrderItem[];
-  customerEmail?: string;
-  paymentMethod?: 'CREDIT_CARD' | 'BANK_TRANSFER';
-  paymentStatus?: 'PENDING' | 'COMPLETED' | 'FAILED';
+  orderItems: OrderItem[];
+  totalAmount: number;
+  discountAmount: number;
+  finalAmount: number;
+  orderDate: string;
+  payment?: OrderPayment;
+  delivery?: OrderDelivery;
 }
 
 export interface OrderItem {
@@ -58,6 +62,23 @@ export interface OrderItem {
   bookAuthor: string;
   quantity: number;
   price: number;
+  totalPrice: number;
+}
+
+export interface OrderPayment {
+  method: 'CREDIT_CARD' | 'DEBIT_CARD' | 'BANK_TRANSFER' | 'KAKAO_PAY' | 'NAVER_PAY' | 'TOSS_PAY';
+  status: 'PENDING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
+  amount: number;
+}
+
+export interface OrderDelivery {
+  recipientName: string;
+  phoneNumber: string;
+  address: string;
+  addressDetail?: string;
+  zipCode?: string;
+  deliveryMemo?: string;
+  status: string;
 }
 
 export interface OrderCreateRequest {
@@ -106,21 +127,27 @@ export interface NavItem {
 }
 
 // Loan Types
+export type LoanStatus = 'ACTIVE' | 'RETURNED' | 'OVERDUE' | 'CANCELLED';
+
 export interface Loan {
   id: number;
   bookId: number;
   bookTitle: string;
   bookAuthor: string;
+  bookIsbn?: string;
   memberId: number;
   memberName: string;
   memberEmail: string;
   loanDate: string;
   dueDate: string;
   returnDate?: string;
-  status: 'ACTIVE' | 'RETURNED' | 'OVERDUE';
-  extensionCount?: number;     // 연장 횟수 (기본값: 0)
-  overdueFee?: number;          // 연체료 (원 단위)
-  overdueDays?: number;         // 연체 일수
+  status: LoanStatus;
+  extensionCount?: number;
+  overdueFee?: number;
+  overdueDays?: number;
+  daysUntilDue?: number;
+  isOverdue?: boolean;
+  canExtendNow?: boolean;
 }
 
 export interface LoanCreateRequest {
@@ -128,9 +155,39 @@ export interface LoanCreateRequest {
   memberId: number;
 }
 
-export interface LoanReturnRequest {
-  loanId: number;
-  returnDate: string;
+export interface ClientLoanRequest {
+  bookId: number;
+  loanPeriod?: number;
+}
+
+// Auth Types
+export interface TokenResponse {
+  accessToken: string;
+  tokenType: string;
+  expiresIn: number;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface SignupRequest {
+  name: string;
+  email: string;
+  password: string;
+  role?: UserRole;
+}
+
+// API Error Type
+export interface ApiError {
+  timestamp: string;
+  status: number;
+  error: string;
+  errorCode: string;
+  message: string;
+  path: string;
+  fieldErrors?: { field: string; rejectedValue: string; message: string }[];
 }
 
 // Badge Variant Types

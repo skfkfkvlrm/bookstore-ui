@@ -1,29 +1,52 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { Book } from "../../../shared/types";
 import Input from "../../../shared/components/common/Input";
 import Select from "../../../shared/components/common/Select";
 import Button from "../../../shared/components/common/Button";
 import Badge from "../../../shared/components/common/Badge";
-import booksData from "../../../shared/data/books.json";
+import { bookService } from "../../../services/bookService";
+import axios from "axios";
+import type { ApiError } from "../../../shared/types";
 
 const BookDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [isEditing, setIsEditing] = useState(false);
-
-  // Find book from imported data or use first book as fallback
-  const initialBook = (booksData as Book[]).find((b) => b.id === Number(id)) || (booksData[0] as Book);
-  const [book, setBook] = useState<Book>(initialBook);
+  const [book, setBook] = useState<Book | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [saveLoading, setSaveLoading] = useState(false);
   const [formData, setFormData] = useState({
-    title: book.title,
-    author: book.author,
-    isbn: book.isbn,
-    price: book.price.toString(),
-    available: book.available.toString(),
-    coverImage: book.coverImage || "",
+    title: "",
+    author: "",
+    isbn: "",
+    price: "",
+    available: "true",
+    coverImageUrl: "",
   });
-  const [previewImage, setPreviewImage] = useState<string>(book.coverImage || "");
+  const [previewImage, setPreviewImage] = useState<string>("");
+
+  useEffect(() => {
+    if (!id) return;
+    setLoading(true);
+    setError(null);
+    bookService.getBook(Number(id))
+      .then((data) => {
+        setBook(data);
+        setFormData({
+          title: data.title,
+          author: data.author,
+          isbn: data.isbn,
+          price: data.price.toString(),
+          available: data.available.toString(),
+          coverImageUrl: data.coverImageUrl || "",
+        });
+        setPreviewImage(data.coverImageUrl || "");
+      })
+      .catch(() => setError("도서 정보를 불러오는 데 실패했습니다."))
+      .finally(() => setLoading(false));
+  }, [id]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -36,7 +59,7 @@ const BookDetail = () => {
       reader.onloadend = () => {
         const imageUrl = reader.result as string;
         setPreviewImage(imageUrl);
-        setFormData({ ...formData, coverImage: imageUrl });
+        setFormData({ ...formData, coverImageUrl: imageUrl });
       };
       reader.readAsDataURL(file);
     }
@@ -44,40 +67,86 @@ const BookDetail = () => {
 
   const handleCancel = () => {
     setIsEditing(false);
-    setPreviewImage(book.coverImage || "");
-    setFormData({
-      title: book.title,
-      author: book.author,
-      isbn: book.isbn,
-      price: book.price.toString(),
-      available: book.available.toString(),
-      coverImage: book.coverImage || "",
-    });
-  };
-
-  const handleSave = (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: API call to update book
-    console.log("Update book:", formData);
-    setBook({
-      ...book,
-      title: formData.title,
-      author: formData.author,
-      isbn: formData.isbn,
-      price: parseFloat(formData.price),
-      available: formData.available === "true",
-      coverImage: formData.coverImage,
-    });
-    setIsEditing(false);
-  };
-
-  const handleDelete = () => {
-    if (window.confirm("이 도서를 삭제하시겠습니까?")) {
-      // TODO: API call to delete book
-      console.log("Delete book:", id);
-      navigate("/admin/books");
+    if (book) {
+      setPreviewImage(book.coverImageUrl || "");
+      setFormData({
+        title: book.title,
+        author: book.author,
+        isbn: book.isbn,
+        price: book.price.toString(),
+        available: book.available.toString(),
+        coverImageUrl: book.coverImageUrl || "",
+      });
     }
   };
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!book) return;
+    setSaveLoading(true);
+    try {
+      const updated = await bookService.update(book.id, {
+        title: formData.title,
+        author: formData.author,
+        isbn: formData.isbn,
+        price: parseFloat(formData.price),
+        available: formData.available === "true",
+      });
+      setBook(updated);
+      setIsEditing(false);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        const apiError = err.response?.data as ApiError | undefined;
+        alert(apiError?.message ?? "도서 정보 수정에 실패했습니다.");
+      } else {
+        alert("서버에 연결할 수 없습니다.");
+      }
+    } finally {
+      setSaveLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!book || !window.confirm("이 도서를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) return;
+    try {
+      await bookService.delete(book.id);
+      navigate("/admin/books");
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        const apiError = err.response?.data as ApiError | undefined;
+        alert(apiError?.message ?? "도서 삭제에 실패했습니다.");
+      } else {
+        alert("서버에 연결할 수 없습니다.");
+      }
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-32">
+        <span className="material-symbols-outlined text-4xl text-[#2f9e5f] animate-spin">progress_activity</span>
+      </div>
+    );
+  }
+
+  if (error || !book) {
+    return (
+      <div className="max-w-7xl mx-auto text-center py-10">
+        <span className="material-symbols-outlined text-6xl text-red-400 mb-4">error</span>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-4">
+          {error ?? "도서를 찾을 수 없습니다."}
+        </h2>
+        <Button
+          variant="secondary"
+          onClick={() => navigate("/admin/books")}
+          className="mt-6"
+        >
+          <span className="material-symbols-outlined">arrow_back</span>
+          목록으로 돌아가기
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -165,7 +234,7 @@ const BookDetail = () => {
                       type="button"
                       onClick={() => {
                         setPreviewImage("");
-                        setFormData({ ...formData, coverImage: "" });
+                        setFormData({ ...formData, coverImageUrl: "" });
                       }}
                       className="mt-2 text-sm text-red-600 dark:text-red-400 hover:underline"
                     >
@@ -214,12 +283,12 @@ const BookDetail = () => {
               {isEditing ? (
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-600 dark:text-gray-400">
-                    $
+                    ₩
                   </span>
                   <input
                     type="number"
-                    step="0.01"
-                    placeholder="10.25"
+                    step="1"
+                    placeholder="15000"
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                     className="w-full pl-7 pr-4 py-2 bg-white dark:bg-[#1a2632] border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#2f9e5f] focus:border-transparent dark:text-white"
@@ -228,7 +297,7 @@ const BookDetail = () => {
                 </div>
               ) : (
                 <div className="py-2 text-gray-900 dark:text-white font-medium">
-                  ${book.price.toFixed(2)}
+                  {book.price.toLocaleString()}원
                 </div>
               )}
             </div>
@@ -268,11 +337,15 @@ const BookDetail = () => {
 
           {isEditing && (
             <div className="flex justify-end gap-4 pt-4">
-              <Button variant="secondary" type="button" onClick={handleCancel}>
+              <Button variant="secondary" type="button" onClick={handleCancel} disabled={saveLoading}>
                 취소
               </Button>
-              <Button type="submit">
-                <span className="material-symbols-outlined">save</span>
+              <Button type="submit" disabled={saveLoading}>
+                {saveLoading ? (
+                  <span className="material-symbols-outlined animate-spin">progress_activity</span>
+                ) : (
+                  <span className="material-symbols-outlined">save</span>
+                )}
                 변경 사항 저장
               </Button>
             </div>

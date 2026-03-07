@@ -1,71 +1,57 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Member } from "../../../shared/types";
 import Button from "../../../shared/components/common/Button";
 import Badge from "../../../shared/components/common/Badge";
 import SearchInput from "../../../shared/components/common/SearchInput";
-
 import Pagination from "../../../shared/components/common/Pagination";
-import membersData from "../../../shared/data/members.json";
+import { memberService } from "../../../services/memberService";
 
 const ITEMS_PER_PAGE = 10;
 
-// Additional mock members
-const additionalMembers: Member[] = [
-  {
-    id: 3,
-    name: "Olivia Carter",
-    email: "olivia.carter@email.com",
-    membershipType: "PREMIUM",
-    status: "DORMANT",
-    joinDate: "2023-03-10T14:20:00",
-  },
-  {
-    id: 4,
-    name: "James Wilson",
-    email: "james.wilson@email.com",
-    membershipType: "REGULAR",
-    status: "SUSPENDED",
-    joinDate: "2023-04-05T09:15:00",
-  },
-  {
-    id: 5,
-    name: "Emma Davis",
-    email: "emma.davis@email.com",
-    membershipType: "PREMIUM",
-    status: "WITHDRAWN",
-    joinDate: "2023-05-12T13:45:00",
-  },
-];
-
-// Combine shared data with additional mock members
-const mockMembers: Member[] = [...(membersData as Member[]), ...additionalMembers];
-
 const MemberList = () => {
   const navigate = useNavigate();
-  const [members] = useState<Member[]>(mockMembers);
+  const [members, setMembers] = useState<Member[]>([]);
+  const [totalItems, setTotalItems] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedMembers, setSelectedMembers] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [localSearch, setLocalSearch] = useState("");
   const [sortBy, setSortBy] = useState<"name" | "email" | "joinDate">("joinDate");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [statusFilter, setStatusFilter] = useState<"all" | "ACTIVE" | "SUSPENDED" | "DORMANT" | "WITHDRAWN">("all");
   const [membershipFilter, setMembershipFilter] = useState<"all" | "REGULAR" | "PREMIUM">("all");
 
-  // Filter members
-  const filteredMembers = members.filter((member) => {
-    const matchesSearch = searchQuery === "" ||
-      member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.email.toLowerCase().includes(searchQuery.toLowerCase());
+  const fetchMembers = useCallback(async (keyword: string, page: number) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const apiPage = page - 1;
+      const response = keyword
+        ? await memberService.search(keyword, apiPage, 200)
+        : await memberService.getMembers(apiPage, 200);
+      setMembers(response.content);
+      setTotalItems(response.totalElements);
+    } catch {
+      setError("회원 목록을 불러오는 데 실패했습니다.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
+  useEffect(() => {
+    fetchMembers(searchQuery, currentPage);
+  }, [searchQuery, currentPage, fetchMembers]);
+
+  const filteredMembers = useMemo(() => members.filter((member) => {
     const matchesStatus = statusFilter === "all" || member.status === statusFilter;
     const matchesMembership = membershipFilter === "all" || member.membershipType === membershipFilter;
+    return matchesStatus && matchesMembership;
+  }), [members, statusFilter, membershipFilter]);
 
-    return matchesSearch && matchesStatus && matchesMembership;
-  });
-
-  // Sort members
-  const sortedMembers = [...filteredMembers].sort((a, b) => {
+  const sortedMembers = useMemo(() => [...filteredMembers].sort((a, b) => {
     let comparison = 0;
     switch (sortBy) {
       case "name":
@@ -79,11 +65,14 @@ const MemberList = () => {
         break;
     }
     return sortOrder === "asc" ? comparison : -comparison;
-  });
+  }), [filteredMembers, sortBy, sortOrder]);
 
-  const totalPages = Math.ceil(sortedMembers.length / ITEMS_PER_PAGE);
+  const pagedTotalPages = Math.ceil(sortedMembers.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedMembers = sortedMembers.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const paginatedMembers = useMemo(
+    () => sortedMembers.slice(startIndex, startIndex + ITEMS_PER_PAGE),
+    [sortedMembers, startIndex]
+  );
 
   const handleSelectAll = () => {
     if (selectedMembers.length === paginatedMembers.length) {
@@ -99,8 +88,9 @@ const MemberList = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSearchQuery(localSearch.trim());
     setCurrentPage(1);
   };
 
@@ -116,23 +106,13 @@ const MemberList = () => {
     }
   };
 
-  const handleBulkAction = (action: string) => {
-    console.log(`Bulk action ${action} on members:`, selectedMembers);
-    alert(`${action} on ${selectedMembers.length} selected member(s)`);
-  };
-
-  const getStatusBadgeVariant = (status: string): 'active' | 'suspended' | 'dormant' | 'withdrawn' => {
+  const getStatusBadgeVariant = (status: string | undefined): 'active' | 'suspended' | 'dormant' | 'withdrawn' => {
     switch (status) {
-      case 'ACTIVE':
-        return 'active';
-      case 'SUSPENDED':
-        return 'suspended';
-      case 'DORMANT':
-        return 'dormant';
-      case 'WITHDRAWN':
-        return 'withdrawn';
-      default:
-        return 'active';
+      case 'ACTIVE': return 'active';
+      case 'SUSPENDED': return 'suspended';
+      case 'DORMANT': return 'dormant';
+      case 'WITHDRAWN': return 'withdrawn';
+      default: return 'active';
     }
   };
 
@@ -186,7 +166,7 @@ const MemberList = () => {
       header: "Status",
       accessor: (row: Member) => (
         <Badge variant={getStatusBadgeVariant(row.status)}>
-          {row.status}
+          {row.status ?? "ACTIVE"}
         </Badge>
       ),
     },
@@ -200,7 +180,12 @@ const MemberList = () => {
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Manage Members</h2>
+        <div>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Manage Members</h2>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
+            {!loading && `총 ${totalItems.toLocaleString()}명의 회원`}
+          </p>
+        </div>
         <Button onClick={() => navigate("/admin/members/add")}>
           <span className="material-symbols-outlined">add</span>
           Add Member
@@ -213,29 +198,19 @@ const MemberList = () => {
             <span className="text-sm font-medium text-blue-800 dark:text-blue-300">
               {selectedMembers.length} member(s) selected
             </span>
-            <div className="flex gap-2">
-              <Button variant="secondary" size="sm" onClick={() => handleBulkAction("Export")}>
-                <span className="material-symbols-outlined">download</span>
-                Export
-              </Button>
-              <Button variant="danger" size="sm" onClick={() => handleBulkAction("Delete")}>
-                <span className="material-symbols-outlined">delete</span>
-                Delete
-              </Button>
-            </div>
           </div>
         </div>
       )}
 
       <div className="bg-white dark:bg-[#1a2632] p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-          <div className="md:col-span-4">
+          <form onSubmit={handleSearch} className="md:col-span-4">
             <SearchInput
-              placeholder="Search by name or email"
-              value={searchQuery}
-              onChange={(e) => handleSearch(e.target.value)}
+              placeholder="이름으로 검색 후 Enter"
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
             />
-          </div>
+          </form>
           <div className="md:col-span-8 flex items-center gap-3 justify-end flex-wrap">
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600 dark:text-gray-400">Status:</span>
@@ -297,52 +272,83 @@ const MemberList = () => {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-[#1a2632] rounded-lg shadow-sm overflow-hidden border border-gray-200 dark:border-gray-700">
-        <table className="w-full text-sm text-left">
-          <thead className="bg-gray-50 dark:bg-white/5 text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-            <tr>
-              {columns.map((col, index) => (
-                <th key={index} scope="col" className="px-6 py-3">
-                  {typeof col.header === "function" ? col.header : col.header}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-            {paginatedMembers.map((member) => (
-              <tr
-                key={member.id}
-                onClick={(e) => {
-                  const target = e.target as HTMLElement;
-                  if (
-                    !target.closest('input[type="checkbox"]') &&
-                    !target.closest("button")
-                  ) {
-                    navigate(`/admin/members/${member.id}`);
-                  }
-                }}
-                className="hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer transition-colors"
-              >
-                {columns.map((col, colIndex) => (
-                  <td key={colIndex} className={`px-6 py-4 ${col.className || ""}`}>
-                    {typeof col.accessor === "function"
-                      ? col.accessor(member)
-                      : member[col.accessor]}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {loading && (
+        <div className="flex items-center justify-center py-16">
+          <span className="material-symbols-outlined text-4xl text-[#2f9e5f] animate-spin">progress_activity</span>
+        </div>
+      )}
 
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-        itemsPerPage={ITEMS_PER_PAGE}
-        totalItems={sortedMembers.length}
-      />
+      {error && (
+        <div className="text-center py-16">
+          <span className="material-symbols-outlined text-6xl text-red-400 mb-4">error</span>
+          <p className="text-lg text-red-600 dark:text-red-400">{error}</p>
+          <button
+            onClick={() => fetchMembers(searchQuery, currentPage)}
+            className="mt-4 px-6 py-2 rounded-lg bg-[#2f9e5f] text-white font-medium hover:bg-[#2f9e5f]/90"
+          >
+            다시 시도
+          </button>
+        </div>
+      )}
+
+      {!loading && !error && (
+        <>
+          <div className="bg-white dark:bg-[#1a2632] rounded-lg shadow-sm overflow-hidden border border-gray-200 dark:border-gray-700">
+            <table className="w-full text-sm text-left">
+              <thead className="bg-gray-50 dark:bg-white/5 text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                <tr>
+                  {columns.map((col, index) => (
+                    <th key={index} scope="col" className="px-6 py-3">
+                      {typeof col.header === "function" ? col.header : col.header}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                {paginatedMembers.length === 0 ? (
+                  <tr>
+                    <td colSpan={columns.length} className="px-6 py-16 text-center text-gray-500 dark:text-gray-400">
+                      조건에 맞는 회원이 없습니다.
+                    </td>
+                  </tr>
+                ) : (
+                  paginatedMembers.map((member) => (
+                    <tr
+                      key={member.id}
+                      onClick={(e) => {
+                        const target = e.target as HTMLElement;
+                        if (
+                          !target.closest('input[type="checkbox"]') &&
+                          !target.closest("button")
+                        ) {
+                          navigate(`/admin/members/${member.id}`);
+                        }
+                      }}
+                      className="hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer transition-colors"
+                    >
+                      {columns.map((col, colIndex) => (
+                        <td key={colIndex} className={`px-6 py-4 ${col.className || ""}`}>
+                          {typeof col.accessor === "function"
+                            ? col.accessor(member)
+                            : member[col.accessor]}
+                        </td>
+                      ))}
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={pagedTotalPages}
+            onPageChange={handlePageChange}
+            itemsPerPage={ITEMS_PER_PAGE}
+            totalItems={sortedMembers.length}
+          />
+        </>
+      )}
     </div>
   );
 };
