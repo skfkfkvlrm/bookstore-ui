@@ -3,33 +3,119 @@ import Input from "../../shared/components/common/Input";
 import Button from "../../shared/components/common/Button";
 import Select from "../../shared/components/common/Select";
 import { getToken } from "../../client/utils/authStorage";
+import booksData from "../../shared/data/books.json";
 
-// 네이버 도서 검색 키워드
-const SEED_KEYWORDS = [
-  '프로그래밍', '알고리즘', '자바', '파이썬', '리액트',
-  '스프링', '데이터베이스', '인공지능', '클라우드', '네트워크',
-  '운영체제', '보안', '자바스크립트', '타입스크립트', '도커',
-  '머신러닝', '딥러닝', '소프트웨어공학', '컴퓨터과학', '데이터분석',
+// 한국어 개발/IT 대표 도서
+const KOREAN_BOOKS = [
+  {
+    title: "자바 ORM 표준 JPA 프로그래밍",
+    author: "김영한",
+    isbn: "978-8960777330",
+    price: 43000,
+    available: true,
+    coverImageUrl: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c",
+  },
+  {
+    title: "스프링 부트 실전 활용 가이드",
+    author: "이동욱",
+    isbn: "978-8965402602",
+    price: 32000,
+    available: true,
+    coverImageUrl: "https://images.unsplash.com/photo-1532012197267-da84d127e765",
+  },
+  {
+    title: "클린 코드 (Clean Code)",
+    author: "로버트 C. 마틴",
+    isbn: "978-8966260959",
+    price: 33000,
+    available: true,
+    coverImageUrl: "https://images.unsplash.com/photo-1512820790803-83ca734da794",
+  },
+  {
+    title: "가상 면접 사례로 배우는 대규모 시스템 설계 기초",
+    author: "알렉스 슈",
+    isbn: "979-1169210027",
+    price: 38000,
+    available: true,
+    coverImageUrl: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6",
+  },
+  {
+    title: "도메인 주도 설계 철저 입문",
+    author: "나루세 마사노부",
+    isbn: "979-1162243404",
+    price: 28000,
+    available: true,
+    coverImageUrl: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f",
+  },
+  {
+    title: "HTTP 완벽 가이드",
+    author: "데이빗 구를리",
+    isbn: "978-8966261208",
+    price: 45000,
+    available: true,
+    coverImageUrl: "https://images.unsplash.com/photo-1457369804613-52c61a468e7d",
+  },
+  {
+    title: "모던 자바스크립트 Deep Dive",
+    author: "이웅모",
+    isbn: "979-1158392239",
+    price: 45000,
+    available: true,
+    coverImageUrl: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73",
+  },
+  {
+    title: "리팩터링 2판",
+    author: "마틴 파울러",
+    isbn: "979-1162242742",
+    price: 35000,
+    available: true,
+    coverImageUrl: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e",
+  },
+  {
+    title: "오브젝트 (코드로 이해하는 객체지향 설계)",
+    author: "조영호",
+    isbn: "979-1158391409",
+    price: 38000,
+    available: true,
+    coverImageUrl: "https://images.unsplash.com/photo-1506880018603-83d5b814b5a6",
+  },
+  {
+    title: "대용량 데이터 처리를 위한 자바 프로그래밍",
+    author: "백기선",
+    isbn: "978-8960779999",
+    price: 30000,
+    available: true,
+    coverImageUrl: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
+  },
 ];
 
-function stripHtml(str = '') {
-  return str.replace(/<[^>]*>/g, '').trim();
-}
-
-interface NaverBookItem {
+interface SeedBookItem {
   title: string;
   author: string;
   isbn: string;
-  discount: string;
-  price: string;
-  image: string;
+  price: number;
+  available: boolean;
+  coverImageUrl: string;
 }
+
+// 내장 도서 데이터 통합 (한국어 전문 도서 10권 + 글로벌 베스트셀러 50권 = 총 60권)
+const BUILT_IN_BOOKS: SeedBookItem[] = [
+  ...KOREAN_BOOKS,
+  ...(booksData as any[]).map((b) => ({
+    title: b.title,
+    author: b.author,
+    isbn: b.isbn ? b.isbn.replace(/\s+/g, "") : "",
+    price: b.price ? (b.price < 100 ? Math.round(b.price * 1000) : b.price) : 20000,
+    available: b.available !== false,
+    coverImageUrl: b.coverImage || b.coverImageUrl || "",
+  })),
+];
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState("profile");
 
   // 도서 시드 상태
-  const [seedTarget, setSeedTarget] = useState("1000");
+  const [seedTarget, setSeedTarget] = useState("60");
   const [seedRunning, setSeedRunning] = useState(false);
   const [seedLogs, setSeedLogs] = useState<string[]>([]);
   const [seedResult, setSeedResult] = useState<{ success: number; duplicate: number; fail: number } | null>(null);
@@ -53,74 +139,52 @@ const Settings = () => {
     setSeedLogs([]);
     setSeedResult(null);
 
-    addLog(`🚀 도서 시드 시작 (목표: ${target}권)`);
+    const booksToRegister = BUILT_IN_BOOKS.slice(0, target);
+    addLog(`🚀 내장 도서 시드 시작 (요청: ${target}권 / 가용: ${booksToRegister.length}권)`);
 
     const token = getToken();
-    const bookMap = new Map<string, object>();
-
-    // 1. 네이버 API 수집
-    for (const keyword of SEED_KEYWORDS) {
-      if (abortRef.current || bookMap.size >= target) break;
-
-      try {
-        for (const start of [1, 101]) {
-          if (abortRef.current || bookMap.size >= target) break;
-
-          const res = await fetch(
-            `/naver-api/v1/search/book.json?query=${encodeURIComponent(keyword)}&display=100&start=${start}`
-          );
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          const data = await res.json();
-          const items: NaverBookItem[] = data.items || [];
-
-          for (const item of items) {
-            if (bookMap.size >= target) break;
-            const isbn = item.isbn?.split(' ').find((s: string) => s.length === 13)
-              || item.isbn?.split(' ').find((s: string) => s.length >= 10) || '';
-            if (!isbn || bookMap.has(isbn)) continue;
-            const price = parseInt(item.discount || item.price || '0', 10);
-            if (!price) continue;
-            const title = stripHtml(item.title);
-            const author = stripHtml(item.author);
-            if (!title || !author) continue;
-            bookMap.set(isbn, { title, author, isbn, price, available: true, coverImageUrl: item.image || '' });
-          }
-
-          await new Promise((r) => setTimeout(r, 150));
-        }
-        addLog(`  ✔ "${keyword}" → 누적 ${bookMap.size}권`);
-      } catch (e) {
-        addLog(`  ✘ "${keyword}" 실패: ${(e as Error).message}`);
-      }
-    }
-
-    addLog(`\n📦 수집 완료 ${bookMap.size}권 → 백엔드 등록 시작`);
-
-    // 2. 백엔드 등록
     let success = 0, duplicate = 0, fail = 0;
-    const books = [...bookMap.values()];
 
-    for (const book of books) {
-      if (abortRef.current) break;
+    for (let i = 0; i < booksToRegister.length; i++) {
+      if (abortRef.current) {
+        addLog("⛔ 사용자에 의해 작업이 중단되었습니다.");
+        break;
+      }
 
-      const res = await fetch('/api/books', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify(book),
-      });
+      const book = booksToRegister[i];
+      try {
+        const res = await fetch('/api/books', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(book),
+        });
 
-      if (res.ok) success++;
-      else if (res.status === 409) duplicate++;
-      else fail++;
+        if (res.ok) {
+          success++;
+          addLog(`  ✔ [${i + 1}/${booksToRegister.length}] 등록: "${book.title}" (${book.author})`);
+        } else {
+          const resData = await res.json().catch(() => null);
+          if (res.status === 400 || res.status === 409 || resData?.code === 'DUPLICATE_ISBN') {
+            duplicate++;
+            addLog(`  ↷ [${i + 1}/${booksToRegister.length}] 중복 스킵: "${book.title}"`);
+          } else {
+            fail++;
+            addLog(`  ✘ [${i + 1}/${booksToRegister.length}] 실패: "${book.title}" (HTTP ${res.status})`);
+          }
+        }
+      } catch (err) {
+        fail++;
+        addLog(`  ✘ [${i + 1}/${booksToRegister.length}] 통신 오류: ${(err as Error).message}`);
+      }
 
-      const done = success + duplicate + fail;
-      if (done % 100 === 0) addLog(`  📖 진행: 등록 ${success} / 중복 ${duplicate} / 실패 ${fail}`);
-
-      await new Promise((r) => setTimeout(r, 80));
+      await new Promise((r) => setTimeout(r, 60));
     }
 
     setSeedResult({ success, duplicate, fail });
-    addLog(`\n✅ 완료 — 등록 ${success}권 / 중복 스킵 ${duplicate}권 / 실패 ${fail}권`);
+    addLog(`\n✅ 완료 — 신규 등록 ${success}권 / 중복 스킵 ${duplicate}권 / 실패 ${fail}권`);
     setSeedRunning(false);
   };
 
@@ -811,7 +875,7 @@ const Settings = () => {
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-white">데이터 관리</h2>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    네이버 도서 API를 이용해 초기 도서 데이터를 등록합니다.
+                    시스템 내장 도서 데이터(60권)를 이용해 백엔드에 초기 도서 데이터를 등록합니다.
                   </p>
                 </div>
 
@@ -819,9 +883,9 @@ const Settings = () => {
                   <div className="flex items-center gap-3">
                     <span className="material-symbols-outlined text-2xl text-[#2f9e5f]">library_books</span>
                     <div>
-                      <h3 className="font-semibold text-gray-900 dark:text-white">도서 초기 데이터 등록</h3>
+                      <h3 className="font-semibold text-gray-900 dark:text-white">도서 초기 데이터 등록 (내장 데이터)</h3>
                       <p className="text-sm text-gray-500 dark:text-gray-400">
-                        네이버 책 검색 API로 IT/개발 도서를 검색해 백엔드에 자동 등록합니다. ISBN 중복은 자동 스킵됩니다.
+                        시스템에 내장된 IT 전문서 및 베스트셀러 60권을 백엔드에 자동 등록합니다. ISBN 중복은 자동으로 스킵됩니다.
                       </p>
                     </div>
                   </div>
@@ -829,14 +893,14 @@ const Settings = () => {
                   <div className="flex items-center gap-4">
                     <div className="w-40">
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        목표 권수
+                        등록 권수 (최대 60권)
                       </label>
                       <input
                         type="number"
                         value={seedTarget}
                         onChange={(e) => setSeedTarget(e.target.value)}
                         min="1"
-                        max="2000"
+                        max="60"
                         disabled={seedRunning}
                         className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#101922] text-gray-900 dark:text-white focus:ring-2 focus:ring-[#2f9e5f] disabled:opacity-50"
                       />
@@ -854,7 +918,7 @@ const Settings = () => {
                         ) : (
                           <>
                             <span className="material-symbols-outlined">download</span>
-                            데이터 등록 시작
+                            내장 데이터 등록 시작
                           </>
                         )}
                       </Button>
@@ -866,8 +930,8 @@ const Settings = () => {
                       )}
                     </div>
                   </div>
-                  <p className="text-xs text-red-600 dark:text-red-400">
-                    비고: 데이터 등록 시작은 localhost 개발 환경(Vite 프록시)에서만 동작하며, GCP(Firebase Hosting) 배포 환경에서는 동작하지 않습니다.
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    ※ 등록된 도서는 백엔드 데이터베이스에 영구 저장되며 즉시 도서 목록 및 대여/구매 화면에 반영됩니다.
                   </p>
 
                   {/* 진행 로그 */}
