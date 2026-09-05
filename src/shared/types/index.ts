@@ -195,3 +195,31 @@ export type BadgeVariant = 'premium' | 'standard' | 'available' | 'unavailable' 
 
 // Button Variant Types
 export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'success';
+
+// Payment Types
+export interface PaymentConfirmRequest {
+  orderId: number;
+  paymentKey: string;
+  amount: number;
+  pgProvider?: string;
+  cardCompany?: string;
+  cardNumber?: string;
+  installmentMonths?: number;
+}
+
+export interface PaymentResponse {
+  id: number;
+  orderId: number;
+  method: string;
+  status: 'PENDING' | 'COMPLETED' | 'FAILED' | 'CANCELLED' | 'REFUNDED' | 'PARTIAL_REFUNDED';
+  amount: number;
+  paymentDate?: string;
+  transactionId?: string;
+  paymentKey?: string;
+  pgProvider?: string;
+  receiptUrl?: string;
+  cardCompany?: string;
+  cardNumber?: string;
+  installmentMonths?: number;
+  failureReason?: string;
+}

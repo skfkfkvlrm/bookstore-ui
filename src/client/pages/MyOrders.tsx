@@ -245,10 +245,26 @@ const MyOrders = () => {
                     ))}
                   </div>
 
-                  {/* Order Total */}
-                  <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                    <span className="text-lg font-bold text-gray-900 dark:text-white">총 결제 금액</span>
-                    <span className="text-2xl font-bold text-[#2f9e5f]">{order.totalAmount.toLocaleString()}원</span>
+                  {/* Order Total & Payment Info */}
+                  <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 flex flex-wrap justify-between items-center gap-4">
+                    <div className="text-sm text-gray-500">
+                      {order.payment && (
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-gray-700 dark:text-gray-300">결제 상태:</span>
+                          <span className={`px-2 py-0.5 rounded text-xs font-semibold ${
+                            order.payment.status === "COMPLETED"
+                              ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
+                              : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+                          }`}>
+                            {order.payment.method} · {order.payment.status === "COMPLETED" ? "결제 승인 완료" : order.payment.status}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <span className="text-lg font-bold text-gray-900 dark:text-white">총 결제 금액</span>
+                      <span className="text-2xl font-bold text-[#2f9e5f]">{order.totalAmount.toLocaleString()}원</span>
+                    </div>
                   </div>
                 </div>
               </div>
