@@ -4,6 +4,7 @@ import Button from "../../shared/components/common/Button";
 import Select from "../../shared/components/common/Select";
 import { getToken } from "../../client/utils/authStorage";
 import booksData from "../../shared/data/books.json";
+import migratedBooksData from "../../shared/data/migratedBooks.json";
 
 // 한국어 개발/IT 대표 도서
 const KOREAN_BOOKS = [
@@ -98,8 +99,8 @@ interface SeedBookItem {
   coverImageUrl: string;
 }
 
-// 내장 도서 데이터 통합 (한국어 전문 도서 10권 + 글로벌 베스트셀러 50권 = 총 60권)
-const BUILT_IN_BOOKS: SeedBookItem[] = [
+// 1. 초기 추천 도서 (60권: 한국어 10권 + 글로벌 베스트셀러 50권)
+const RECOMMENDED_60_BOOKS: SeedBookItem[] = [
   ...KOREAN_BOOKS,
   ...(booksData as any[]).map((b) => ({
     title: b.title,
@@ -111,26 +112,77 @@ const BUILT_IN_BOOKS: SeedBookItem[] = [
   })),
 ];
 
+// 2. 이관 도서 데이터 (1,010권: DB에서 정합성 검증 완료된 도서 전체)
+const MIGRATED_1010_BOOKS: SeedBookItem[] = (migratedBooksData as any[]).map((b) => ({
+  title: b.title,
+  author: b.author,
+  isbn: b.isbn ? b.isbn.replace(/\s+/g, "") : "",
+  price: b.price || 20000,
+  available: b.available !== false,
+  coverImageUrl: b.coverImageUrl || "",
+}));
+
+// 3. 통합 전체 도서 (중복 제거된 1,060권)
+const buildCombinedBooks = (): SeedBookItem[] => {
+  const map = new Map<string, SeedBookItem>();
+  for (const b of MIGRATED_1010_BOOKS) {
+    if (b.isbn) map.set(b.isbn, b);
+  }
+  for (const b of RECOMMENDED_60_BOOKS) {
+    if (b.isbn && !map.has(b.isbn)) map.set(b.isbn, b);
+  }
+  return Array.from(map.values());
+};
+
+const COMBINED_ALL_BOOKS: SeedBookItem[] = buildCombinedBooks();
+
 const Settings = () => {
   const [activeTab, setActiveTab] = useState("profile");
 
   // 도서 시드 상태
-  const [seedTarget, setSeedTarget] = useState("60");
+  const [datasetType, setDatasetType] = useState<"migrated" | "combined" | "recommended">("migrated");
+  const [seedTarget, setSeedTarget] = useState("1010");
   const [seedRunning, setSeedRunning] = useState(false);
+  const [seedProgress, setSeedProgress] = useState<{ current: number; total: number } | null>(null);
   const [seedLogs, setSeedLogs] = useState<string[]>([]);
   const [seedResult, setSeedResult] = useState<{ success: number; duplicate: number; fail: number } | null>(null);
   const abortRef = useRef(false);
   const logEndRef = useRef<HTMLDivElement>(null);
 
+  const getActiveDataset = (): SeedBookItem[] => {
+    switch (datasetType) {
+      case "migrated":
+        return MIGRATED_1010_BOOKS;
+      case "combined":
+        return COMBINED_ALL_BOOKS;
+      case "recommended":
+        return RECOMMENDED_60_BOOKS;
+      default:
+        return MIGRATED_1010_BOOKS;
+    }
+  };
+
+  const handleDatasetChange = (type: "migrated" | "combined" | "recommended") => {
+    setDatasetType(type);
+    if (type === "migrated") {
+      setSeedTarget("1010");
+    } else if (type === "combined") {
+      setSeedTarget(String(COMBINED_ALL_BOOKS.length));
+    } else {
+      setSeedTarget("60");
+    }
+  };
+
   const addLog = (msg: string) => {
     setSeedLogs((prev) => {
-      const next = [...prev, msg];
+      const next = prev.length > 250 ? [...prev.slice(prev.length - 150), msg] : [...prev, msg];
       setTimeout(() => logEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 50);
       return next;
     });
   };
 
   const handleStartSeed = async () => {
+    const activeBooks = getActiveDataset();
     const target = parseInt(seedTarget, 10);
     if (!target || target <= 0) return;
 
@@ -139,8 +191,10 @@ const Settings = () => {
     setSeedLogs([]);
     setSeedResult(null);
 
-    const booksToRegister = BUILT_IN_BOOKS.slice(0, target);
-    addLog(`🚀 내장 도서 시드 시작 (요청: ${target}권 / 가용: ${booksToRegister.length}권)`);
+    const booksToRegister = activeBooks.slice(0, Math.min(target, activeBooks.length));
+    setSeedProgress({ current: 0, total: booksToRegister.length });
+    const datasetName = datasetType === 'migrated' ? '이관 도서 1,010권' : datasetType === 'combined' ? '통합 도서 1,060권' : '추천 도서 60권';
+    addLog(`🚀 도서 데이터 시드 시작 (요청: ${target}권 / 가용: ${booksToRegister.length}권 / 선택: ${datasetName})`);
 
     const token = getToken();
     let success = 0, duplicate = 0, fail = 0;
@@ -152,6 +206,8 @@ const Settings = () => {
       }
 
       const book = booksToRegister[i];
+      setSeedProgress({ current: i + 1, total: booksToRegister.length });
+
       try {
         const res = await fetch('/api/books', {
           method: 'POST',
@@ -180,10 +236,11 @@ const Settings = () => {
         addLog(`  ✘ [${i + 1}/${booksToRegister.length}] 통신 오류: ${(err as Error).message}`);
       }
 
-      await new Promise((r) => setTimeout(r, 60));
+      await new Promise((r) => setTimeout(r, 15));
     }
 
     setSeedResult({ success, duplicate, fail });
+    setSeedProgress(null);
     addLog(`\n✅ 완료 — 신규 등록 ${success}권 / 중복 스킵 ${duplicate}권 / 실패 ${fail}권`);
     setSeedRunning(false);
   };
@@ -875,61 +932,183 @@ const Settings = () => {
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-white">데이터 관리</h2>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    시스템 내장 도서 데이터(60권)를 이용해 백엔드에 초기 도서 데이터를 등록합니다.
+                    이관 완료된 대량 도서 데이터(1,010권) 및 추천 도서를 이용해 백엔드에 도서 데이터를 원클릭 자동 등록합니다.
                   </p>
                 </div>
 
-                <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6 space-y-4">
+                <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6 space-y-6">
                   <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-2xl text-[#2f9e5f]">library_books</span>
+                    <span className="material-symbols-outlined text-3xl text-[#2f9e5f]">library_books</span>
                     <div>
-                      <h3 className="font-semibold text-gray-900 dark:text-white">도서 초기 데이터 등록 (내장 데이터)</h3>
+                      <h3 className="font-semibold text-gray-900 dark:text-white text-lg">도서 대량 데이터 등록 (Seeding)</h3>
                       <p className="text-sm text-gray-500 dark:text-gray-400">
-                        시스템에 내장된 IT 전문서 및 베스트셀러 60권을 백엔드에 자동 등록합니다. ISBN 중복은 자동으로 스킵됩니다.
+                        데이터베이스에 보존된 1,010권의 전문 도서 및 글로벌 도서를 백엔드에 자동 등록합니다. 이미 등록된 ISBN은 안전하게 스킵됩니다.
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-4">
-                    <div className="w-40">
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        등록 권수 (최대 60권)
-                      </label>
-                      <input
-                        type="number"
-                        value={seedTarget}
-                        onChange={(e) => setSeedTarget(e.target.value)}
-                        min="1"
-                        max="60"
-                        disabled={seedRunning}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#101922] text-gray-900 dark:text-white focus:ring-2 focus:ring-[#2f9e5f] disabled:opacity-50"
-                      />
-                    </div>
-                    <div className="flex gap-2 mt-5">
-                      <Button
-                        onClick={handleStartSeed}
-                        disabled={seedRunning}
+                  {/* 데이터셋 선택 영역 */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      등록 대상 데이터셋 선택
+                    </label>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      <div
+                        onClick={() => !seedRunning && handleDatasetChange("migrated")}
+                        className={`cursor-pointer p-4 rounded-lg border-2 transition-all ${
+                          datasetType === "migrated"
+                            ? "border-[#2f9e5f] bg-[#2f9e5f]/10 dark:bg-[#2f9e5f]/20 text-[#2f9e5f]"
+                            : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 bg-white dark:bg-[#101922] text-gray-700 dark:text-gray-300"
+                        } ${seedRunning ? "opacity-50 cursor-not-allowed" : ""}`}
                       >
-                        {seedRunning ? (
-                          <>
-                            <span className="material-symbols-outlined animate-spin">progress_activity</span>
-                            진행 중...
-                          </>
-                        ) : (
-                          <>
-                            <span className="material-symbols-outlined">download</span>
-                            내장 데이터 등록 시작
-                          </>
-                        )}
-                      </Button>
-                      {seedRunning && (
-                        <Button variant="danger" onClick={() => { abortRef.current = true; }}>
-                          <span className="material-symbols-outlined">stop</span>
-                          중단
-                        </Button>
-                      )}
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="font-semibold">📚 이관 도서 (1,010권)</span>
+                          {datasetType === "migrated" && (
+                            <span className="material-symbols-outlined text-sm">check_circle</span>
+                          )}
+                        </div>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          PostgreSQL에서 완벽 이관된 한국어 IT/프로그래밍/자료구조 전문 도서
+                        </p>
+                      </div>
+
+                      <div
+                        onClick={() => !seedRunning && handleDatasetChange("combined")}
+                        className={`cursor-pointer p-4 rounded-lg border-2 transition-all ${
+                          datasetType === "combined"
+                            ? "border-[#2f9e5f] bg-[#2f9e5f]/10 dark:bg-[#2f9e5f]/20 text-[#2f9e5f]"
+                            : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 bg-white dark:bg-[#101922] text-gray-700 dark:text-gray-300"
+                        } ${seedRunning ? "opacity-50 cursor-not-allowed" : ""}`}
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="font-semibold">🌐 통합 전체 도서 (1,060권)</span>
+                          {datasetType === "combined" && (
+                            <span className="material-symbols-outlined text-sm">check_circle</span>
+                          )}
+                        </div>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          이관 도서 1,010권 + 글로벌 베스트셀러 50권 통합 패키지
+                        </p>
+                      </div>
+
+                      <div
+                        onClick={() => !seedRunning && handleDatasetChange("recommended")}
+                        className={`cursor-pointer p-4 rounded-lg border-2 transition-all ${
+                          datasetType === "recommended"
+                            ? "border-[#2f9e5f] bg-[#2f9e5f]/10 dark:bg-[#2f9e5f]/20 text-[#2f9e5f]"
+                            : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 bg-white dark:bg-[#101922] text-gray-700 dark:text-gray-300"
+                        } ${seedRunning ? "opacity-50 cursor-not-allowed" : ""}`}
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="font-semibold">⭐ 초기 추천 도서 (60권)</span>
+                          {datasetType === "recommended" && (
+                            <span className="material-symbols-outlined text-sm">check_circle</span>
+                          )}
+                        </div>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          한국어 핵심 개발서 10권 + 글로벌 50권 경량 데이터셋
+                        </p>
+                      </div>
                     </div>
                   </div>
+
+                  {/* 등록 수량 입력 및 프리셋 버튼 */}
+                  <div className="space-y-2">
+                    <div className="flex flex-wrap items-end gap-4">
+                      <div className="w-48">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                          등록 권수 (최대 {getActiveDataset().length}권)
+                        </label>
+                        <input
+                          type="number"
+                          value={seedTarget}
+                          onChange={(e) => setSeedTarget(e.target.value)}
+                          min="1"
+                          max={getActiveDataset().length}
+                          disabled={seedRunning}
+                          className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#101922] text-gray-900 dark:text-white focus:ring-2 focus:ring-[#2f9e5f] disabled:opacity-50 font-bold"
+                        />
+                      </div>
+
+                      {/* 빠른 수량 프리셋 */}
+                      <div className="flex items-center gap-2 pb-0.5">
+                        <span className="text-xs text-gray-500 dark:text-gray-400">빠른 설정:</span>
+                        <button
+                          type="button"
+                          onClick={() => !seedRunning && setSeedTarget("60")}
+                          disabled={seedRunning}
+                          className="px-2.5 py-1 text-xs rounded border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 disabled:opacity-50"
+                        >
+                          60권
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => !seedRunning && setSeedTarget("100")}
+                          disabled={seedRunning}
+                          className="px-2.5 py-1 text-xs rounded border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 disabled:opacity-50"
+                        >
+                          100권
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => !seedRunning && setSeedTarget("500")}
+                          disabled={seedRunning}
+                          className="px-2.5 py-1 text-xs rounded border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 disabled:opacity-50"
+                        >
+                          500권
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => !seedRunning && setSeedTarget(String(getActiveDataset().length))}
+                          disabled={seedRunning}
+                          className="px-2.5 py-1 text-xs font-semibold rounded border border-[#2f9e5f] text-[#2f9e5f] bg-[#2f9e5f]/10 hover:bg-[#2f9e5f]/20 disabled:opacity-50"
+                        >
+                          전체 ({getActiveDataset().length}권)
+                        </button>
+                      </div>
+
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={handleStartSeed}
+                          disabled={seedRunning}
+                        >
+                          {seedRunning ? (
+                            <>
+                              <span className="material-symbols-outlined animate-spin">progress_activity</span>
+                              등록 진행 중...
+                            </>
+                          ) : (
+                            <>
+                              <span className="material-symbols-outlined">download</span>
+                              도서 데이터 등록 시작
+                            </>
+                          )}
+                        </Button>
+                        {seedRunning && (
+                          <Button variant="danger" onClick={() => { abortRef.current = true; }}>
+                            <span className="material-symbols-outlined">stop</span>
+                            중단
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 실시간 진행 바 */}
+                  {seedProgress && (
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-xs font-semibold text-gray-700 dark:text-gray-300">
+                        <span>진행률 ({seedProgress.current} / {seedProgress.total} 권)</span>
+                        <span>{Math.round((seedProgress.current / seedProgress.total) * 100)}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
+                        <div
+                          className="bg-[#2f9e5f] h-3 rounded-full transition-all duration-150"
+                          style={{ width: `${Math.round((seedProgress.current / seedProgress.total) * 100)}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  )}
                   <p className="text-xs text-gray-500 dark:text-gray-400">
                     ※ 등록된 도서는 백엔드 데이터베이스에 영구 저장되며 즉시 도서 목록 및 대여/구매 화면에 반영됩니다.
                   </p>
