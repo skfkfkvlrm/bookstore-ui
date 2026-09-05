@@ -26,8 +26,10 @@ const ApprovalList = () => {
   const [targetStatus, setTargetStatus] = useState<ApprovalStatus>("APPROVED");
   const [statusReason, setStatusReason] = useState("");
 
-  const fetchApprovals = useCallback(async () => {
-    setLoading(true);
+  const fetchApprovals = useCallback(async (isInitial = false) => {
+    if (isInitial) {
+      setLoading(true);
+    }
     setError(null);
     try {
       const response = await approvalService.getAllApprovals(
@@ -44,7 +46,7 @@ const ApprovalList = () => {
   }, [statusFilter]);
 
   useEffect(() => {
-    fetchApprovals();
+    fetchApprovals(true);
   }, [fetchApprovals]);
 
   const filteredApprovals = useMemo(() => {

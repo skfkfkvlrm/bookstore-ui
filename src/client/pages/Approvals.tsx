@@ -15,7 +15,8 @@ interface BookRow {
 }
 
 const Approvals = () => {
-  const user = getCurrentUser();
+  const [user, setUser] = useState(() => getCurrentUser());
+  const userId = user?.id;
 
   // Top-Level State Declarations
   const [activeTab, setActiveTab] = useState<"list" | "form">("list");
@@ -36,22 +37,36 @@ const Approvals = () => {
   // Selected Detail Modal
   const [selectedApproval, setSelectedApproval] = useState<Approval | null>(null);
 
-  const fetchMyApprovals = useCallback(async () => {
-    if (!user) return;
-    setLoading(true);
+  // Sync auth state
+  useEffect(() => {
+    const handleAuthChange = () => {
+      setUser(getCurrentUser());
+    };
+    window.addEventListener("authChange", handleAuthChange);
+    return () => window.removeEventListener("authChange", handleAuthChange);
+  }, []);
+
+  const fetchMyApprovals = useCallback(async (isInitial = false) => {
+    if (!userId) {
+      setLoading(false);
+      return;
+    }
+    if (isInitial) {
+      setLoading(true);
+    }
     setError(null);
     try {
-      const response = await approvalService.getMyApprovals(user.id, 0, 100);
+      const response = await approvalService.getMyApprovals(userId, 0, 100);
       setApprovals(response.content);
     } catch {
       setError("내 품의 내역을 불러오는 데 실패했습니다.");
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [userId]);
 
   useEffect(() => {
-    fetchMyApprovals();
+    fetchMyApprovals(true);
   }, [fetchMyApprovals]);
 
   const totalEstimatedBudget = useMemo(() => {
