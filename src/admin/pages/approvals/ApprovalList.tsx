@@ -22,6 +22,9 @@ const ApprovalList = () => {
   const [processing, setProcessing] = useState(false);
   const [rejectionModalOpen, setRejectionModalOpen] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
+  const [statusModalOpen, setStatusModalOpen] = useState(false);
+  const [targetStatus, setTargetStatus] = useState<ApprovalStatus>("APPROVED");
+  const [statusReason, setStatusReason] = useState("");
 
   const fetchApprovals = useCallback(async () => {
     setLoading(true);
@@ -64,9 +67,11 @@ const ApprovalList = () => {
     total: approvals.length,
     pending: approvals.filter((a) => a.status === "PENDING").length,
     approved: approvals.filter((a) => a.status === "APPROVED").length,
+    ordered: approvals.filter((a) => a.status === "ORDERED").length,
     rejected: approvals.filter((a) => a.status === "REJECTED").length,
+    cancelled: approvals.filter((a) => a.status === "CANCELLED").length,
     totalBudget: approvals
-      .filter((a) => a.status === "APPROVED")
+      .filter((a) => a.status === "APPROVED" || a.status === "ORDERED")
       .reduce((sum, a) => sum + (Number(a.totalAmount) || 0), 0),
   }), [approvals]);
 
@@ -84,6 +89,28 @@ const ApprovalList = () => {
       if (axios.isAxiosError(err)) {
         const apiError = err.response?.data as ApiError | undefined;
         alert(apiError?.message ?? "승인 처리 중 오류가 발생했습니다.");
+      } else {
+        alert("서버 연결에 실패했습니다.");
+      }
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleMarkAsOrdered = async (approval: Approval) => {
+    if (!window.confirm(`'${approval.title}' 품의 도서를 발주 완료(도서 입고 대기) 처리하시겠습니까?`)) {
+      return;
+    }
+    setProcessing(true);
+    try {
+      await approvalService.markAsOrdered(approval.id, 1);
+      alert("품의 도서가 '발주 완료' 상태로 전환되었습니다.");
+      setSelectedApproval(null);
+      await fetchApprovals();
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        const apiError = err.response?.data as ApiError | undefined;
+        alert(apiError?.message ?? "발주 완료 처리 중 오류가 발생했습니다.");
       } else {
         alert("서버 연결에 실패했습니다.");
       }
@@ -117,12 +144,44 @@ const ApprovalList = () => {
     }
   };
 
+  const handleOpenStatusModal = (approval: Approval) => {
+    setTargetStatus(approval.status);
+    setStatusReason(approval.rejectionReason || "");
+    setStatusModalOpen(true);
+  };
+
+  const handleStatusChangeSubmit = async () => {
+    if (!selectedApproval) return;
+    if (targetStatus === "REJECTED" && !statusReason.trim()) {
+      alert("반려 상태로 변경할 때는 사유를 반드시 입력해주세요.");
+      return;
+    }
+    setProcessing(true);
+    try {
+      await approvalService.changeStatus(selectedApproval.id, targetStatus, statusReason, 1);
+      alert(`품의 상태가 '${targetStatus}'(으)로 성공적으로 변경되었습니다.`);
+      setStatusModalOpen(false);
+      setSelectedApproval(null);
+      await fetchApprovals();
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        const apiError = err.response?.data as ApiError | undefined;
+        alert(apiError?.message ?? "상태 변경 중 오류가 발생했습니다.");
+      } else {
+        alert("서버 연결에 실패했습니다.");
+      }
+    } finally {
+      setProcessing(false);
+    }
+  };
+
   const getStatusBadge = (status: ApprovalStatus) => {
     const variants = {
       PENDING: { bg: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300", icon: "pending", label: "결재 대기" },
       APPROVED: { bg: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300", icon: "check_circle", label: "승인 완료" },
       REJECTED: { bg: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300", icon: "cancel", label: "반려" },
       ORDERED: { bg: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300", icon: "shopping_cart", label: "발주 완료" },
+      CANCELLED: { bg: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300", icon: "cancel_presentation", label: "상신 취소" },
     };
     const v = variants[status] || variants.PENDING;
     return (
@@ -190,7 +249,7 @@ const ApprovalList = () => {
         <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
           {/* Status Tabs */}
           <div className="flex flex-wrap gap-2 w-full sm:w-auto">
-            {(["ALL", "PENDING", "APPROVED", "REJECTED"] as const).map((tab) => (
+            {(["ALL", "PENDING", "APPROVED", "ORDERED", "REJECTED", "CANCELLED"] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => { setStatusFilter(tab); setCurrentPage(1); }}
@@ -200,7 +259,17 @@ const ApprovalList = () => {
                     : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
                 }`}
               >
-                {tab === "ALL" ? "전체 보기" : tab === "PENDING" ? "대기중" : tab === "APPROVED" ? "승인됨" : "반려됨"}
+                {tab === "ALL"
+                  ? "전체 보기"
+                  : tab === "PENDING"
+                  ? `대기중 (${stats.pending})`
+                  : tab === "APPROVED"
+                  ? `승인됨 (${stats.approved})`
+                  : tab === "ORDERED"
+                  ? `발주완료 (${stats.ordered})`
+                  : tab === "REJECTED"
+                  ? `반려됨 (${stats.rejected})`
+                  : `취소됨 (${stats.cancelled})`}
               </button>
             ))}
           </div>
@@ -384,35 +453,59 @@ const ApprovalList = () => {
             </div>
 
             {/* Modal Actions */}
-            <div className="pt-4 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => setSelectedApproval(null)}
-                className="px-4 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-              >
-                닫기
-              </button>
-              {selectedApproval.status === "PENDING" && (
-                <>
+            <div className="pt-4 border-t border-gray-200 dark:border-gray-700 flex flex-wrap justify-between items-center gap-3">
+              <div>
+                <button
+                  type="button"
+                  onClick={() => handleOpenStatusModal(selectedApproval)}
+                  className="px-3 py-1.5 text-xs rounded-lg border border-purple-300 dark:border-purple-700 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 font-semibold flex items-center gap-1 transition-colors"
+                >
+                  <span className="material-symbols-outlined text-xs">tune</span>
+                  상태 직접 변경
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSelectedApproval(null)}
+                  className="px-4 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                >
+                  닫기
+                </button>
+                {selectedApproval.status === "PENDING" && (
+                  <>
+                    <button
+                      type="button"
+                      disabled={processing}
+                      onClick={() => setRejectionModalOpen(true)}
+                      className="px-4 py-2 text-sm rounded-lg bg-red-600 text-white font-semibold hover:bg-red-700 disabled:opacity-50"
+                    >
+                      반려
+                    </button>
+                    <button
+                      type="button"
+                      disabled={processing}
+                      onClick={() => handleApprove(selectedApproval)}
+                      className="px-5 py-2 text-sm rounded-lg bg-[#2f9e5f] text-white font-bold hover:bg-[#2f9e5f]/90 disabled:opacity-50 flex items-center gap-1.5 shadow-sm"
+                    >
+                      <span className="material-symbols-outlined text-sm">check</span>
+                      결재 승인 (주문 생성)
+                    </button>
+                  </>
+                )}
+                {selectedApproval.status === "APPROVED" && (
                   <button
                     type="button"
                     disabled={processing}
-                    onClick={() => setRejectionModalOpen(true)}
-                    className="px-4 py-2 text-sm rounded-lg bg-red-600 text-white font-semibold hover:bg-red-700 disabled:opacity-50"
+                    onClick={() => handleMarkAsOrdered(selectedApproval)}
+                    className="px-5 py-2 text-sm rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 disabled:opacity-50 flex items-center gap-1.5 shadow-sm"
                   >
-                    반려
+                    <span className="material-symbols-outlined text-sm">local_shipping</span>
+                    발주 완료 (ORDERED) 처리
                   </button>
-                  <button
-                    type="button"
-                    disabled={processing}
-                    onClick={() => handleApprove(selectedApproval)}
-                    className="px-5 py-2 text-sm rounded-lg bg-[#2f9e5f] text-white font-bold hover:bg-[#2f9e5f]/90 disabled:opacity-50 flex items-center gap-1.5 shadow-sm"
-                  >
-                    <span className="material-symbols-outlined text-sm">check</span>
-                    결재 승인 (주문 생성)
-                  </button>
-                </>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -446,6 +539,71 @@ const ApprovalList = () => {
                 className="px-4 py-2 text-sm rounded-lg bg-red-600 text-white font-bold hover:bg-red-700 disabled:opacity-50"
               >
                 반려 확정
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 상태 직접 변경 서브 모달 */}
+      {statusModalOpen && selectedApproval && (
+        <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-[#1a2332] rounded-xl max-w-md w-full p-6 shadow-2xl border border-gray-200 dark:border-gray-700 space-y-4">
+            <div>
+              <h3 className="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
+                <span className="material-symbols-outlined text-purple-600">tune</span>
+                품의 상태 직접 변경
+              </h3>
+              <p className="text-xs text-gray-500 mt-1">
+                품의 번호 #{selectedApproval.id} ({selectedApproval.title})의 상태를 변경합니다.
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
+                변경할 목표 상태 <span className="text-red-500">*</span>
+              </label>
+              <select
+                value={targetStatus}
+                onChange={(e) => setTargetStatus(e.target.value as ApprovalStatus)}
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#101922] text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-[#2f9e5f] focus:outline-none"
+              >
+                <option value="PENDING">PENDING (결재 대기)</option>
+                <option value="APPROVED">APPROVED (승인 완료 - 주문서 자동 연계)</option>
+                <option value="ORDERED">ORDERED (발주 완료 - 도서 입고 대기)</option>
+                <option value="REJECTED">REJECTED (반려)</option>
+                <option value="CANCELLED">CANCELLED (상신 취소)</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
+                상태 변경 사유 / 비고 {targetStatus === "REJECTED" && <span className="text-red-500">*</span>}
+              </label>
+              <textarea
+                rows={3}
+                value={statusReason}
+                onChange={(e) => setStatusReason(e.target.value)}
+                placeholder="상태 변경 사유 또는 처리 비고를 입력하세요"
+                className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#101922] text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-[#2f9e5f] focus:outline-none"
+              />
+            </div>
+
+            <div className="flex justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setStatusModalOpen(false)}
+                className="px-4 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                취소
+              </button>
+              <button
+                type="button"
+                disabled={processing || (targetStatus === "REJECTED" && !statusReason.trim())}
+                onClick={handleStatusChangeSubmit}
+                className="px-5 py-2 text-sm rounded-lg bg-purple-600 text-white font-bold hover:bg-purple-700 disabled:opacity-50 shadow-sm"
+              >
+                상태 변경 저장
               </button>
             </div>
           </div>

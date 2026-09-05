@@ -225,7 +225,12 @@ export interface PaymentResponse {
 }
 
 // Approval (전자결재/품의) Types
-export type ApprovalStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'ORDERED';
+export type ApprovalStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'ORDERED' | 'CANCELLED';
+
+export interface UpdateApprovalStatusRequest {
+  status: ApprovalStatus;
+  reason?: string;
+}
 
 export interface ApprovalItem {
   id: number;

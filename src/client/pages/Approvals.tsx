@@ -130,12 +130,34 @@ const Approvals = () => {
     }
   };
 
+  const handleCancelApproval = async (app: Approval) => {
+    if (!window.confirm(`'${app.title}' 품의를 정말 취소(회수)하시겠습니까?`)) {
+      return;
+    }
+    try {
+      await approvalService.cancel(app.id, user?.id);
+      alert("품의서 상신이 성공적으로 취소되었습니다.");
+      if (selectedApproval?.id === app.id) {
+        setSelectedApproval(null);
+      }
+      await fetchMyApprovals();
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        const apiError = err.response?.data as ApiError | undefined;
+        alert(apiError?.message ?? "품의 취소 중 오류가 발생했습니다.");
+      } else {
+        alert("서버 연결에 실패했습니다.");
+      }
+    }
+  };
+
   const getStatusBadge = (status: ApprovalStatus) => {
     const variants = {
       PENDING: { bg: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300", icon: "pending", label: "결재 대기" },
       APPROVED: { bg: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300", icon: "check_circle", label: "승인 완료" },
       REJECTED: { bg: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300", icon: "cancel", label: "반려" },
       ORDERED: { bg: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300", icon: "shopping_cart", label: "발주 완료" },
+      CANCELLED: { bg: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300", icon: "cancel_presentation", label: "상신 취소" },
     };
     const v = variants[status] || variants.PENDING;
     return (
@@ -272,7 +294,17 @@ const Approvals = () => {
                     </div>
                   )}
 
-                  <div className="mt-3 flex justify-end">
+                  <div className="mt-3 flex justify-end gap-2">
+                    {app.status === "PENDING" && (
+                      <button
+                        type="button"
+                        onClick={() => handleCancelApproval(app)}
+                        className="px-3 py-1.5 rounded-lg border border-red-200 dark:border-red-900/40 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex items-center gap-1"
+                      >
+                        <span className="material-symbols-outlined text-xs">close</span>
+                        품의 취소
+                      </button>
+                    )}
                     <button
                       onClick={() => setSelectedApproval(app)}
                       className="px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 text-xs font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -503,7 +535,16 @@ const Approvals = () => {
               <span className="text-lg text-[#2f9e5f]">{Number(selectedApproval.totalAmount).toLocaleString()}원</span>
             </div>
 
-            <div className="mt-5 flex justify-end">
+            <div className="mt-5 flex justify-end gap-2">
+              {selectedApproval.status === "PENDING" && (
+                <button
+                  type="button"
+                  onClick={() => handleCancelApproval(selectedApproval)}
+                  className="px-4 py-2 rounded-lg border border-red-300 dark:border-red-800 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                >
+                  품의 취소
+                </button>
+              )}
               <button
                 onClick={() => setSelectedApproval(null)}
                 className="px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-xs font-semibold hover:bg-gray-200"

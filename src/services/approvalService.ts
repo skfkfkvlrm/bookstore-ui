@@ -37,4 +37,22 @@ export const approvalService = {
    */
   reject: (id: number, reason: string, approverId?: number): Promise<Approval> =>
     apiClient.patch<Approval>(`/api/approvals/${id}/reject`, { reason }, { params: { approverId } }).then((r) => r.data),
+
+  /**
+   * 품의 상신 취소 (기안자 회원 본인)
+   */
+  cancel: (id: number, memberId?: number): Promise<Approval> =>
+    apiClient.patch<Approval>(`/api/approvals/${id}/cancel`, null, { params: { memberId } }).then((r) => r.data),
+
+  /**
+   * 품의 발주 완료 처리 (관리자)
+   */
+  markAsOrdered: (id: number, approverId?: number): Promise<Approval> =>
+    apiClient.patch<Approval>(`/api/approvals/${id}/order`, null, { params: { approverId } }).then((r) => r.data),
+
+  /**
+   * 품의 상태 직접 변경 (관리자)
+   */
+  changeStatus: (id: number, status: ApprovalStatus, reason?: string, modifierId?: number): Promise<Approval> =>
+    apiClient.patch<Approval>(`/api/approvals/${id}/status`, { status, reason }, { params: { modifierId } }).then((r) => r.data),
 };
