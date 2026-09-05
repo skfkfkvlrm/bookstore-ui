@@ -15,6 +15,7 @@ import OrderDetail from "./pages/orders/OrderDetail";
 import LoanList from "./pages/loans/LoanList";
 import LoanAdd from "./pages/loans/LoanAdd";
 import LoanDetail from "./pages/loans/LoanDetail";
+import ApprovalList from "./pages/approvals/ApprovalList";
 import Settings from "./pages/Settings";
 
 function AdminApp() {
@@ -41,6 +42,7 @@ function AdminApp() {
                 <Route path="/orders" element={<OrderList />} />
                 <Route path="/orders/add" element={<OrderAdd />} />
                 <Route path="/orders/:id" element={<OrderDetail />} />
+                <Route path="/approvals" element={<ApprovalList />} />
                 <Route path="/settings" element={<Settings />} />
               </Routes>
             </Layout>

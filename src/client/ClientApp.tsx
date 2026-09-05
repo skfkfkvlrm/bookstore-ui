@@ -7,6 +7,7 @@ import MyLoans from "./pages/MyLoans";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import MyOrders from "./pages/MyOrders";
+import Approvals from "./pages/Approvals";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MyAccount from "./pages/MyAccount";
@@ -65,6 +66,14 @@ function ClientApp() {
           element={
             <ProtectedRoute>
               <MyAccount />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/approvals"
+          element={
+            <ProtectedRoute>
+              <Approvals />
             </ProtectedRoute>
           }
         />

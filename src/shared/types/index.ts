@@ -223,3 +223,52 @@ export interface PaymentResponse {
   installmentMonths?: number;
   failureReason?: string;
 }
+
+// Approval (전자결재/품의) Types
+export type ApprovalStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'ORDERED';
+
+export interface ApprovalItem {
+  id: number;
+  bookId?: number;
+  bookTitle: string;
+  bookAuthor?: string;
+  isbn?: string;
+  quantity: number;
+  estimatedPrice: number;
+  totalPrice: number;
+}
+
+export interface Approval {
+  id: number;
+  applicantId: number;
+  applicantName: string;
+  applicantEmail: string;
+  approverId?: number;
+  approverName?: string;
+  title: string;
+  purpose?: string;
+  department?: string;
+  totalAmount: number;
+  status: ApprovalStatus;
+  statusDescription: string;
+  rejectionReason?: string;
+  orderId?: number;
+  submittedDate: string;
+  reviewedDate?: string;
+  items: ApprovalItem[];
+}
+
+export interface CreateApprovalRequest {
+  memberId?: number;
+  title: string;
+  purpose?: string;
+  department?: string;
+  items: Array<{
+    bookId?: number;
+    bookTitle: string;
+    bookAuthor?: string;
+    isbn?: string;
+    quantity: number;
+    estimatedPrice: number;
+  }>;
+}

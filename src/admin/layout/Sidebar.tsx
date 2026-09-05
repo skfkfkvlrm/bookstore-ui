@@ -6,6 +6,7 @@ const navItems = [
   { to: "/admin/books", icon: "menu_book", label: "도서 관리" },
   { to: "/admin/loans", icon: "library_books", label: "대여 관리" },
   { to: "/admin/orders", icon: "receipt_long", label: "주문 관리" },
+  { to: "/admin/approvals", icon: "approval", label: "전자결재(품의)" },
   { to: "/admin/settings", icon: "settings", label: "설정" },
 ];
 

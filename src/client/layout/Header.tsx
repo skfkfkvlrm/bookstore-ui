@@ -107,6 +107,12 @@ const Header = () => {
               >
                 주문 내역
               </Link>
+              <Link
+                to="/client/approvals"
+                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#2f9e5f] dark:hover:text-[#2f9e5f] transition-colors"
+              >
+                도서 품의(결재)
+              </Link>
             </nav>
           </div>
           <div className="flex items-center gap-4">
@@ -192,6 +198,14 @@ const Header = () => {
                       >
                         <span className="material-symbols-outlined text-base">shopping_bag</span>
                         내 주문
+                      </Link>
+                      <Link
+                        to="/client/approvals"
+                        onClick={() => setShowUserMenu(false)}
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                      >
+                        <span className="material-symbols-outlined text-base">assignment</span>
+                        도서 품의/결재
                       </Link>
                     </div>
                     <div className="border-t border-gray-200 dark:border-gray-700 py-2">
