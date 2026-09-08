@@ -44,6 +44,9 @@ function AdminApp() {
                 <Route path="/orders/:id" element={<OrderDetail />} />
                 <Route path="/approvals" element={<ApprovalList />} />
                 <Route path="/settings" element={<Settings />} />
+
+                {/* Admin Sub-Route Wildcard Fallback */}
+                <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
               </Routes>
             </Layout>
           </AdminProtectedRoute>

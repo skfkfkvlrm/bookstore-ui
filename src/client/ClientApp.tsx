@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./layout/Layout";
 import Home from "./pages/Home";
 import BookList from "./pages/BookList";
@@ -83,6 +83,9 @@ function ClientApp() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/authors/:name" element={<AuthorPage />} />
+
+        {/* Client Sub-Route Wildcard Fallback */}
+        <Route path="*" element={<Navigate to="/client" replace />} />
       </Routes>
     </Layout>
   );
