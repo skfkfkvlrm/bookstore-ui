@@ -13,6 +13,9 @@ function App() {
 
       {/* Client routes */}
       <Route path="/client/*" element={<ClientApp />} />
+
+      {/* Wildcard Fallback Route */}
+      <Route path="*" element={<Navigate to="/client" replace />} />
     </Routes>
   );
 }
