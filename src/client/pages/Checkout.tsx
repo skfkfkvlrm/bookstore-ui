@@ -283,11 +283,10 @@ const Checkout = () => {
                 {PAYMENT_METHODS.map((method) => (
                   <label
                     key={method.value}
-                    className={`flex items-center justify-center gap-2 p-3 rounded-lg border-2 cursor-pointer transition-all ${
-                      paymentMethod === method.value
+                    className={`flex items-center justify-center gap-2 p-3 rounded-lg border-2 cursor-pointer transition-all ${paymentMethod === method.value
                         ? "border-[#2f9e5f] bg-[#2f9e5f]/10 text-[#2f9e5f] font-semibold"
                         : "border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-[#2f9e5f]/50"
-                    }`}
+                      }`}
                   >
                     <input
                       type="radio"
@@ -404,7 +403,7 @@ const Checkout = () => {
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900 dark:text-white">토스페이먼츠 전자결제</h3>
-                  <p className="text-xs text-gray-500">2-Phase 보안 결제 승인창</p>
+                  <p className="text-xs text-gray-500">2-Phase 보안 결제창</p>
                 </div>
               </div>
               <button
@@ -429,7 +428,7 @@ const Checkout = () => {
                   </span>
                 </div>
                 <div className="flex justify-between border-t border-gray-200 dark:border-gray-800 pt-2 text-base">
-                  <span className="font-bold text-gray-700 dark:text-gray-300">최종 승인 금액</span>
+                  <span className="font-bold text-gray-700 dark:text-gray-300">최종 결제 금액</span>
                   <span className="font-black text-[#2f9e5f]">{total.toLocaleString()}원</span>
                 </div>
               </div>
@@ -463,7 +462,7 @@ const Checkout = () => {
                 ) : (
                   <>
                     <span className="material-symbols-outlined text-lg">check</span>
-                    <span>결제 승인 완료</span>
+                    <span>결제 완료</span>
                   </>
                 )}
               </button>
