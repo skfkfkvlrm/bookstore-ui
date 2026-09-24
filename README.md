@@ -66,7 +66,7 @@ React 19 + TypeScript + Vite 7 + TailwindCSS 기반으로 구축된 **도서 구
 
 ---
 
-## 🔒 4. 프론트엔드 안전 가드 (Guardrails)
+## 🔒 4. 프론트엔드 안전 가드
 
 1. **Vercel SPA 404 원천 방지**: `vercel.json` 전역 Rewrite 및 `ClientApp` / `AdminApp` 와일드카드 Fallback 라우트 이중 적용.
 2. **Cloud Run API 역방향 프록시**: `vercel.json`의 `/api/*` 경로를 Cloud Run 백엔드로 투명하게 프록시하여 CORS 완전 제거.
